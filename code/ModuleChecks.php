@@ -3,12 +3,26 @@
 
 class ModuleChecks extends buildtask {
 
+	/**
+	 * @var string
+	 */
 	private static $git_user_name = "";
 
+	/**
+	 * @var string
+	 */
 	private static $packagist_user_name = "";
 
+	/**
+	 * any additional modules to be checked
+	 * @var array
+	 */
 	private static $modules = array();
 
+	/**
+	 * list of methods to run for each module
+	 * @var array
+	 */
 	private static $methods_to_check = array(
 		"exitsOnPackagist",
 		"hasReadMeFile",
@@ -47,6 +61,7 @@ class ModuleChecks extends buildtask {
 
 	/**
 	 * @param string $name
+	 *
 	 * @return boolean
 	 */
 	protected function exitsOnPackagist($name){
@@ -86,7 +101,8 @@ class ModuleChecks extends buildtask {
 	}
 
 	/**
-	 * takes the preloaded modules and add any other ones you have listed...
+	 * takes the preloaded modules and
+	 * adds any other ones you have listed on github
 	 */
 	protected function getAllRepos(){
 		$username = $this->Config()->get("git_user_name");
@@ -126,51 +142,30 @@ class ModuleChecks extends buildtask {
 		}
 	}
 
-	protected function checkForDetailsInComposerFile(){
+	/**
+	 * checks if a particular variable is present in the composer.json file
+	 *
+	 * @param string $name
+	 * @param string $variable
+	 * @return boolean
+	 */
+	protected function checkForDetailsInComposerFile($name, $variable){
 		die("to be completed");
-		//check require in composer.json
-		$data = file_get_contents($location);
-		// Is the str in the data (case-insensitive search)
-		if (stripos($data, "\"require\":{") !== false){
-			// sw00t! we have a match
-			echo "<div style='color: green;' class='ok'>OK $location has require</div>";
-		}
-		else {
-			echo "<div style='color: red;'>BAD $location does not have require</div>";
-		}
-
-		//check require in composer.json
-		$data = file_get_contents($location);
-		// Is the str in the data (case-insensitive search)
-		if (stripos($data, "\"extra\":{") !== false){
-			// sw00t! we have a match
-			echo "<div style='color: green;' class='ok'>OK $location has extra</div>";
-		}
-		else {
-			echo "<div style='color: red;'>BAD $location does not have extra</div>";
-		}
-
-		//check authors in composer.json
-		$data = file_get_contents($location);
-		// Is the str in the data (case-insensitive search)
-		if (stripos($data, "\"authors\":[") !== false){
-			// sw00t! we have a match
-			echo "<div style='color: green;' class='ok'>OK $location has authors</div>";
-		}
-		else {
-			echo "<div style='color: red;'>BAD $location does not have authors</div>";
-		}
 	}
 
 
+	/**
+	 * opens a location with curl to see if it exists.
+	 *
+	 * @param string $url
+	 *
+	 * @return boolean
+	 */
 	protected function checkLocation($url) {
 		$handle = curl_init($url);
 		curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
 		curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, TRUE);
-		/* Get the HTML or whatever is linked in $url. */
 		$response = curl_exec($handle);
-
-		/* Check for 404 (file not found). */
 		$httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
 		$outcome = $httpCode == 200;
 		curl_close($handle);
