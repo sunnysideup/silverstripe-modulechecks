@@ -1,0 +1,23 @@
+{
+	"name": "sunnysideup/modulechecks",
+	"type": "silverstripe-module",
+	"description": "Checks your modules on packagist, github, and the silverstripe add-ons site",
+	"homepage": "http://www.silverstripe-webdevelopment.com/",
+	"keywords": ["modules", "quality control", "automation", "packagist", "composer", "license", "addons"],
+	"license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
+	"authors":[
+		{
+			"name": "Nicolaas Francken",
+			"homepage": "https://github.com/sunnysideup",
+			"email" : "modules@sunnysideup.co.nz",
+			"role" : "lead developer"
+		}
+	],
+	"require":{
+		"silverstripe/framework": "*",
+	},
+	"extra": {
+		"installer-name": "modulechecks"
+	}
+
+}

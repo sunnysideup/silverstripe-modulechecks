@@ -1,0 +1,5 @@
+ModuleChecks:
+  git_user_name: "abc"
+  packagist_user_name: "abc"
+  # the variable below is not required, but allows you to check for additional ones that may not be listed on github
+  modules: []
