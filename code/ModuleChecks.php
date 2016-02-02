@@ -40,11 +40,13 @@ class ModuleChecks extends buildtask {
 			user_error("make sure to set your git and packagist usernames via the standard config system");
 		}
 		increase_time_limit_to(3600);
+		$count = 0;
 		$this->getAllRepos();
 		$methodsToCheck = $this->Config()->get("methods_to_check");
 		foreach(self::$modules as $module) {
+			$count++;
 			$failures = 0;
-			DB::alteration_message("<h3>Checking $module</h3>");
+			DB::alteration_message("<h3>$count. checking $module</h3>");
 			foreach($methodsToCheck as $method) {
 				if(!$this->$method($module)) {
 					$failures++;
@@ -57,6 +59,7 @@ class ModuleChecks extends buildtask {
 			ob_flush();
 			flush();
 		}
+		echo "----------------------------- THE END --------------------------";
 	}
 
 	/**
