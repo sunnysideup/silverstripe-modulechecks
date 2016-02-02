@@ -134,7 +134,7 @@ class ModuleChecks extends buildtask {
 						//make sure we are the owners
 						if($repo["owner"]["login"] == $username) {
 							//check it is silverstripe module
-							$nameWithoutPrefix = str_replace("silverstripe-", "", $repo["name"]);
+							$nameWithoutPrefix = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);
 							if(strlen($nameWithoutPrefix) < strlen($repo["name"])) {
 								//is it listed yet?
 								if(!in_array($nameWithoutPrefix, self::$modules)) {
