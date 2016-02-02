@@ -36,20 +36,24 @@ class ModuleChecks extends buildtask {
 	protected $description = "Goes through every module on github and checks for some of the basic requirements. You will need to set your GitHub Username in the configs.";
 
 	function run($request) {
-		if($this->Config()->get("git_user_name") && $this->Config()->get("packagist_user_name")) {
+		increase_time_limit_to(3600);
+		$gitUser = $this->Config()->get("git_user_name");
+		$packagistUser = $this->Config()->get("git_user_name");
+		if($gitUser && $packagistUser) {
 			//all is good ...
 		}
 		else {
 			user_error("make sure to set your git and packagist usernames via the standard config system");
 		}
-		increase_time_limit_to(3600);
+
 		$count = 0;
 		$this->getAllRepos();
+		echo "<h1>Testing ".count(self::$modules)." modules (git user: $gitUser and packagist user: $packagistUser) ...</h1>";
 		$methodsToCheck = $this->Config()->get("methods_to_check");
 		foreach(self::$modules as $module) {
 			$count++;
 			$failures = 0;
-			echo "<h3>$count. checking $module</h3>";
+			echo "<h3><a href=\"https://github.com/".$gitUser."/silverstripe-".$module."\"></a>$count. checking $module</h3>";
 			foreach($methodsToCheck as $method) {
 				if(!$this->$method($module)) {
 					$failures++;
@@ -112,38 +116,46 @@ class ModuleChecks extends buildtask {
 	 */
 	protected function getAllRepos(){
 		$username = $this->Config()->get("git_user_name");
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, "https://api.github.com/users/".$username."/repos?per_page=500");
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, TRUE);
-		curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-		$string = curl_exec($ch);
-		// close curl resource to free up system resources
-		curl_close($ch);
-		$array = json_decode($string, true);
-		foreach($array as $repo) {
-			//dont bother about forks
-			if(isset($repo["fork"]) && !$repo["fork"]) {
-				//make sure we are the owners
-				if($repo["owner"]["login"] == $username) {
-					//check it is silverstripe module
-					$nameWithoutPrefix = str_replace("silverstripe-", "", $repo["name"]);
-					if(strlen($nameWithoutPrefix) < strlen($repo["name"])) {
-						//is it listed yet?
-						if(!in_array($nameWithoutPrefix, self::$modules)) {
-							self::$modules[] = $nameWithoutPrefix;
+		for($page = 0; $page < 10; $page++) {
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, "https://api.github.com/users/".$username."/repos?per_page=100&page=$page");
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, TRUE);
+			curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+			$string = curl_exec($ch);
+			// close curl resource to free up system resources
+			curl_close($ch);
+			$array = json_decode($string, true);
+			$count = count($array);
+			if($count > 0 ) {
+				foreach($array as $repo) {
+					//dont bother about forks
+					if(isset($repo["fork"]) && !$repo["fork"]) {
+						//make sure we are the owners
+						if($repo["owner"]["login"] == $username) {
+							//check it is silverstripe module
+							$nameWithoutPrefix = str_replace("silverstripe-", "", $repo["name"]);
+							if(strlen($nameWithoutPrefix) < strlen($repo["name"])) {
+								//is it listed yet?
+								if(!in_array($nameWithoutPrefix, self::$modules)) {
+									self::$modules[] = $nameWithoutPrefix;
+								}
+							}
+							else {
+								DB::alteration_message("skipping ".$repo["name"]." as it does not appear to me a silverstripe module, you can add it manually to this task, using the configs ... ");
+							}
+						}
+						else {
+							DB::alteration_message("skipping ".$repo["name"]." as it has a different owner");
 						}
 					}
-					else {
-						DB::alteration_message("skipping ".$repo["name"]." as it does not appear to me a silverstripe module, you can add it manually to this task, using the configs ... ");
+					elseif(isset($repo["name"])) {
+						DB::alteration_message("skipping ".$repo["name"]." as it is a fork");
 					}
 				}
-				else {
-					DB::alteration_message("skipping ".$repo["name"]." as it has a different owner");
-				}
 			}
-			elseif(isset($repo["name"])) {
-				DB::alteration_message("skipping ".$repo["name"]." as it is a fork");
+			else {
+				$page = 11;
 			}
 		}
 	}
