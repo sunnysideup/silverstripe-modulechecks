@@ -3,9 +3,9 @@
 
 class ModuleChecks extends buildtask {
 
-	private static $git_user_name = "sunnysideup";
+	private static $git_user_name = "";
 
-	private static $packagist_user_name = "sunnysideup";
+	private static $packagist_user_name = "";
 
 	private static $modules = array();
 
@@ -22,6 +22,9 @@ class ModuleChecks extends buildtask {
 	protected $description = "Goes through every module on github and checks for some of the basic requirements. You will need to set your GitHub Username in the configs.";
 
 	function run($request) {
+		if(!$this->Config()->get("git_user_name") || $this->Config()->get("packagist_user_name")) {
+			user_error("make sure to set your git and packagist usernames via the standard config system");
+		}
 		increase_time_limit_to(3600);
 		$this->getAllRepos();
 		$methodsToCheck = $this->Config()->get("methods_to_check");
