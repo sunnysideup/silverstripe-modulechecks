@@ -22,16 +22,20 @@ class ModuleChecks extends buildtask {
 	protected $description = "Goes through every module on github and checks for some of the basic requirements. You will need to set your GitHub Username in the configs.";
 
 	function run($request) {
-
 		increase_time_limit_to(3600);
 		$this->getAllRepos();
 		$methodsToCheck = $this->Config()->get("methods_to_check");
 		foreach(self::$modules as $module) {
+			$failures = 0;
 			DB::alteration_message("<h3>Checking $module</h3>");
 			foreach($methodsToCheck as $method) {
 				if(!$this->$method($module)) {
+					$failures++;
 					DB::alteration_message("bad response for $method", "deleted");
 				}
+			}
+			if($failures == 0) {
+				DB::alteration_message("OK", "created");
 			}
 			ob_flush();
 			flush();
@@ -84,20 +88,17 @@ class ModuleChecks extends buildtask {
 	protected function getAllRepos(){
 		$username = $this->Config()->get("git_user_name");
 		$ch = curl_init();
-		// set url
-		curl_setopt($ch, CURLOPT_URL, "https://api.github.com/users/".$username."/repos");
-		//return the transfer as a string
+		curl_setopt($ch, CURLOPT_URL, "https://api.github.com/users/".$username."/repos?per_page=500");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, TRUE);
 		curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-		// $output contains the output string
 		$string = curl_exec($ch);
-
 		// close curl resource to free up system resources
 		curl_close($ch);
 		$array = json_decode($string, true);
 		foreach($array as $repo) {
 			//dont bother about forks
-			if(!$repo["fork"]) {
+			if(isset($repo["fork"]) && !$repo["fork"]) {
 				//make sure we are the owners
 				if($repo["owner"]["login"] == $username) {
 					//check it is silverstripe module
@@ -108,7 +109,16 @@ class ModuleChecks extends buildtask {
 							self::$modules[] = $nameWithoutPrefix;
 						}
 					}
+					else {
+						DB::alteration_message("skipping ".$repo["name"]." as it does not appear to me a silverstripe module, you can add it manually to this task, using the configs ... ");
+					}
 				}
+				else {
+					DB::alteration_message("skipping ".$repo["name"]." as it has a different owner");
+				}
+			}
+			elseif(isset($repo["name"])) {
+				DB::alteration_message("skipping ".$repo["name"]." as it is a fork");
 			}
 		}
 	}
@@ -153,7 +163,7 @@ class ModuleChecks extends buildtask {
 	protected function checkLocation($url) {
 		$handle = curl_init($url);
 		curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
-
+		curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, TRUE);
 		/* Get the HTML or whatever is linked in $url. */
 		$response = curl_exec($handle);
 
