@@ -36,7 +36,10 @@ class ModuleChecks extends buildtask {
 	protected $description = "Goes through every module on github and checks for some of the basic requirements. You will need to set your GitHub Username in the configs.";
 
 	function run($request) {
-		if(!$this->Config()->get("git_user_name") || $this->Config()->get("packagist_user_name")) {
+		if($this->Config()->get("git_user_name") && $this->Config()->get("packagist_user_name")) {
+			//all is good ...
+		}
+		else {
 			user_error("make sure to set your git and packagist usernames via the standard config system");
 		}
 		increase_time_limit_to(3600);
@@ -46,7 +49,7 @@ class ModuleChecks extends buildtask {
 		foreach(self::$modules as $module) {
 			$count++;
 			$failures = 0;
-			DB::alteration_message("<h3>$count. checking $module</h3>");
+			echo "<h3>$count. checking $module</h3>";
 			foreach($methodsToCheck as $method) {
 				if(!$this->$method($module)) {
 					$failures++;
