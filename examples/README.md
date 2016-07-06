@@ -36,4 +36,4 @@ We welcome any contributions.
 
 ## Paid assistance
 
-You can pay us to create an improved / adapted version of this module for your own projects.  Please contact us if you like to find out more: (www.sunnysideup.co.nz)[http://www.sunnysideup.co.nz]
+You can pay us to create an improved / adapted version of this module for your own projects.  Please contact us if you like to find out more: [www.sunnysideup.co.nz](http://www.sunnysideup.co.nz)
