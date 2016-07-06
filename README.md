@@ -12,6 +12,19 @@ other Silverstripe Module module.
 To use the module, set the configs in the task and
 then browse to /dev/tasks/ModuleChecks to run ...
 
+
+## Configuration ##
+
+you can place any custom configs in the following file:
+
+`/ssmoduleconfig/ModuleConfig.php`
+
+dont forget to also add a
+
+`/ssmoduleconfig/_manifest_exclude`
+
+file
+
 ## Developers ##
 
 Nicolaas Francken [at] sunnysideup.co.nz
