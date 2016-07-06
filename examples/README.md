@@ -29,3 +29,11 @@ see [composer.json](composer.json) for details
 ```
 composer require silverstripe/my-module
 ```
+
+## Contributing
+
+We welcome any contributions.
+
+## Paid assistance
+
+You can pay us to create an improved / adapted version of this module for your own projects.  Please contact us if you like to find out more: (www.sunnysideup.co.nz)[http://www.sunnysideup.co.nz]
