@@ -6,8 +6,9 @@
  *
  */
 
-class ModuleChecks extends BuildTask {
+class ModuleChecks extends ModuleTasksConfig {
 
+    private static $enabled = true;
     /**
      * @var string
      */
@@ -41,6 +42,11 @@ class ModuleChecks extends BuildTask {
     protected $description = "Goes through every module on github and checks for some of the basic requirements. You will need to set your GitHub Username in the configs.";
 
     function run($request) {
+        
+        if (count(ModuleChecks::$modules) == 0) {
+            
+        }
+        
         increase_time_limit_to(3600);
         $gitUser = $this->Config()->get("git_user_name");
         $packagistUser = $this->Config()->get("git_user_name");
