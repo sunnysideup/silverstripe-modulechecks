@@ -1,0 +1,18 @@
+<?php
+
+
+interface ModuleConfigInterface
+{
+
+  /**
+   * array looks like this:
+   *    array(
+   *        "FileLocation" => "docs/myfile.txt,
+   *        "SourceLocation => "http://...."
+   *    );
+   * @return array
+   */   
+  public function params();
+
+
+}
