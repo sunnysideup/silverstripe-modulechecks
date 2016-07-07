@@ -14,7 +14,7 @@
 		}
 	],
 	"require":{
-		"silverstripe/framework": "*",
+		"silverstripe/framework": "^3.4",
 	        "cpliakas/git-wrapper": "~1.0"
 	},
 	"extra": {
