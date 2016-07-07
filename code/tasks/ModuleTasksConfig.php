@@ -48,20 +48,6 @@ abstract Class ModuleTasksConfig extends BuildTask {
         'baseGitHubURL' => "https://github.com/sunnysideup/silverstripe-"
     );
 
-    /*
-     * Override default settings for specific modules here
-     * 
-     * */
-    private static $module_settings = array (
-        'cms_tricks_for_apps' =>
-            array (
-                'readme' => 'rasdfdsf',
-                'localDir' => '/home/jack/modules/',
-                'sourceDir' => '/var/www/picspeanutbutter.com'
-            )
-        /*etc ...*/
-    
-    );
 
     
     /*
