@@ -8,16 +8,6 @@
 
 class ModuleChecks extends ModuleTasksConfig {
 
-    private static $enabled = true;
-    /**
-     * @var string
-     */
-    private static $git_user_name = "";
-
-    /**
-     * @var string
-     */
-    private static $packagist_user_name = "";
 
     /**
      * any additional modules to be checked
@@ -30,7 +20,7 @@ class ModuleChecks extends ModuleTasksConfig {
      * @var array
      */
     private static $methods_to_check = array(
-        "exsitsOnPackagist",
+        "exitsOnPackagist",
         "hasReadMeFile",
         "hasLicense",
         "hasComposerFile",
@@ -43,13 +33,22 @@ class ModuleChecks extends ModuleTasksConfig {
 
     function run($request) {
         
-        if (count(ModuleChecks::$modules) == 0) {
-            
+        if (count (ModuleChecks::$modules) == 0) {
+            ModuleChecks::$modules = $this->getModules();
         }
+        
+        /*print ("dasdasasd");
+        $gitobj = $this->getGitHubModuleObj('perfect_cms_images');
+        print "pulling 'cms_tricks_for_apps'";
+        $gitobj->pull();
+        print (" 5656");
+        die();*/
+        
         
         increase_time_limit_to(3600);
         $gitUser = $this->Config()->get("git_user_name");
-        $packagistUser = $this->Config()->get("git_user_name");
+        $packagistUser = $this->Config()->get("packagist_user_name");
+        
         if($gitUser && $packagistUser) {
             //all is good ...
         }
@@ -126,6 +125,7 @@ class ModuleChecks extends ModuleTasksConfig {
      * adds any other ones you have listed on github
      */
     protected function getAllRepos(){
+        
         $username = $this->Config()->get("git_user_name");
         for($page = 0; $page < 10; $page++) {
             $ch = curl_init();
@@ -137,6 +137,9 @@ class ModuleChecks extends ModuleTasksConfig {
             // close curl resource to free up system resources
             curl_close($ch);
             $array = json_decode($string, true);
+            
+            print_r($array);
+            die();
             $count = count($array);
             if($count > 0 ) {
                 foreach($array as $repo) {

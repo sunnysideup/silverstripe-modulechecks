@@ -1,6 +1,17 @@
 <?php
 
-Class ModuleTasksConfig extends BuildTask {
+abstract Class ModuleTasksConfig extends BuildTask {
+
+    /**
+     * @var string
+     */
+    private static $git_user_name = "sunnysideupdevs@gmail.com";
+
+    /**
+     * @var string
+     */
+    private static $packagist_user_name = "sunnysideupdevs@gmail.com";
+
 
     /*
      * A list of module names to process
@@ -31,47 +42,74 @@ Class ModuleTasksConfig extends BuildTask {
     /*
      * Default config values where not overridden
      */
-    private static $default_module_settings = $array(
+    private static $default_module_settings = array(
         'readme' => 'readme.md',
         'localDir' => '/home/jack/modules/',
-        'sourceDir' => '/var/www/picspeanutbutter.com'
+        'baseGitHubURL' => "https://github.com/sunnysideup/silverstripe-"
     );
 
     /*
      * Override default settings for specific modules here
      * 
      * */
-    private static $module_settings = $array (
-        'cms_tricks_for_apps' = array (
-            'readme' => 'readme.md',
-            'localDir' => '/home/jack/modules/',
-            'sourceDir' => '/var/www/picspeanutbutter.com'
-            ),
+    private static $module_settings = array (
+        'cms_tricks_for_apps' =>
+            array (
+                'readme' => 'rasdfdsf',
+                'localDir' => '/home/jack/modules/',
+                'sourceDir' => '/var/www/picspeanutbutter.com'
+            )
         /*etc ...*/
     
     );
 
+    
+    /*
+     * return a the list of modules defined in the static
+     * */
+
     protected function getModules() {
-        return $this->modules;
+        return ModuleTasksConfig::$modules;
     }
 
+
     /**
-     * Returns settings for a speicifed module name
-     * 
+     * Returns settings for a specific module
      * */
     protected function getModuleSettings ($moduleName) {
         $moduleName = trim($moduleName);
-        $settings = $this::default_module_settings;
-        for ($key in $settings) {
-            if (isset($this::module_settings[$moduleName])) {
-                if (isset($this::module_settings[$moduleName][$key])) {
-                    $settings[$key] = $this::module_settings[$moduleName][$key];
+        $settings = ModuleTasksConfig::$default_module_settings;
+        
+        foreach ( $settings as $key => $setting) {
+            if (isset(ModuleTasksConfig::$module_settings[$moduleName])) {
+                if (isset(ModuleTasksConfig::$module_settings[$moduleName][$key])) {
+                    $settings[$key] = ModuleTasksConfig::$module_settings[$moduleName][$key];
                 }
             }
         }
         
+        return $settings;
     }
 
+    protected function getGitHubModuleObj($moduleName) {
+        $moduleName = trim($moduleName);
+        $moduleSettings = $this -> getModuleSettings($moduleName);
+        
+        $gitHubModule = GitHubModule::get()->filter(array('ModuleName'=>$moduleName))->first();
+
+        if (!$gitHubModule) {
+ 
+            $gitHubModule = new GitHubModule();
+            
+            $gitHubModule->ModuleName = $moduleName;
+            $gitHubModule->Directory = $moduleSettings['localDir'].$moduleName;
+            $gitHubModule->URL = $moduleSettings['baseGitHubURL'].$moduleName;   
+            $gitHubModule->write();
+            
+        }
+        
+        return $gitHubModule;
+    }
 }
 
 

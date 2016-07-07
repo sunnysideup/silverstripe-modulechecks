@@ -31,5 +31,9 @@ class UpdateModules extends BuildTask
     private static $files_to_update = array(
 
     );
+    
+    public function run($request) {
+        //to do ..
+    }
 
 }
