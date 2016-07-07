@@ -6,7 +6,7 @@
  *
  */
 
-class ModuleChecks extends buildtask {
+class ModuleChecks extends BuildTask {
 
     /**
      * @var string
@@ -29,7 +29,7 @@ class ModuleChecks extends buildtask {
      * @var array
      */
     private static $methods_to_check = array(
-        "exitsOnPackagist",
+        "exsitsOnPackagist",
         "hasReadMeFile",
         "hasLicense",
         "hasComposerFile",
