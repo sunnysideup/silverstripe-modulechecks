@@ -17,11 +17,14 @@ class GitRepoFinder extends Object
      * takes the preloaded modules and
      * adds any other ones you have listed on github
      */
-    public static function get_all_repos($username = '')
+    public static function get_all_repos($username = '', $getNamesWithPrefix = false)
+    
         {
+        print "<li>Retrieving List of modules from GitHub ... </li>";            
         if(! count(self::$_modules)) {
             if(!$username) {
                 $username = Config::inst()->get('GitHubModule', "git_user_name");
+                print("<li></li>");
             }
             for($page = 0; $page < 10; $page++) {
                 $ch = curl_init();
@@ -29,11 +32,12 @@ class GitRepoFinder extends Object
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, TRUE);
                 curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+                
+                
                 $string = curl_exec($ch);
                 // close curl resource to free up system resources
                 curl_close($ch);
                 $array = json_decode($string, true);
-
                 $count = count($array);
                 if($count > 0 ) {
                     foreach($array as $repo) {
@@ -42,11 +46,18 @@ class GitRepoFinder extends Object
                             //make sure we are the owners
                             if($repo["owner"]["login"] == $username) {
                                 //check it is silverstripe module
-                                $nameWithoutPrefix = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);
-                                if(strlen($nameWithoutPrefix) < strlen($repo["name"])) {
+                                print($repo["name"]);
+                                
+                                if (!$getNamesWithPrefix) {
+                                    $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);
+                                }
+                                else {
+                                    $name = $repo["name"];
+                                }
+                                if(strlen($name) < strlen($repo["name"])) {
                                     //is it listed yet?
-                                    if(!in_array($nameWithoutPrefix, self::$_modules)) {
-                                        self::$_modules[] = $nameWithoutPrefix;
+                                    if(!in_array($name, self::$_modules)) {
+                                        self::$_modules[] = $name;
                                     }
                                 }
                                 else {
@@ -66,6 +77,10 @@ class GitRepoFinder extends Object
                     $page = 11;
                 }
             }
+        }
+        print "<li>Found ".count(self::$_modules)." modules on GitHub ... </li>"; 
+        if (count(self::$_modules)==0) {
+            user_error ("No modules found on GitHub. This is possibly because the limit of 60 requests an hour has been exceeded.");
         }
         return self::$_modules;
     }

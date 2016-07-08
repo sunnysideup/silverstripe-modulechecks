@@ -16,7 +16,7 @@ class GitHubModule extends DataObject {
 
     private static $github_account_base_url = '';
 
-    private static $github_account_base_ssh = 'git@github.com:sunnysideup/';
+    //private static $github_account_base_ssh = 'git@github.com:sunnysideup/';
 
     /**
      *
@@ -57,31 +57,49 @@ class GitHubModule extends DataObject {
         'ModuleName' => true,
     );
 
+
+    private static $casting = array(
+        'Directory' => 'Varchar(255)',
+        'URL' => 'Varchar(255)',
+    );
+
+    public function Directory () {
+        $tempFolder = $this->Config()->get('temp_folder');
+        return $tempFolder.'/'.$this->ModuleName;
+    }
+
+    public function URL () {
+        $username = $this->Config()->get('git_user_name');
+        return 'https://github.com/'.$username.'/'.$this->ModuleName;
+    }
+
     protected function IsDirGitRepo ($directory) {
         return file_exists($directory."/.git");
     }
+    
+
 
     public function checkOrSetGitWrapper() {
         if( ! $this->git ) {
-            if ($this->Directory == '') {
-                user_error('Directory element must be set before using git repository commands');
-            }
-
-            if (!$this->ModuleName) {
-                $this->ModuleName = substr($this->Directory, strrchr($this->Directory, '\\'));
+            if ($this->ModuleName == '') {
+                user_error('ModuleName element must be set before using git repository commands');
             }
 
             $wrapper = new GitWrapper();
 
-            if ($this->IsDirGitRepo($this->Directory)) {
-                $this->git = $wrapper->workingCopy($this->Directory);
+            if ($this->IsDirGitRepo($this->Directory())) {
+                $this->git = $wrapper->workingCopy($this->Directory());
 
             }
             else {
-                user_error($this->Directory. " does not appear to be git repo, cloning from URL ".$this->URL);
-                $this->git = $wrapper->cloneRepository($this->URL, $this->Directory);
+                user_error($this->Directory(). " does not appear to be git repo");
             }
         }
+        
+        $this->git->config("push.default", "simple");
+        $this->git->config("user.name", $this->Config()->get('git_user_name'));
+        //git config user.name "Billy Everyteen"
+        
         return $this->git;
     }
 
@@ -107,7 +125,14 @@ class GitHubModule extends DataObject {
      * @return bool
      */
     public function commit($message) {
-
+        $git = $this->checkOrSetGitWrapper();
+        if ($git) {
+            
+            $git->commit($message);
+    
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -115,7 +140,14 @@ class GitHubModule extends DataObject {
      * @return bool
      */
     public function add() {
-
+        $git = $this->checkOrSetGitWrapper();
+        if ($git) {
+            
+            $git->add("*");
+    
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -124,7 +156,14 @@ class GitHubModule extends DataObject {
      * @return bool
      */
     public function push() {
-
+        $git = $this->checkOrSetGitWrapper();
+        if ($git) {
+            
+            $git->push("origin", "master");
+    
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -132,8 +171,28 @@ class GitHubModule extends DataObject {
      *
      * @return bool
      */
-    public function removeClone() {
+    public function cloneRepo() {
+        $username = $this->Config()->get('git_user_name');
+        $gitURL = $this->Config()->get('github_account_base_url');
+        
+        if ($this->IsDirGitRepo($this->Directory())) {
+            $this->removeClone();
+        }
+        
+        $wrapper = new GitWrapper();
+        print '<li>Cloning '.$this->ModuleName.' into '. $this->Directory().' ...  </li>';
+        $this->git = $wrapper->cloneRepository($gitURL.'/'.$username.'/'.$this->ModuleName, $this->Directory());
+    }
 
+    /**
+     * removes a cloned repo
+     *
+     * 
+     */
+    public function removeClone() {
+        print "<li>Removing ".$this->Directory()." and all its contents ... </li>";
+        $this->git = null;
+        return exec ("rm -rf ".  $this->Directory());
     }
 
 

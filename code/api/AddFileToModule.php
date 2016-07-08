@@ -89,7 +89,14 @@ abstract class AddFileToModule extends Object
      */
     protected function getStandardFile()
     {
-
+        //$file = fopen ($rootDirForModule.'/'.$sourceLocation, "w");
+        if ($file) {
+            fwrite ($file, $fileContent);
+            fclose ($file);
+        }
+        else {
+            return false;
+        }
     }
 
     /**
@@ -111,11 +118,17 @@ abstract class AddFileToModule extends Object
      *
      * @return bool - true on success, false on failure
      */
-    protected function saveFile($fileContent)
+    protected function saveFile($fileContent) 
     {
-
+        $file = fopen ($rootDirForModule.'/'.$fileLocation, "w");
+        if ($file) {
+            fwrite ($file, $fileContent);
+            fclose ($file);
+        }
+        else {
+            return false;
+        }
     }
-
     /**
      *
      *

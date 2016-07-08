@@ -7,7 +7,7 @@
  *
  */
 
-class ModuleChecks extends ModuleTasksConfig {
+class ModuleChecks extends BuildTask {
 
     private static $packagist_user_name = '';
 
@@ -32,7 +32,7 @@ class ModuleChecks extends ModuleTasksConfig {
 
         $modules = GitRepoFinder::get_all_repos();
 
-        $gitUser = Config::inst()->get('GitHubModule', "git_user_name");
+        $gitUser = Config::inst()->get('GitRepoFinder', "git_user_name");
         $packagistUser = $this->Config()->get("packagist_user_name");
 
         if($gitUser && $packagistUser) {
@@ -80,7 +80,7 @@ class ModuleChecks extends ModuleTasksConfig {
      * @return boolean
      */
     protected function hasLicense($name){
-        return GeneralMethods::check_location("https://raw.githubusercontent.com/".Config::inst()->get('GitHubModule', "git_user_name")."/silverstripe-".$name."/master/LICENSE");
+        return GeneralMethods::check_location("https://raw.githubusercontent.com/".$this->Config()->get("git_user_name")."/silverstripe-".$name."/master/LICENSE");
     }
 
     /**
@@ -89,7 +89,7 @@ class ModuleChecks extends ModuleTasksConfig {
      * @return boolean
      */
     protected function hasComposerFile($name){
-        return GeneralMethods::check_location("https://raw.githubusercontent.com/".Config::inst()->get('GitHubModule', "git_user_name")."/silverstripe-".$name."/master/composer.json");
+        return GeneralMethods::check_location("https://raw.githubusercontent.com/".$this->Config()->get("git_user_name")."/silverstripe-".$name."/master/composer.json");
     }
 
     /**
@@ -98,7 +98,7 @@ class ModuleChecks extends ModuleTasksConfig {
      * @return boolean
      */
     protected function hasReadMeFile($name){
-        return GeneralMethods::check_location("https://raw.githubusercontent.com/".Config::inst()->get('GitHubModule', "git_user_name")."/silverstripe-".$name."/master/README.md");
+        return GeneralMethods::check_location("https://raw.githubusercontent.com/".$this->Config()->get("git_user_name")."/silverstripe-".$name."/master/README.md");
     }
 
     protected function existsOnAddOns($name) {

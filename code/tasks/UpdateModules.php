@@ -8,6 +8,9 @@
 class UpdateModules extends BuildTask
 {
 
+    protected $title = "Update Modules";
+
+    protected $description = "Adds files necessary for publishing a module to GitHub. The list of modules is specified in standard config or else it retrieves a list of modules from GitHub.";
 
     /**
      * e.g.
@@ -38,7 +41,8 @@ class UpdateModules extends BuildTask
     private static $commands_to_run = array();
 
     public function run($request) {
-        $modules = GitRepoFinder::get_all_repos();
+        //$modules = GitRepoFinder::get_all_repos();
+        $modules = array('silverstripe-userpage');//hack to get around GitHub Api limit
         $limitedModules = $this->Config()->get('modules_to_update');
         if($limitedModules && count($limitedModules)) {
             $modules = array_intersect($modules, $limitedModules);
@@ -55,20 +59,20 @@ class UpdateModules extends BuildTask
         }
         foreach($modules as $module) {
             $moduleObject = GitHubModule::get_git_hub_module($module);
-            $moduleObject->clone();
-            foreach($files as $file) {
+            $moduleObject->cloneRepo();
+            /*foreach($files as $file) {
                 //run file update
-                $obj = $file::create($moduleObject->tempRootDir())
+                $obj = $file::create($moduleObject->tempRootDir());
                 $obj->run();
             }
             foreach($commands as $command) {
                 //run file update
-                $obj = $command::create($moduleObject->tempRootDir())
+                $obj = $command::create($moduleObject->tempRootDir());
                 $obj->run();
                 //run command
             }
             $moduleObject->add();
-            $moduleObject->commit('adding stuff');
+            $moduleObject->commit('adding stuff');*/
             $moduleObject->push();
             $moduleObject->removeClone();
         }
