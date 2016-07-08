@@ -14,6 +14,10 @@ require_once '../vendor/autoload.php';
 class GitHubModule extends DataObject {
 
 
+    private static $github_account_base_url = '';
+
+    private static $github_account_base_ssh = 'git@github.com:sunnysideup/';
+
     /**
      *
      *
