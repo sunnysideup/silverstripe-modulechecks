@@ -13,6 +13,24 @@ require_once '../vendor/autoload.php';
 
 class GitHubModule extends DataObject {
 
+
+    /**
+     *
+     *
+     *
+     * @var string
+     */
+    private static $git_user_name = '';
+
+    /**
+     * where the git module is temporary
+     * cloned and fixed up
+     *
+     *
+     * @var string
+     */
+    private static $temp_folder = '';
+
     /**
      *
      *
@@ -28,10 +46,12 @@ class GitHubModule extends DataObject {
     private $git = null;
 
     private static $db = array (
-        'ModuleName' => 'VarChar(100)',
-        'Directory' => 'VarChar(255)',
-        'URL' => 'Varchar(255)',
-        );
+        'ModuleName' => 'VarChar(100)'
+    );
+
+    private static $indexes = array (
+        'ModuleName' => true,
+    );
 
     protected function IsDirGitRepo ($directory) {
         return file_exists($directory."/.git");
@@ -100,6 +120,15 @@ class GitHubModule extends DataObject {
      * @return bool
      */
     public function push() {
+
+    }
+
+    /**
+     * adds all files to a git repo
+     *
+     * @return bool
+     */
+    public function removeClone() {
 
     }
 

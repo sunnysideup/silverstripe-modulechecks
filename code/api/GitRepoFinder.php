@@ -11,13 +11,6 @@ class GitRepoFinder extends Object
      *
      * @var string
      */
-    private static $git_user_name = '';
-    /**
-     *
-     *
-     *
-     * @var string
-     */
     private static $_modules = array();
 
     /**
@@ -28,7 +21,7 @@ class GitRepoFinder extends Object
         {
         if(! count(self::$_modules)) {
             if(!$username) {
-                $username = $this->Config()->get("git_user_name");
+                $username = Config::inst()->get('GitHubModule', "git_user_name");
             }
             for($page = 0; $page < 10; $page++) {
                 $ch = curl_init();

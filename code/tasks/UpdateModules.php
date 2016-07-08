@@ -57,7 +57,7 @@ class UpdateModules extends BuildTask
             $commands = array_intersect($commands, $limitedCommands);
         }
         foreach($modules as $module) {
-            $moduleObject = GitHubModule::get_git_hub_module();
+            $moduleObject = GitHubModule::get_git_hub_module($module);
             $moduleObject->clone();
             foreach($files as $file) {
                 //run file update
@@ -73,6 +73,7 @@ class UpdateModules extends BuildTask
             $moduleObject->add();
             $moduleObject->commit('adding stuff');
             $moduleObject->push();
+            $moduleObject->removeClone();
         }
         //to do ..
     }
