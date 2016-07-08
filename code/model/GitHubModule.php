@@ -78,6 +78,8 @@ class GitHubModule extends DataObject {
     /**
      * commits a git repo
      *
+     * @param string $message
+     *
      * @return bool
      */
     public function commit($message) {
@@ -86,10 +88,9 @@ class GitHubModule extends DataObject {
 
     /**
      * adds all files to a git repo
-     *
      * @return bool
      */
-    public function add($message) {
+    public function add() {
 
     }
 

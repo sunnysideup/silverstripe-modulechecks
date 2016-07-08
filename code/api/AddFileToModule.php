@@ -25,6 +25,7 @@ abstract class AddFileToModule extends Object
      * root dir for module
      * e.g.
      *  - README.md
+     *  OR
      *  - docs/index.php
      *
      *
@@ -59,11 +60,10 @@ abstract class AddFileToModule extends Object
         $this->fileLocation = $relativeDirAndFileName;
     }
 
-    public function __construct($rootDirForModule = '', $fileLocation = ''){
+    public function __construct($rootDirForModule = ''){
         $this->rootDirForModule = $rootDirForModule;
-        $this->fileLocation = $fileLocation;
     }
-    
+
     function run() {
         if( ! $this->rootDirForModule) {
             user_error('no root dir for module has been set');
