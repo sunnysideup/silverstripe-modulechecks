@@ -1,20 +1,57 @@
 <?php
 /**
  * adds or replaces a file
+ * in a git hub module
  * in a module...
  *
  *
  */
 
-class AddFileToModule extends Object {
+abstract class AddFileToModule extends Object
+{
 
+
+    /**
+     * root dir for module
+     * e.g. /var/www/modules/mymodule
+     * no final slash
+     *
+     * @var string
+     */
+    protected $rootDirForModule = '';
+
+
+    /**
+     * root dir for module
+     * e.g.
+     *  - README.md
+     *  - docs/index.php
+     *
+     *
+     * @var string
+     */
     protected $fileLocation = '';
 
+    /**
+     * e.g.
+     * http://www.mysite.com/myfile.txt
+     * myfile.txt
+     * where examples.txt will have the base dir + modulechecks director added to it
+     * e.g.
+     * examples/myfile.txt becomes
+     * /var/www/myproject/modulechecks/examples/myfile.txt
+     * @var string
+     */
     protected $sourceLocation = '';
+
+    function setRootDirForModule($rootDirForModule)
+    {
+        $this->$rootDirForModule = $rootDirForModule;
+    }
 
     function setSourceLocation($sourceLocation)
     {
-        $this->sourceLocation = $$sourceLocation;
+        $this->sourceLocation = $sourceLocation;
     }
 
     function setFileLocation($relativeDirAndFileName)
@@ -22,48 +59,75 @@ class AddFileToModule extends Object {
         $this->fileLocation = $relativeDirAndFileName;
     }
 
-    function run(){
-        if( ! $this->sourceLocation) {
-            user_error('Source location not set');
+    public function __construct($rootDirForModule = '', $fileLocation = ''){
+        $this->rootDirForModule = $rootDirForModule;
+        $this->fileLocation = $fileLocation;
+    }
+    
+    function run() {
+        if( ! $this->rootDirForModule) {
+            user_error('no root dir for module has been set');
         }
         if( ! $this->fileLocation) {
-            user_error('Source location not set');
+            user_error('File location not set');
         }
-        $this->cloneRepo();
-        $this->buildFile();
-        $this->saveFile();
-        $this->commitRepo();
-        $this->pushRepo();
+        $fileContent = $this->getStandardFile();
+        $fileContent = $this->customiseStandardFile($fileContent);
+        if($fileContent) {
+            $this->saveFile($fileContent);
+        }
     }
 
-    function cloneRepo()
+    /**
+     * you can either return the string from the
+     * `$sourceLocation` or you can just have a string here
+     * that returns the data directly....
+     *
+     * @param string $fileContent
+     *
+     * @return bool - true on success, false on failure
+     */
+    protected function getStandardFile()
     {
 
     }
 
-    function getStandardFile()
+    /**
+     * takes the standard file and adds any
+     * customisations to it from the module
+     *
+     * @return bool - true on success, false on failure
+     */
+    protected function customiseStandardFile($fileContent)
+    {
+        $obj = $this->getCustomisationFile();
+        $fileContent = $obj->customiseFile($this->fileLocation, $fileContent);
+    }
+
+    /**
+     * writes the file
+     *
+     * @param string $fileContent
+     *
+     * @return bool - true on success, false on failure
+     */
+    protected function saveFile($fileContent)
     {
 
     }
 
-    function customiseStandardFile()
+    /**
+     *
+     *
+     * @return ModuleConfig (instance of ModuleConfigInterface)
+     */
+    protected function getCustomisationFile()
     {
-
+        require_once(
+            $this->rootDirForModule . '/ssmoduleconfigs/ModuleConfig.php'
+        );
+        return Injector::inst()->get('ModuleConfig');
     }
 
-    function saveFile()
-    {
-
-    }
-
-    function >commitRepo(
-    {
-
-    }
-
-    function >pushRepo()
-    {
-
-    }
 
 }
