@@ -20,6 +20,10 @@ class GitRepoFinder extends Object
     public static function get_all_repos($username = '', $getNamesWithPrefix = false)
     
         {
+        /*
+         * To do: Add OAuth capability to get around API limit - Check Git Wrapper Module
+         * 
+         * */
         print "<li>Retrieving List of modules from GitHub ... </li>";            
         if(! count(self::$_modules)) {
             if(!$username) {
@@ -45,14 +49,13 @@ class GitRepoFinder extends Object
                         if(isset($repo["fork"]) && !$repo["fork"]) {
                             //make sure we are the owners
                             if($repo["owner"]["login"] == $username) {
-                                //check it is silverstripe module
-                                print($repo["name"]);
                                 
+                                //check it is silverstripe module
                                 if (!$getNamesWithPrefix) {
-                                    $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);
+                                    $name = $repo["name"];                                    
                                 }
                                 else {
-                                    $name = $repo["name"];
+                                    $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);                                    
                                 }
                                 if(strlen($name) < strlen($repo["name"])) {
                                     //is it listed yet?

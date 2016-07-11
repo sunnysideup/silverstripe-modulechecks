@@ -63,9 +63,17 @@ class GitHubModule extends DataObject {
         'URL' => 'Varchar(255)',
     );
 
+    public function getDirectory() {
+        return $this->Directory();
+    }
+
     public function Directory () {
         $tempFolder = $this->Config()->get('temp_folder');
         return $tempFolder.'/'.$this->ModuleName;
+    }
+
+    public function getURL() {
+        return $this->URL();
     }
 
     public function URL () {
@@ -140,12 +148,13 @@ class GitHubModule extends DataObject {
      * @return bool
      */
     public function add() {
-        print '<li>Adding new files to '.$this->ModuleName.' ...  </li>';
+        
+        GeneralMethods::output_to_screen('Adding new files to '.$this->ModuleName.' ...  ' ,"created");
         
         $git = $this->checkOrSetGitWrapper();
         if ($git) {
             
-            $git->add("*");
+            $git->add(".");
     
             return true;
         }
@@ -158,7 +167,8 @@ class GitHubModule extends DataObject {
      * @return bool
      */
     public function push() {
-        print '<li>Pushing '.$this->ModuleName.' ...  </li>';
+        GeneralMethods::output_to_screen('Pushing files to '.$this->ModuleName.' ...  ' ,"created");
+        
         $git = $this->checkOrSetGitWrapper();
         if ($git) {
             
@@ -185,7 +195,8 @@ class GitHubModule extends DataObject {
         }
         
         $wrapper = new GitWrapper();
-        print '<li>Cloning '.$this->ModuleName.' into '. $this->Directory().' ...  </li>';
+        GeneralMethods::output_to_screen('Cloning '.$this->ModuleName.' into '. $this->Directory().' ...  </li>' ,"deleted");
+        
         //die ($gitURL.'/'.$username.'/'.$this->ModuleName);
         $this->git = $wrapper->cloneRepository($gitURL.'/'.$username.'/'.$this->ModuleName, $this->Directory());
     }
@@ -196,10 +207,17 @@ class GitHubModule extends DataObject {
      * 
      */
     public function removeClone() {
-        print "<li>Removing ".$this->Directory()." and all its contents ... </li>";
+        
+        GeneralMethods::output_to_screen('<li>Removing '.$this->Directory().' and all its contents ...  ' ,"deleted");
+
         $this->git = null;
-        return exec ("rm -rf ".  $this->Directory());
+        
+        GeneralMethods::removeDirectory($this->Directory());
+        
+        return;
     }
+
+
 
 
     public static function get_git_hub_module($moduleName) {
