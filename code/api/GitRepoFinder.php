@@ -27,7 +27,7 @@ class GitRepoFinder extends Object
         print "<li>Retrieving List of modules from GitHub ... </li>";            
         if(! count(self::$_modules)) {
             if(!$username) {
-                $username = Config::inst()->get('GitHubModule', "git_user_name");
+                $username = Config::inst()->get('GitHubModule', "github_user_name");
                 print("<li></li>");
             }
             for($page = 0; $page < 10; $page++) {

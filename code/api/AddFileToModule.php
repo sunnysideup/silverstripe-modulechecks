@@ -43,8 +43,16 @@ abstract class AddFileToModule extends Object
      * /var/www/myproject/modulechecks/examples/myfile.txt
      * @var string
      */
-    protected $sourceLocation = '';
+    protected $sourceLocation = 'please set in files that extend ';
 
+    protected $useCustomisationFile = false;
+
+    function __construct($rootDirForModule)
+    {
+        parent::__construct();
+        $this->rootDirForModule = $rootDirForModule;
+    }
+    
     function setRootDirForModule($rootDirForModule)
     {
         $this->$rootDirForModule = $rootDirForModule;
@@ -60,9 +68,6 @@ abstract class AddFileToModule extends Object
         $this->fileLocation = $relativeDirAndFileName;
     }
 
-    public function __construct($rootDirForModule = ''){
-        $this->rootDirForModule = $rootDirForModule;
-    }
 
     function run() {
         if( ! $this->rootDirForModule) {
@@ -72,7 +77,10 @@ abstract class AddFileToModule extends Object
             user_error('File location not set');
         }
         $fileContent = $this->getStandardFile();
-        $fileContent = $this->customiseStandardFile($fileContent);
+
+        if ($this->useCustomisationFile) {
+            $fileContent = $this->customiseStandardFile($fileContent);
+        }
         if($fileContent) {
             $this->saveFile($fileContent);
         }
@@ -89,10 +97,22 @@ abstract class AddFileToModule extends Object
      */
     protected function getStandardFile()
     {
-        $file = fopen ($rootDirForModule.'/'.$sourceLocation, "r");
+        $isURL = (strpos($this->sourceLocation, '//') !== false);
+        
+        if ($isURL) {
+            $fullFileName = $this->sourceLocation;
+        }
+        else {
+            $fullFileName = Director::baseFolder().'/silverstripe-modulechecks/'.$this->sourceLocation;
+        }
+
+       
+        $file = fopen ($fullFileName, "r");
         if ($file) {
-            fread ($file, $fileContent);
+            $fileContents = fread ($file, filesize($fullFileName));
             fclose ($file);
+
+            return $fileContents;
         }
         else {
             return false;
@@ -120,10 +140,17 @@ abstract class AddFileToModule extends Object
      */
     protected function saveFile($fileContent) 
     {
-        $file = fopen ($rootDirForModule.'/'.$fileLocation, "w");
+        $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
+
+ 
+        
+        $file = fopen ($fileName, "w");
+        
         if ($file) {
             fwrite ($file, $fileContent);
             fclose ($file);
+            print ($fileName);
+            die ("asdfs");
         }
         else {
             return false;

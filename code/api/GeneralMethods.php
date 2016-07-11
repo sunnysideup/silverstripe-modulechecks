@@ -44,13 +44,8 @@ class GeneralMethods extends Object
      * @param  string $path
      */
 
-    public function removeDirectory($path) {
-        $files = glob($path . '/*');
-        foreach ($files as $file) {
-            is_dir($file) ? removeDirectory($file) : unlink($file);
-        }
-        rmdir($path);
-        return;
+    public static function removeDirectory($path) {
+        FileSystem::removeFolder ($path);
     }
 
 }

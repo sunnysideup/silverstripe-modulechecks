@@ -34,9 +34,19 @@ For a module to be included in the processs, it needs to have the
 Install like any
 other Silverstripe Module module.
 
+You will need to configure the following values in config.yml
+for the UpdateModules task to run:
+
+  git_user_name - your git user name
+  github_account_base_url - the base url 
+  
+  absolute_temp_folder - temporary folder for modules to be cloned into - must be writeable by www-data
+  path_to_private_key: path to id_rsa file, for example, /var/www/.ssh/id_rsa
+
+/var/www/.ssh/known_hosts file also needs to be created.
+
 To use the module, set the configs in the task and
 then browse to /dev/tasks/ModuleChecks to run ...
-
 
 
 ## Developers ##

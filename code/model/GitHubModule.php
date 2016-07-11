@@ -3,7 +3,7 @@
 /**
  * does everything with one module
  *
- * see https://github.com/cpliakas/git-wrapper for info on the git wrapper module
+ * see https://github.com/cpliakas/git-commsWrapper for info on the git commsWrapper module
  */
 
 
@@ -13,41 +13,57 @@ require_once '../vendor/autoload.php';
 
 class GitHubModule extends DataObject {
 
-
+    
+    /**
+     * e.g. 
+     * @var string
+     */     
     private static $github_account_base_url = '';
-
-    //private static $github_account_base_ssh = 'git@github.com:sunnysideup/';
+    
+    /**
+     * e.g. boss
+     * @var string
+     */ 
+    private static $github_user_name = '';
 
     /**
      *
      *
-     *
-     * @var string
+     * @var GitcommsWrapper
      */
-    private static $git_user_name = '';
+    private static $git_user_email = 'sunnysideupdevs@gmail.com';
 
     /**
      * where the git module is temporary
      * cloned and fixed up
-     *
+     * should be an absolute_path
      *
      * @var string
      */
-    private static $temp_folder = '';
+    private static $path_to_private_key = '';
 
     /**
+     * where the git module is temporary
+     * cloned and fixed up
+     * should be an absolute_path
      *
-     *
-     * @var GitWrapper
+     * @var string
      */
-    private $wrapper = null;
+    private static $absolute_temp_folder = '';
+
+    /**
+     * wrapper also relates to one git hub repo only!!!!
+     *
+     * @var GitcommsWrapper
+     */
+    protected $commsWrapper = null;
 
     /**
      *
      *
      * @var git module
      */
-    private $git = null;
+    protected $gitRepo = null;
 
     private static $db = array (
         'ModuleName' => 'VarChar(100)'
@@ -67,17 +83,37 @@ class GitHubModule extends DataObject {
         return $this->Directory();
     }
 
+    /**
+     * absolute path
+     * @return string | null
+     */ 
     public function Directory () {
-        $tempFolder = $this->Config()->get('temp_folder');
-        return $tempFolder.'/'.$this->ModuleName;
+        $tempFolder = $this->Config()->get('absolute_temp_folder');
+        if($this->ModuleName) {
+            $folder = $tempFolder.'/'.$this->ModuleName;
+            if(file_exists($folder)) {
+                if(file_exists($folder)) {
+                    return $folder;
+                }
+            } else {
+                mkdir($folder);
+                if(file_exists($folder)) {
+                    return $folder;
+                }
+            }
+        }
     }
 
     public function getURL() {
         return $this->URL();
     }
 
+    /**
+     * check if URL exists and returns it
+     * @var string | null
+     */ 
     public function URL () {
-        $username = $this->Config()->get('git_user_name');
+        $username = $this->Config()->get('github_user_name');
         return 'https://github.com/'.$username.'/'.$this->ModuleName;
     }
 
@@ -86,41 +122,87 @@ class GitHubModule extends DataObject {
     }
     
 
+    /**
+     *
+     * @param bool (optional) $forceNew - create a new repo and ditch all changes
+     * @return Git Repo Object
+     */ 
+    public function checkOrSetGitCommsWrapper($forceNew = false) {
+        //if there is a wrapper the is also a repo....
+        if( ! $this->gitRepo ) {
 
-    public function checkOrSetGitWrapper() {
-        if( ! $this->git ) {
+            //basic check
             if ($this->ModuleName == '') {
                 user_error('ModuleName element must be set before using git repository commands');
             }
+            
+            //create comms
+            $this->commsWrapper = new GitWrapper();
 
-            $wrapper = new GitWrapper();
-
-            if ($this->IsDirGitRepo($this->Directory())) {
-                $this->git = $wrapper->workingCopy($this->Directory());
-
+            // Stream output of subsequent Git commands in real time to STDOUT and STDERR.
+            if(Director::is_cli()) {
+                $this->commsWrapper->streamOutput();
             }
-            else {
-                user_error($this->Directory(). " does not appear to be git repo");
+            
+            
+            if( ! $this->Config()->get('path_to_private_key')) {
+                user_error("We recommend you set private key");
             }
+            // Optionally specify a private key other than one of the defaults.
+            $this->commsWrapper->setPrivateKey($this->Config()->get('path_to_private_key'));
+            
+            //if directory exists, return existing repo, 
+            //otherwise clone it....
+            if($this->IsDirGitRepo($this->Directory())) {
+                if($forceNew) {
+                    $this->removeClone();
+                    return $this->checkOrSetGitCommsWrapper(false);
+                }
+                $this->gitRepo = $this->commsWrapper->workingCopy($this->Directory());
+            } else {
+                GeneralMethods::output_to_screen("cloning ... ".$this->fullGitURL(),'created');
+                $this->gitRepo = $this->commsWrapper->cloneRepository(
+                    $this->fullGitURL(), 
+                    $this->Directory()
+                );
+            }
+            $this->gitRepo->config("push.default", "simple");
+            $this->gitRepo->config("user.name", $this->Config()->get('github_user_name'));
+            $this->gitRepo->config("user.email", $this->Config()->get('git_user_email'));
+            $this->commsWrapper->git('config -l');   
         }
-        
-        $this->git->config("push.default", "simple");
-        $this->git->config("user.name", $this->Config()->get('git_user_name'));
-        $this->git->config("user.email", "sunnysideupdevs@gmail.com");
-        
-        return $this->git;
+        return $this->gitRepo;
+    }
+
+    /**
+     * @var string
+     */ 
+    function fullGitURL() 
+    {
+        $username = $this->Config()->get('git_user_name');
+        $gitURL = $this->Config()->get('github_account_base_url');
+        return $gitURL.'/'.$username.'/'.$this->ModuleName.'.git';
     }
 
     /**
      * pulls a git repo
      *
-     * @return bool
+     * @return bool | this
      */
     public function pull() {
-        $git = $this->checkOrSetGitWrapper();
+        $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
-            $git->pull();
-            return true;
+            try {
+                 $git->pull();
+            }
+            catch (GitWrapper\GitException $e) {
+                print_r($e);
+                throw $e;
+            }   
+                    
+           
+            //GeneralMethods::output_to_screen($git->getOutput());
+            return $this;
         }
         return false;
     }
@@ -130,33 +212,62 @@ class GitHubModule extends DataObject {
      *
      * @param string $message
      *
-     * @return bool
+     * @return bool | this
      */
-    public function commit($message) {
-        $git = $this->checkOrSetGitWrapper();
+    public function commit($message = '') {
+        if(!$message) {
+            $message = 'fix ups';
+        }
+        $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
             
-            $git->commit($message);
-    
-            return true;
+            try {
+                $git->commit($message);
+            }
+            catch (Exception $e) {
+                $errStr = $e->getMessage();
+                if (stripos($errStr, 'nothing to commit') === false) {
+                    print_r($e);
+                    throw $e;
+                }
+                else {
+                    GeneralMethods::output_to_screen('No changes to commit');
+                }
+            }
+            //GeneralMethods::output_to_screen($git->getOutput());
+
+            return $this;
         }
         return false;
     }
 
     /**
      * adds all files to a git repo
-     * @return bool
+     * @return bool | this
      */
     public function add() {
         
         GeneralMethods::output_to_screen('Adding new files to '.$this->ModuleName.' ...  ' ,"created");
         
-        $git = $this->checkOrSetGitWrapper();
+        $git = $this->checkOrSetGitcommsWrapper();
         if ($git) {
+            try {
+                $git->add(".");
+            }
+            catch (GitWrapper\GitException $e) {
+                $errStr = $e->getMessage();
+                if (stripos($errStr, 'did not match any files') === false) {
+                    print_r($e);
+                    throw $e;
+                }
+                else {
+                   GeneralMethods::output_to_screen('No new files to add to $module. ');
+                }
+            }            
             
-            $git->add(".");
+            //GeneralMethods::output_to_screen($git->getOutput());
     
-            return true;
+            return $this;
         }
         return false;
     }
@@ -164,41 +275,24 @@ class GitHubModule extends DataObject {
     /**
      * adds all files to a git repo
      *
-     * @return bool
+     * @return bool | this
      */
     public function push() {
         GeneralMethods::output_to_screen('Pushing files to '.$this->ModuleName.' ...  ' ,"created");
         
-        $git = $this->checkOrSetGitWrapper();
+        $git = $this->checkOrSetGitcommsWrapper();
         if ($git) {
+            try {
+                $git->push();
+               
+            }
+            catch (Exception $e) {
+                $git->getOutput();
+            }
             
-            $git->push("origin", "master");
-    
-            return true;
+            return $this;
         }
         return false;
-    }
-
-    /**
-     * adds all files to a git repo
-     *
-     * @return bool
-     */
-    public function cloneRepo() {
-        
-        
-        $username = $this->Config()->get('git_user_name');
-        $gitURL = $this->Config()->get('github_account_base_url');
-        
-        if ($this->IsDirGitRepo($this->Directory())) {
-            $this->removeClone();
-        }
-        
-        $wrapper = new GitWrapper();
-        GeneralMethods::output_to_screen('Cloning '.$this->ModuleName.' into '. $this->Directory().' ...  </li>' ,"deleted");
-        
-        //die ($gitURL.'/'.$username.'/'.$this->ModuleName);
-        $this->git = $wrapper->cloneRepository($gitURL.'/'.$username.'/'.$this->ModuleName, $this->Directory());
     }
 
     /**
@@ -207,24 +301,22 @@ class GitHubModule extends DataObject {
      * 
      */
     public function removeClone() {
+        $dir = $this->Directory();
+        GeneralMethods::output_to_screen('Removing '.$dir.' and all its contents ...  ' ,"deleted");
+        $this->gitRepo = null;
+        FileSystem::removeFolder($dir);
         
-        GeneralMethods::output_to_screen('<li>Removing '.$this->Directory().' and all its contents ...  ' ,"deleted");
-
-        $this->git = null;
-        
-        GeneralMethods::removeDirectory($this->Directory());
-        
-        return;
+        return ! file_exists($dir);
     }
 
 
 
 
-    public static function get_git_hub_module($moduleName) {
+    public static function get_or_create_github_module($moduleName) {
         $moduleName = trim($moduleName);
         $filter = array('ModuleName' => $moduleName);
         $gitHubModule = GitHubModule::get()->filter($filter)->first();
-        if (!$gitHubModule) {
+        if ( ! $gitHubModule) {
             $gitHubModule = GitHubModule::create($filter);
             $gitHubModule->write();
         }

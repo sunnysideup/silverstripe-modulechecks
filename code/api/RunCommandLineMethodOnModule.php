@@ -54,7 +54,7 @@ abstract class RunCommandLineMethodOnModule
       {
           return exec(
               ' cd '.$this->rootDirForModule.';
-                '.$command'
+                '.$command.'
                 '
           );
       }
