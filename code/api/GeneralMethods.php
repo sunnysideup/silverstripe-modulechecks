@@ -42,5 +42,19 @@ class GeneralMethods extends Object
         flush(); ob_end_flush(); DB::alteration_message($message, $type); ob_start();
     }
 
+    /*
+     * Recursively removes a directory
+     * 
+     * @param  string $path
+     */
+
+    public function removeDirectory($path) {
+        $files = glob($path . '/*');
+        foreach ($files as $file) {
+            is_dir($file) ? removeDirectory($file) : unlink($file);
+        }
+        rmdir($path);
+        return;
+    }
 
 }

@@ -73,8 +73,8 @@ class UpdateModules extends BuildTask
                 $moduleObject->cloneRepo();
             }
             catch (Exception $e) {
-                GeneralMethods::output_to_screen("Failed to clone $module - ". $e->getMessage() ."</li>");
-                print ("<li> Moving to next module ...</li><br/>");
+                GeneralMethods::output_to_screen("Failed to clone $module - ". $e->getMessage(),  "deleted");
+                GeneralMethods::output_to_screen("Moving to next module ..." ,"");
                 continue;
             }
             /*foreach($files as $file) {

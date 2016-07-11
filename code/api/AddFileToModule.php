@@ -89,9 +89,9 @@ abstract class AddFileToModule extends Object
      */
     protected function getStandardFile()
     {
-        //$file = fopen ($rootDirForModule.'/'.$sourceLocation, "w");
+        $file = fopen ($rootDirForModule.'/'.$sourceLocation, "r");
         if ($file) {
-            fwrite ($file, $fileContent);
+            fread ($file, $fileContent);
             fclose ($file);
         }
         else {
