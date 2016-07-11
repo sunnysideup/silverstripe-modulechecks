@@ -76,10 +76,10 @@ class UpdateModules extends BuildTask
                 $obj->run();
                 //run command
             }
-            if( ! $moduleObject->add('.')) { die("ERROR in add"); }
+            if( ! $moduleObject->add()) { die("ERROR in add"); }
             if( ! $moduleObject->commit()) { die("ERROR in commit"); }
             if( ! $moduleObject->push()) { die("ERROR in push"); }
-            //if( ! $moduleObject->removeClone()) { die("ERROR in removeClone"); }
+            if( ! $moduleObject->removeClone()) { die("ERROR in removeClone"); }
         }
         //to do ..
     }

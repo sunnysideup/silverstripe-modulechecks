@@ -147,10 +147,8 @@ abstract class AddFileToModule extends Object
         $file = fopen ($fileName, "w");
         
         if ($file) {
-            fwrite ($file, $fileContent);
-            fclose ($file);
-            print ($fileName);
-            die ("asdfs");
+            $result = fwrite ($file, $fileContent);
+            $a = file_exists ($fileName);
         }
         else {
             return false;

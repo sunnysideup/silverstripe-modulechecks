@@ -288,6 +288,8 @@ class GitHubModule extends DataObject {
             }
             catch (Exception $e) {
                 $git->getOutput();
+                print_r($e);
+                throw $e;
             }
             
             return $this;
