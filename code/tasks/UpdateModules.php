@@ -58,21 +58,22 @@ class UpdateModules extends BuildTask
             $commands = array_intersect($commands, $limitedCommands);
         }
         foreach($modules as $module) {
-            
+
             $moduleIsPublishable = true;
-            
+
             $moduleObject = GitHubModule::get_git_hub_module($module);
-            
-            /*print ("dsfdfs");
+
+            /*
+             * GeneralMethods::output_to_screen("dsfdfs");
             $c = $this->Config()->get($module));
             var_dump ($c);
             die("=-=-=-");*/
-            
+
             try {
                 $moduleObject->cloneRepo();
             }
             catch (Exception $e) {
-                print ("<li style=\"color:#f00;\"> Failed to clone $module - ". $e->getMessage() ."</li>");
+                GeneralMethods::output_to_screen("Failed to clone $module - ". $e->getMessage() ."</li>");
                 print ("<li> Moving to next module ...</li><br/>");
                 continue;
             }
@@ -87,14 +88,14 @@ class UpdateModules extends BuildTask
                 $obj->run();
                 //run command
             }*/
-            
-            
-            
+
+
+
             if (!$this->checkReadMe($module)) {
-                print ("<li style=\"color:#f00;\"> $module does not have a README.MD. </li>");
+                GeneralMethods::output_to_screen($module.' does not have a README.MD. ', 'deleted');
                 $moduleIsPublishable = false;
             }
-            
+
             if ($moduleIsPublishable) {
                 $this->addCommitPush ($moduleObject);
             }
@@ -113,10 +114,10 @@ class UpdateModules extends BuildTask
                     throw $e;
                 }
                 else {
-                    print ("<li style=\"color:#00f;\">No new files to add to $module. </li>");                    
-                }                
+                    print ("<li style=\"color:#00f;\">No new files to add to $module. </li>");
+                }
             }
-            
+
             unset ($commitFail);
             unset ($nothingToCommit);
             try {
@@ -124,18 +125,18 @@ class UpdateModules extends BuildTask
             }
             catch (GitWrapper\GitException $e) {
                 $errStr = $e->getMessage();
-                
+
                 $commitFail = true;
                 if (stripos($errStr, 'nothing to commit') === false) {
                     throw $e;
                 }
                 else {
                     $nothingToCommit = true;
-                    print ("<li style=\"color:#00f;\">No changes to commit for $module. </li>");                    
+                    print ("<li style=\"color:#00f;\">No changes to commit for $module. </li>");
                 }
             }
 
-            unset ($pushFail);            
+            unset ($pushFail);
             if (!$commitFail) {
 
                 try {
@@ -144,9 +145,9 @@ class UpdateModules extends BuildTask
                 catch (Exception $e) {
                     $pushFail = true;
                     print ("<li style=\"color:#f00;\"> Failed to push module $module. </li>");
-                    
+
                 }
-                
+
                 if (!isset($pushfail) || (isset($pushFail) &&  !$pushFail)) {
                     $moduleObject->removeClone();
                 }
@@ -156,7 +157,7 @@ class UpdateModules extends BuildTask
     private function checkFile($module, $filename) {
         return file_exists($this->Config()->get('temp_folder').'/'.$module.'/'.$filename);
     }
-    
+
     private function checkReadMe($module) {
         return $this->checkFile($module, "README.MD");
     }

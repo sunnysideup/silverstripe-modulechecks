@@ -23,4 +23,20 @@ class GeneralMethods extends Object
         return $outcome;
     }
 
+
+
+    /**
+     *
+     * @see DB::alteration_message for types...
+     *
+     * @param  string $message
+     * @param  string $type
+     */
+    public static function output_to_screen($message, $type = "")
+    {
+        echo " ";
+        flush(); ob_end_flush(); DB::alteration_message($message, $type); ob_start();
+    }
+
+
 }
