@@ -27,6 +27,10 @@ class GeneralMethods extends Object
 
     /**
      *
+     * @use
+     * ```
+     *    GeneralMethods::output_to_screen('asdf', 'created')
+     * ```
      * @see DB::alteration_message for types...
      *
      * @param  string $message
