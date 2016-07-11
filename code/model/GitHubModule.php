@@ -98,7 +98,7 @@ class GitHubModule extends DataObject {
         
         $this->git->config("push.default", "simple");
         $this->git->config("user.name", $this->Config()->get('git_user_name'));
-        //git config user.name "Billy Everyteen"
+        $this->git->config("user.email", "sunnysideupdevs@gmail.com");
         
         return $this->git;
     }
@@ -140,6 +140,8 @@ class GitHubModule extends DataObject {
      * @return bool
      */
     public function add() {
+        print '<li>Adding new files to '.$this->ModuleName.' ...  </li>';
+        
         $git = $this->checkOrSetGitWrapper();
         if ($git) {
             
@@ -156,6 +158,7 @@ class GitHubModule extends DataObject {
      * @return bool
      */
     public function push() {
+        print '<li>Pushing '.$this->ModuleName.' ...  </li>';
         $git = $this->checkOrSetGitWrapper();
         if ($git) {
             
@@ -172,6 +175,8 @@ class GitHubModule extends DataObject {
      * @return bool
      */
     public function cloneRepo() {
+        
+        
         $username = $this->Config()->get('git_user_name');
         $gitURL = $this->Config()->get('github_account_base_url');
         
@@ -181,6 +186,7 @@ class GitHubModule extends DataObject {
         
         $wrapper = new GitWrapper();
         print '<li>Cloning '.$this->ModuleName.' into '. $this->Directory().' ...  </li>';
+        //die ($gitURL.'/'.$username.'/'.$this->ModuleName);
         $this->git = $wrapper->cloneRepository($gitURL.'/'.$username.'/'.$this->ModuleName, $this->Directory());
     }
 
