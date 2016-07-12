@@ -52,7 +52,7 @@ abstract class AddFileToModule extends Object
         parent::__construct();
         $this->rootDirForModule = $rootDirForModule;
     }
-    
+
     function setRootDirForModule($rootDirForModule)
     {
         $this->$rootDirForModule = $rootDirForModule;
@@ -98,15 +98,15 @@ abstract class AddFileToModule extends Object
     protected function getStandardFile()
     {
         $isURL = (strpos($this->sourceLocation, '//') !== false);
-        
+
         if ($isURL) {
             $fullFileName = $this->sourceLocation;
         }
         else {
-            $fullFileName = Director::baseFolder().'/silverstripe-modulechecks/'.$this->sourceLocation;
+            $fullFileName = Director::baseFolder().'/modulechecks/'.$this->sourceLocation;
         }
 
-       
+
         $file = fopen ($fullFileName, "r");
         if ($file) {
             $fileContents = fread ($file, filesize($fullFileName));
@@ -138,14 +138,14 @@ abstract class AddFileToModule extends Object
      *
      * @return bool - true on success, false on failure
      */
-    protected function saveFile($fileContent) 
+    protected function saveFile($fileContent)
     {
         $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
 
- 
-        
+
+
         $file = fopen ($fileName, "w");
-        
+
         if ($file) {
             $result = fwrite ($file, $fileContent);
             $a = file_exists ($fileName);
