@@ -16,7 +16,6 @@
 	"require":{
 		"silverstripe/framework": "*",
 		"cpliakas/git-wrapper": "*"
-
 	},
 	"extra": {
 		"installer-name": "modulechecks"
