@@ -13,17 +13,17 @@ require_once '../vendor/autoload.php';
 
 class GitHubModule extends DataObject {
 
-    
+
     /**
-     * e.g. 
+     * e.g.
      * @var string
-     */     
+     */
     private static $github_account_base_url = '';
-    
+
     /**
      * e.g. boss
      * @var string
-     */ 
+     */
     private static $github_user_name = '';
 
     /**
@@ -86,7 +86,7 @@ class GitHubModule extends DataObject {
     /**
      * absolute path
      * @return string | null
-     */ 
+     */
     public function Directory () {
         $tempFolder = $this->Config()->get('absolute_temp_folder');
         if($this->ModuleName) {
@@ -111,7 +111,7 @@ class GitHubModule extends DataObject {
     /**
      * check if URL exists and returns it
      * @var string | null
-     */ 
+     */
     public function URL () {
         $username = $this->Config()->get('github_user_name');
         return 'https://github.com/'.$username.'/'.$this->ModuleName;
@@ -120,13 +120,13 @@ class GitHubModule extends DataObject {
     protected function IsDirGitRepo ($directory) {
         return file_exists($directory."/.git");
     }
-    
+
 
     /**
      *
      * @param bool (optional) $forceNew - create a new repo and ditch all changes
      * @return Git Repo Object
-     */ 
+     */
     public function checkOrSetGitCommsWrapper($forceNew = false) {
         //if there is a wrapper the is also a repo....
         if( ! $this->gitRepo ) {
@@ -135,7 +135,7 @@ class GitHubModule extends DataObject {
             if ($this->ModuleName == '') {
                 user_error('ModuleName element must be set before using git repository commands');
             }
-            
+
             //create comms
             $this->commsWrapper = new GitWrapper();
 
@@ -143,15 +143,15 @@ class GitHubModule extends DataObject {
             if(Director::is_cli()) {
                 $this->commsWrapper->streamOutput();
             }
-            
-            
+
+
             if( ! $this->Config()->get('path_to_private_key')) {
                 user_error("We recommend you set private key");
             }
             // Optionally specify a private key other than one of the defaults.
             $this->commsWrapper->setPrivateKey($this->Config()->get('path_to_private_key'));
-            
-            //if directory exists, return existing repo, 
+
+            //if directory exists, return existing repo,
             //otherwise clone it....
             if($this->IsDirGitRepo($this->Directory())) {
                 if($forceNew) {
@@ -162,26 +162,26 @@ class GitHubModule extends DataObject {
             } else {
                 GeneralMethods::output_to_screen("cloning ... ".$this->fullGitURL(),'created');
                 $this->gitRepo = $this->commsWrapper->cloneRepository(
-                    $this->fullGitURL(), 
+                    $this->fullGitURL(),
                     $this->Directory()
                 );
             }
             $this->gitRepo->config("push.default", "simple");
             $this->gitRepo->config("user.name", $this->Config()->get('github_user_name'));
             $this->gitRepo->config("user.email", $this->Config()->get('git_user_email'));
-            $this->commsWrapper->git('config -l');   
+            $this->commsWrapper->git('config -l');
         }
         return $this->gitRepo;
     }
 
     /**
      * @var string
-     */ 
-    function fullGitURL() 
+     */
+    function fullGitURL()
     {
         $username = $this->Config()->get('git_user_name');
         $gitURL = $this->Config()->get('github_account_base_url');
-        return $gitURL.'/'.$username.'/'.$this->ModuleName.'.git';
+        return 'git@github.com:/'.$username.'/'.$this->ModuleName.'.git';
     }
 
     /**
@@ -198,9 +198,9 @@ class GitHubModule extends DataObject {
             catch (GitWrapper\GitException $e) {
                 print_r($e);
                 throw $e;
-            }   
-                    
-           
+            }
+
+
             //GeneralMethods::output_to_screen($git->getOutput());
             return $this;
         }
@@ -220,7 +220,7 @@ class GitHubModule extends DataObject {
         }
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
-            
+
             try {
                 $git->commit($message);
             }
@@ -246,9 +246,9 @@ class GitHubModule extends DataObject {
      * @return bool | this
      */
     public function add() {
-        
+
         GeneralMethods::output_to_screen('Adding new files to '.$this->ModuleName.' ...  ' ,"created");
-        
+
         $git = $this->checkOrSetGitcommsWrapper();
         if ($git) {
             try {
@@ -263,10 +263,10 @@ class GitHubModule extends DataObject {
                 else {
                    GeneralMethods::output_to_screen('No new files to add to $module. ');
                 }
-            }            
-            
+            }
+
             //GeneralMethods::output_to_screen($git->getOutput());
-    
+
             return $this;
         }
         return false;
@@ -279,19 +279,19 @@ class GitHubModule extends DataObject {
      */
     public function push() {
         GeneralMethods::output_to_screen('Pushing files to '.$this->ModuleName.' ...  ' ,"created");
-        
+
         $git = $this->checkOrSetGitcommsWrapper();
         if ($git) {
             try {
                 $git->push();
-               
+
             }
             catch (Exception $e) {
                 $git->getOutput();
                 print_r($e);
                 throw $e;
             }
-            
+
             return $this;
         }
         return false;
@@ -300,14 +300,14 @@ class GitHubModule extends DataObject {
     /**
      * removes a cloned repo
      *
-     * 
+     *
      */
     public function removeClone() {
         $dir = $this->Directory();
-        GeneralMethods::output_to_screen('Removing '.$dir.' and all its contents ...  ' ,"deleted");
+        GeneralMethods::output_to_screen('Removing '.$dir.' and all its contents ...  ' ,"created");
         $this->gitRepo = null;
         FileSystem::removeFolder($dir);
-        
+
         return ! file_exists($dir);
     }
 
