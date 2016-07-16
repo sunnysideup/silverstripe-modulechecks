@@ -16,11 +16,9 @@ You can either run it for all files fon a github account or one specific file. A
 you can specify specific files in your `yml` configurations 
 (`mysite/_config/modulecheck.yml`).
 
-Thirdly, you can set exceptions / custom configs in a file within each module.
+Thirdly, you can set exceptions / custom configs in a file within each module. You can place any custom configs in the following file: 
 
-you can place any custom configs in the following file: 
-
-`/ssmoduleconfig/ModuleConfig.php`
+`/_module_data/ModuleConfig.php`
 
 dont forget to also add a `/_module_data/_manifest_exclude` file.
 
