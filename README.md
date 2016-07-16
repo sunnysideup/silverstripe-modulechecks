@@ -22,11 +22,11 @@ you can place any custom configs in the following file:
 
 `/ssmoduleconfig/ModuleConfig.php`
 
-dont forget to also add a `/ssmoduleconfig/_manifest_exclude` file.
+dont forget to also add a `/_module_data/_manifest_exclude` file.
 
 _IMPORTANT_
 For a module to be included in the processs, it needs to have the 
-`/ssmoduleconfig/ModuleConfig.php` file. 
+`/_module_data/ModuleConfig.php` file. 
 
 
 ## Installation Instructions ##
