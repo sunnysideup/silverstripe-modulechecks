@@ -23,7 +23,7 @@ dont forget to also add a
 
 `/ssmoduleconfig/_manifest_exclude`
 
-file
+file. 
 
 ## Developers ##
 
