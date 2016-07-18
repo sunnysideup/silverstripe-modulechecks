@@ -1,6 +1,6 @@
 <?
 
-class AddSourceReadmeToModule extends AddFileToModul
+class AddSourceReadmeToModule extends AddFileToModule
 
     protected $sourceLocation = 'source/_module_data/README.md';
     

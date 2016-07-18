@@ -112,7 +112,7 @@ class GitHubModule extends DataObject {
 
     function LongModuleName()
     {
-        return $this->github_user_name.'/'.$this->ModuleName;
+        return $this->Config()->get('git_user_name').'/'.$this->ModuleName;
     }
 
 
