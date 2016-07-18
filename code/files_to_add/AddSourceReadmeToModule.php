@@ -1,6 +1,6 @@
 <?
 
-class AddScrutinizerYmlToModule extends AddFileToModule {
+class AddSourceReadmeToModule extends AddFileToModul
 
     protected $sourceLocation = 'source/_module_data/README.md';
     

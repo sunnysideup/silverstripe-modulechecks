@@ -10,6 +10,11 @@
 abstract class AddFileToModule extends Object
 {
 
+    protected $replaceArray = array(
+        '+++long-module-name-goes-here+++' => 'LongModuleName',
+        '+++medium-module-name-goes-here+++' => 'MediumModuleName',
+        '+++short-module-name-goes-here+++' => 'ShortModuleName'
+    );
 
     /**
      * root dir for module
@@ -47,9 +52,13 @@ abstract class AddFileToModule extends Object
 
     protected $useCustomisationFile = false;
 
-    function __construct($rootDirForModule)
+    protected $gitObject=null;
+
+    function __construct($gitObject)
     {
         parent::__construct();
+        $this->gitObject = $gitObject;
+        $rootDirForModule = $gitObject->Directory();
         $this->rootDirForModule = $rootDirForModule;
     }
 
@@ -83,6 +92,7 @@ abstract class AddFileToModule extends Object
         }
         if($fileContent) {
             $this->saveFile($fileContent);
+            $this->replaceWordsInFile();
         }
     }
 
@@ -167,5 +177,20 @@ abstract class AddFileToModule extends Object
         return Injector::inst()->get('ModuleConfig');
     }
 
+    /**
+     * @param string $file
+     * @param GitHubModule $gitObject
+     *
+     * @return string
+     */ 
+    public function replaceWordsInFile() 
+    {
+        foreach($this->replaceArray as $searchTerm => $replaceMethod) {
+
+            $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
+            GeneralMethods::replaceInFile($fileName, $searchTerm, $this->gitObject->$replaceMethod());
+        }
+        
+    }    
 
 }

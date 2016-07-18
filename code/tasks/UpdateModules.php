@@ -67,7 +67,7 @@ class UpdateModules extends BuildTask
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
             foreach($files as $file) {
                 //run file update
-                $obj = $file::create($moduleObject->Directory());
+                $obj = $file::create($moduleObject);
                 $obj->run();
             }
             foreach($commands as $command) {
@@ -142,5 +142,6 @@ class UpdateModules extends BuildTask
         return $matchedWords;
         
     }
+
 
 }

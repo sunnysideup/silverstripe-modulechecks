@@ -104,8 +104,30 @@ class GitHubModule extends DataObject {
         }
     }
 
-    public function getURL() {
+    public function getURL()
+    {
         return $this->URL();
+    }
+
+
+    function LongModuleName()
+    {
+        return $this->github_user_name.'/'.$this->ModuleName;
+    }
+
+
+    function MediumModuleName()
+    {
+        return $this->ModuleName;
+    }
+
+    /**
+     * @todo: check that silverstripe- is at the start of string.
+     * @return string
+     */ 
+    function ShortModuleName()
+    {
+        return str_replace('silverstripe-', '', $this->ModuleName);
     }
 
     /**
@@ -325,6 +347,7 @@ class GitHubModule extends DataObject {
 
         return $gitHubModule;
     }
+
 
 
 
