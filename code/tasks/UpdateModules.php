@@ -75,7 +75,8 @@ class UpdateModules extends BuildTask
                 $obj = $command::create($moduleObject->Directory());
                 $obj->run();
                 //run command
-            }
+            }         
+            
             if( ! $moduleObject->add()) { die("ERROR in add"); }
             if( ! $moduleObject->commit()) { die("ERROR in commit"); }
             if( ! $moduleObject->push()) { die("ERROR in push"); }
@@ -91,6 +92,55 @@ class UpdateModules extends BuildTask
 
     private function checkReadMe($module) {
         return $this->checkFile($module, "README.MD");
+    }
+
+    private function checkDirExcludedWords($directory, $wordArray) {
+        $filesAndFolders = scandir ($directory);
+        
+        $problem_files = array();
+        foreach ($filesAndFolders as $fileOrFolder) {
+            
+            if ($fileOrFolder == '.' or $fileOrFolder == '..') {
+                continue;
+            }
+            
+            $fileOrFolderFullPath = $directory . '/' . $fileOrFolder;
+            if (is_dir($fileOrFolderFullPath)) {
+                $dir = $fileOrFolderFullPath;
+                $this->checkDirExcludedWords ($dir, $wordArray);
+            }
+            if (is_file($fileOrFolderFullPath)) {
+                $file = $fileOrFolderFullPath;
+                $matchedWords = $this->checkFileExcludedWords($file, $wordArray);
+                
+                if ($matchedWords) {
+                   $problem_files[$file] = $matchedWords;
+                }
+            }
+        }
+        return $problem_files;
+    }
+
+    private function checkFileExcludedWords($fileName, $wordArray) {
+        $file = fopen($fileName, 'r');
+
+        $matchedWords = array();
+        
+        if (! $file) return false;
+        $fileContent = fread($file, filesize($fileName));
+
+        
+        foreach ($wordArray as $word)  {
+            $matches = array();
+            $matchCount = preg_match_all('/' . $word . '/i', $fileContent);
+            if ($matchCount > 0) {
+                $matchedWords[] = $word;
+            }
+        }
+
+        fclose($file);
+        return $matchedWords;
+        
     }
 
 }
