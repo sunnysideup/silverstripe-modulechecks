@@ -90,8 +90,9 @@ abstract class AddFileToModule extends Object
         if ($this->useCustomisationFile) {
             $fileContent = $this->customiseStandardFile($fileContent);
         }
-        if($fileContent) {
+        
             $this->saveFile($fileContent);
+        if($fileContent) {
             $this->replaceWordsInFile();
         }
     }
@@ -119,7 +120,14 @@ abstract class AddFileToModule extends Object
 
         $file = fopen ($fullFileName, "r");
         if ($file) {
-            $fileContents = fread ($file, filesize($fullFileName));
+            $fileSize = filesize($fullFileName);
+
+            if ($fileSize > 0) {
+                $fileContents = fread ($file, filesize($fullFileName));
+            }
+            else {
+                $fileContents = "";
+            }
             fclose ($file);
 
             return $fileContents;
@@ -150,9 +158,26 @@ abstract class AddFileToModule extends Object
      */
     protected function saveFile($fileContent)
     {
+        /*
+         * If fileLocation  contains folder, name then need to check
+         * if folder exists
+         */
+        if (strpos( $this->fileLocation, '/')!==false) {
+            $folderPath = substr($this->fileLocation, 0, strrpos($this->fileLocation, '/'));
+            
+            //print_r ($this->rootDirForModule.'/'.$folderPath);
+            
+            if(!file_exists($this->rootDirForModule.'/'.$folderPath)) {
+				$folder = Filesystem::makeFolder($this->rootDirForModule.'/'.$folderPath);
+			}
+
+        }
+
+        if(isset($folderPath)  && !file_exists($this->rootDirForModule.'/'.$folderPath)) {
+            user_error('could not find or create directory ' . $this->rootDirForModule.'/'.$folderPath);
+        }
+        
         $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
-
-
 
         $file = fopen ($fileName, "w");
 

@@ -1,9 +1,9 @@
 <?
 
-class AddSourceReadmeToModule extends AddFileToModule
+class AddSourceReadmeToModule extends AddFileToModule {
 
     protected $sourceLocation = 'source/_module_data/README.md';
     
-    protected $fileLocation = 'source/_module_data/README.md';
+    protected $fileLocation = '_module_data/README.md';
 
 }
