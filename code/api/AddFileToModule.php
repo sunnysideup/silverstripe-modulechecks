@@ -117,6 +117,7 @@ abstract class AddFileToModule extends Object
             $fullFileName = Director::baseFolder().'/modulechecks/'.$this->sourceLocation;
         }
 
+        print ("<li>$fullFileName</li>");
 
         $file = fopen ($fullFileName, "r");
         if ($file) {
