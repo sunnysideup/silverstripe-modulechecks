@@ -31,7 +31,7 @@ class GitHubModule extends DataObject {
      *
      * @var GitcommsWrapper
      */
-    private static $git_user_email = 'sunnysideupdevs@gmail.com';
+    private static $git_user_email = '';
 
     /**
      * where the git module is temporary

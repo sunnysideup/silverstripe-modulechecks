@@ -1,6 +1,6 @@
 <?
 
-class AddChangeLogToModule extends AddFileToModule {
+class AddChangeLogToModule extends AddFileToModule {    
 
     protected $sourceLocation = 'source/CHANGELOG.md';
     
