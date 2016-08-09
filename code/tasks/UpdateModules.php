@@ -92,6 +92,8 @@ class UpdateModules extends BuildTask
         if($limitedCommands && count($limitedCommands)) {
             $commands = array_intersect($commands, $limitedCommands);
         }
+
+       
         foreach($modules as $count => $module) {
 
             if ( stripos($module, 'silverstripe-')  === false ) {
@@ -107,7 +109,7 @@ class UpdateModules extends BuildTask
             // if so we can skip that module. But! ... if there are commands to run
             // over the files in the repo, then we need to clone the repo anyhow,
             // so skip the check
-            if (count($commands) > 0 ) {
+            if (count($commands) == 0 ) {
                 $moduleFilesOK = true;
                 
                 foreach($files as $file) {
