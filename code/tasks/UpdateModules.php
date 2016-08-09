@@ -102,28 +102,33 @@ class UpdateModules extends BuildTask
             
             $moduleObject = GitHubModule::get_or_create_github_module($module);
 
+
             // Check if all necessary files are perfect on GitHub repo already,
-            // if so we can skip that module
-            $moduleFilesOK = true;
-            
-            foreach($files as $file) {
-                $fileObj = $file::create($moduleObject);
-                $checkFileName = $fileObj->getFileLocation();
-                $GitHubFileText = $moduleObject -> getRawFileFromGithub('CHANGELOG.md');
-                if ($GitHubFileText) {
-                    $fileCheck = $fileObj->compareWithText($GitHubFileText);
-                    if ( ! $fileCheck) {
+            // if so we can skip that module. But! ... if there are commands to run
+            // over the files in the repo, then we need to clone the repo anyhow,
+            // so skip the check
+            if (count($commands) > 0 ) {
+                $moduleFilesOK = true;
+                
+                foreach($files as $file) {
+                    $fileObj = $file::create($moduleObject);
+                    $checkFileName = $fileObj->getFileLocation();
+                    $GitHubFileText = $moduleObject -> getRawFileFromGithub($checkFileName);
+                    if ($GitHubFileText) {
+                        $fileCheck = $fileObj->compareWithText($GitHubFileText);
+                        if ( ! $fileCheck) {
+                            $moduleFilesOK = false;
+                        }
+                    }
+                    else {
                         $moduleFilesOK = false;
                     }
                 }
-                else {
-                    $moduleFilesOK = false;
-                }
-            }
 
-            if ($moduleFilesOK) {
-                GeneralMethods::outputToScreen ("<li> All files in $module OK, skipping moving to next module ... </li>");
-                continue;
+                if ($moduleFilesOK) {
+                    GeneralMethods::outputToScreen ("<li> All files in $module OK, skipping moving to next module ... </li>");
+                    continue;
+                }
             }
             
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
