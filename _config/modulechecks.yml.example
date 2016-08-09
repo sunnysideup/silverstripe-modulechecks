@@ -12,8 +12,18 @@ GitHubModule:
   absolute_temp_folder: "/var/www/temp_modules"
   path_to_private_key: "/var/www/.ssh/id_rsa"
   
+UpdateModules:  
+
   #modules_to_update:
   #commands_to_run:
   #files_to_update:
 
+
+  modules_to_update:
+    - my_module_name
+
+  files_to_update:
+    - AddMyFileToModule
     
+  commands_to_run:
+    - MyCommandLine

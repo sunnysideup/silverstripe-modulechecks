@@ -41,24 +41,45 @@ class UpdateModules extends BuildTask
     private static $commands_to_run = array();
 
     public function run($request) {
-        //$modules = GitRepoFinder::get_all_repos();
-        $modules = array('silverstripe-phone_field');//hack to get around GitHub Api limit
+        // $modules = GitRepoFinder::get_all_repos();
+        $modules = array('cms_tricks_for_apps',
+                'cms_edit_link_field',
+                'frontendeditor',
+                'payment_stripe',
+                'table_filter_sort',
+                'us_phone_number',
+                'blog_shared_categorisation',
+                'comments_add_recaptcha',
+                'ecommerce_cloud_flare_geoip',
+                'ecommerce_nutritional_products',
+                'ecommerce_stockists',
+                'email_address_database_field',
+                'import_task',
+                'pdf_upload_field',
+                'perfect_cms_images',
+                'phone_field',
+                'share_this_simple',
+                'webpack_requirements_backend');//hack to get around GitHub Api limit
+                    
         $limitedModules = $this->Config()->get('modules_to_update');
+
+
         if($limitedModules && count($limitedModules)) {
             $modules = array_intersect($modules, $limitedModules);
         }
 
-
+        
         /*
          * Get files to add to modules
          * */
         $files = ClassInfo::subclassesFor('AddFileToModule');
+
         array_shift($files);
         $limitedFileClasses = $this->Config()->get('files_to_update');
         if($limitedFileClasses && count($limitedFileClasses)) {
-            $modules = array_intersect($files, $limitedFileClasses);
+            $files = array_intersect($files, $limitedFileClasses);
         }
-
+        
         /*
          * Get commands to run on modules
          * */
@@ -71,8 +92,12 @@ class UpdateModules extends BuildTask
         }
         foreach($modules as $count => $module) {
 
-            echo "<h2>".($count+1).". ".$module."</h2>";
+            if ( stripos($module, 'silverstripe-')  === false ) {
+                $module = "silverstripe-" . $module;
+            }
+            echo "<h2>".($count+1) . ". ".$module."</h2>";
 
+            
             $moduleObject = GitHubModule::get_or_create_github_module($module);
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
             foreach($files as $file) {
