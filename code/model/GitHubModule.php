@@ -348,7 +348,7 @@ class GitHubModule extends DataObject {
         $content = '';
         while(! feof($file))
         {
-            $content .= fgets($file) . "\n";
+            $content .= fgets($file); // . "\n";
         }
         fclose($file);
         return $content;

@@ -41,6 +41,8 @@ class UpdateModules extends BuildTask
     private static $commands_to_run = array();
 
     public function run($request) {
+        increase_time_limit_to(3600);
+        
         // $modules = GitRepoFinder::get_all_repos();
         $modules = array('cms_tricks_for_apps',
                 'cms_edit_link_field',
@@ -120,10 +122,10 @@ class UpdateModules extends BuildTask
             }
 
             if ($moduleFilesOK) {
-                print ("<li> All files in $module OK, skipping moving to next module ... </li>");
+                GeneralMethods::outputToScreen ("<li> All files in $module OK, skipping moving to next module ... </li>");
                 continue;
             }
-            die();
+            
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
             foreach($files as $file) {
                 //run file update

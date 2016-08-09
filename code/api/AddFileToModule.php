@@ -229,7 +229,6 @@ abstract class AddFileToModule extends Object
 
     public function compareWithText($compareText) {
         $fileText = $this->getStandardFile();
-
-        return ($fileText == $compareText);
+        return (trim($fileText) == trim($compareText));
     }
 }
