@@ -1,6 +1,6 @@
 # Contributing to +++module_name_goes_here+++
 
-See a [high level overview](http://silverstripe.org/contributing-to-silverstripe) on silverstripe.org for some general information.
+Please read the [generic write up for contributing](https://docs.silverstripe.org/en/4.0/contributing/) on silverstripe.org for some general information.  In practice, we would be stoked with any feedback / help you can provide.
 
 ## Copyright
 
