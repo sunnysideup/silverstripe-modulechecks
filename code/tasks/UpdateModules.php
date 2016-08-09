@@ -99,12 +99,38 @@ class UpdateModules extends BuildTask
 
             
             $moduleObject = GitHubModule::get_or_create_github_module($module);
+
+            // Check if all necessary files are perfect on GitHub repo already,
+            // if so we can skip that module
+            $moduleFilesOK = true;
+            
+            foreach($files as $file) {
+                $fileObj = $file::create($moduleObject);
+                $checkFileName = $fileObj->getFileLocation();
+                $GitHubFileText = $moduleObject -> getRawFileFromGithub('CHANGELOG.md');
+                if ($GitHubFileText) {
+                    $fileCheck = $fileObj->compareWithText($GitHubFileText);
+                    if ( ! $fileCheck) {
+                        $moduleFilesOK = false;
+                    }
+                }
+                else {
+                    $moduleFilesOK = false;
+                }
+            }
+
+            if ($moduleFilesOK) {
+                print ("<li> All files in $module OK, skipping moving to next module ... </li>");
+                continue;
+            }
+            die();
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
             foreach($files as $file) {
                 //run file update
                 $obj = $file::create($moduleObject);
                 $obj->run();
             }
+
             foreach($commands as $command) {
                 //run file update
                 $obj = $command::create($moduleObject->Directory());

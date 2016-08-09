@@ -333,6 +333,26 @@ class GitHubModule extends DataObject {
         return ! file_exists($dir);
     }
 
+    public function getRawFileFromGithub($fileName) {
+        
+        $gitUserName = $this->Config()->get('git_user_name');
+        $branch = 'master';
+
+        $rawURL = 'https://raw.githubusercontent.com/' . $gitUserName . '/' . $this->ModuleName . '/' . $branch . '/' . $fileName;
+
+        $file = fopen($rawURL, 'r');
+        
+        if ( ! $file){
+            return false;
+        }
+        $content = '';
+        while(! feof($file))
+        {
+            $content .= fgets($file) . "\n";
+        }
+        fclose($file);
+        return $content;
+    }
 
 
 

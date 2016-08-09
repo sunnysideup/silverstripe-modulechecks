@@ -91,7 +91,7 @@ abstract class AddFileToModule extends Object
             $fileContent = $this->customiseStandardFile($fileContent);
         }
         
-            $this->saveFile($fileContent);
+        $this->saveFile($fileContent);
         if($fileContent) {
             $this->replaceWordsInFile();
         }
@@ -169,8 +169,8 @@ abstract class AddFileToModule extends Object
             //print_r ($this->rootDirForModule.'/'.$folderPath);
             
             if(!file_exists($this->rootDirForModule.'/'.$folderPath)) {
-				$folder = Filesystem::makeFolder($this->rootDirForModule.'/'.$folderPath);
-			}
+                $folder = Filesystem::makeFolder($this->rootDirForModule.'/'.$folderPath);
+            }
 
         }
 
@@ -218,5 +218,18 @@ abstract class AddFileToModule extends Object
         }
         
     }    
+    /**
+     *
+     * @return string
+     */ 
+    public function getFileLocation()
+    {
+        return $this->fileLocation;
+    }
 
+    public function compareWithText($compareText) {
+        $fileText = $this->getStandardFile();
+
+        return ($fileText == $compareText);
+    }
 }
