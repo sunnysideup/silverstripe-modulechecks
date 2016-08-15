@@ -14,7 +14,8 @@ abstract class AddFileToModule extends Object
         '+++long-module-name-goes-here+++' => 'LongModuleName',
         '+++medium-module-name-goes-here+++' => 'MediumModuleName',
         '+++short-module-name-goes-here+++' => 'ShortModuleName',
-        '+++module-name-goes-here+++' => 'ShortModuleName'
+        '+++module-name-goes-here+++' => 'ShortModuleName',
+        '+++short-module-name-first-letter-capital+++' => 'ModuleNameFirstLetterCapital'
     );
 
 

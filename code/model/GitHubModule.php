@@ -130,6 +130,17 @@ class GitHubModule extends DataObject {
         return str_replace('silverstripe-', '', $this->ModuleName);
     }
 
+
+    function ModuleNameFirstLetterCapital() {
+        $shortName = ShortModuleName();
+
+        $FirstLetterCapitalName = str_replace ('_', ' ', $shortName);
+        $FirstLetterCapitalName = str_replace ('-', ' ', $FirstLetterCapitalName);
+
+        return ucfirst ($FirstLetterCapitalNaame);
+    }
+    
+
     /**
      * check if URL exists and returns it
      * @var string | null
