@@ -328,10 +328,17 @@ class GitHubModule extends DataObject {
         $dir = $this->Directory();
         GeneralMethods::output_to_screen('Removing '.$dir.' and all its contents ...  ' ,"created");
         $this->gitRepo = null;
-        FileSystem::removeFolder($dir);
-
+        FileSystem::removeFolder($dir); // removes contents but not the actual folder
+        rmdir ($dir);
         return ! file_exists($dir);
     }
+
+    
+    /**
+     * retrieves a raw file from Github
+     *
+     * @return string | bool
+     */
 
     public function getRawFileFromGithub($fileName) {
         
@@ -340,20 +347,30 @@ class GitHubModule extends DataObject {
 
         $rawURL = 'https://raw.githubusercontent.com/' . $gitUserName . '/' . $this->ModuleName . '/' . $branch . '/' . $fileName;
 
+        set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
         $file = fopen($rawURL, 'r');
+        restore_error_handler();
         
         if ( ! $file){
+            GeneralMethods::outputToScreen('<li>Could not find ' . $rawURL . '</li>');
             return false;
         }
         $content = '';
         while(! feof($file))
         {
-            $content .= fgets($file); // . "\n";
+            $content .= fgets($file);
         }
         fclose($file);
         return $content;
     }
 
+    /*
+     * 
+     * */
+
+    private function catchFopenWarning($errno, $errstr) {
+        //
+    }
 
 
     public static function get_or_create_github_module($moduleName) {

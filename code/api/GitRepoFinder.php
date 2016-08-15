@@ -13,23 +13,37 @@ class GitRepoFinder extends Object
      */
     private static $_modules = array();
 
+    
+
     /**
      * takes the preloaded modules and
      * adds any other ones you have listed on github
      */
-    public static function get_all_repos($username = '', $getNamesWithPrefix = false)
+
+    public static function get_all_repos($username = '', $getNamesWithPrefix = false) {
+        $oauth_token = GitRepoFinder::Config()->get('github_oauth_token');
+        if ($oauth_token) {
+            return GitRepoFinder::get_all_repos_oauth($username, $getNamesWithPrefix);
+        }
+        else {
+            return GitRepoFinder::get_all_repos_no_oauth($username, $getNamesWithPrefix);
+        }
+    }
+
+    public static function get_all_repos_no_oauth($username = '', $getNamesWithPrefix = false)
     
         {
         /*
          * To do: Add OAuth capability to get around API limit - Check Git Wrapper Module
          * 
          * */
-        print "<li>Retrieving List of modules from GitHub ... </li>";            
+        if(!$username) {
+            $username = Config::inst()->get('GitHubModule', "git_user_name");
+            print("<li></li>");
+        }         
+        print "<li>Retrieving List of modules from GitHub for user $username ... </li>";            
         if(! count(self::$_modules)) {
-            if(!$username) {
-                $username = Config::inst()->get('GitHubModule', "github_user_name");
-                print("<li></li>");
-            }
+
             for($page = 0; $page < 10; $page++) {
                 $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, "https://api.github.com/users/".$username."/repos?per_page=100&page=$page");
@@ -49,7 +63,8 @@ class GitRepoFinder extends Object
                         if(isset($repo["fork"]) && !$repo["fork"]) {
                             //make sure we are the owners
                             if($repo["owner"]["login"] == $username) {
-                                
+
+                                $isSSModule =  ( stripos($repo["name"], 'silverstripe-')  !== false );
                                 //check it is silverstripe module
                                 if (!$getNamesWithPrefix) {
                                     $name = $repo["name"];                                    
@@ -57,7 +72,9 @@ class GitRepoFinder extends Object
                                 else {
                                     $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);                                    
                                 }
-                                if(strlen($name) < strlen($repo["name"])) {
+                                
+                                //if(strlen($name) < strlen($repo["name"])) {
+                                if($isSSModule) {
                                     //is it listed yet?
                                     if(!in_array($name, self::$_modules)) {
                                         self::$_modules[] = $name;
@@ -88,4 +105,20 @@ class GitRepoFinder extends Object
         return self::$_modules;
     }
 
+    public static function get_all_repos_oauth ($username = '', $getNamesWithPrefix = false) {
+
+    /*
+            $header[]         = 'Content-Type: application/x-www-form-urlencoded';
+
+            curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
+            curl_setopt($ch, CURLOPT_POST,        true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode("oauth_consumer_key=example.com&
+           oauth_signature_method=RSA-SHA1&
+           oauth_signature=wOJIO9A2W5mFwDgiDvZbTSMK%2FPY%3D&
+           oauth_timestamp=137131200&
+           oauth_nonce=4572616e48616d6d65724c61686176&
+           oauth_version=1.0"));
+     *
+     */
+    }
 }

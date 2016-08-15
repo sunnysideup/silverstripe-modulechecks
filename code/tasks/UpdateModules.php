@@ -42,27 +42,18 @@ class UpdateModules extends BuildTask
 
     public function run($request) {
         increase_time_limit_to(3600);
-        
-        // $modules = GitRepoFinder::get_all_repos();
-        $modules = array('cms_tricks_for_apps',
-                'cms_edit_link_field',
-                'frontendeditor',
-                'payment_stripe',
-                'table_filter_sort',
-                'us_phone_number',
-                'blog_shared_categorisation',
-                'comments_add_recaptcha',
-                'ecommerce_cloud_flare_geoip',
-                'ecommerce_nutritional_products',
-                'ecommerce_stockists',
-                'email_address_database_field',
-                'import_task',
-                'pdf_upload_field',
-                'perfect_cms_images',
-                'phone_field',
-                'share_this_simple',
-                'webpack_requirements_backend');//hack to get around GitHub Api limit
-                    
+
+        //Check temp module folder is empty
+        $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
+        $tempDirFiles = scandir($tempFolder);
+        if (count($tempDirFiles) > 2) {
+            die ( '<h2>' . $tempFolder . ' is not empty, please delete or move files </h2>');
+        }
+
+        //Get list of all modules from GitHub
+        $gitUserName = $this->Config()->get('git_user_name');
+        //$modules = GitRepoFinder::get_all_repos();
+        $modules = array ('silverstripe-wishlist', 'silverstripe-youtubegallery');
         $limitedModules = $this->Config()->get('modules_to_update');
 
 
@@ -81,7 +72,7 @@ class UpdateModules extends BuildTask
         if($limitedFileClasses && count($limitedFileClasses)) {
             $files = array_intersect($files, $limitedFileClasses);
         }
-        
+
         /*
          * Get commands to run on modules
          * */

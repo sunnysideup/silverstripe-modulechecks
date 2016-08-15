@@ -79,6 +79,7 @@ abstract class AddFileToModule extends Object
 
 
     function run() {
+        
         if( ! $this->rootDirForModule) {
             user_error('no root dir for module has been set');
         }
@@ -217,7 +218,8 @@ abstract class AddFileToModule extends Object
             GeneralMethods::replaceInFile($fileName, $searchTerm, $this->gitObject->$replaceMethod());
         }
         
-    }    
+    }
+        
     /**
      *
      * @return string
@@ -227,8 +229,27 @@ abstract class AddFileToModule extends Object
         return $this->fileLocation;
     }
 
+    /**
+     * @param string $file
+     * @param GitHubModule $gitObject
+     *
+     * @return string
+     */ 
+    public function replaceWordsInText($text) 
+    {
+        $originalText = $text;
+        foreach($this->replaceArray as $searchTerm => $replaceMethod) {
+            $text = str_replace ($searchTerm, $this->gitObject->$replaceMethod(), $text);
+        }
+        if ($originalText != $text) die("asdfasd");
+        return $text;
+        
+    }    
+
     public function compareWithText($compareText) {
+        die ("comparewithtest");
         $fileText = $this->getStandardFile();
-        return (trim($fileText) == trim($compareText));
+        $text = $this->replaceWordsInText($fileText);
+        return (trim($text) == trim($compareText));
     }
 }
