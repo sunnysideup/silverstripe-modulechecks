@@ -10,27 +10,36 @@
 
 
 ## Documentation
+
 +++README_DOCUMENTATION+++
+
+
 [Browse the API](docs/en/index.xhtml)
 
 ## Requirements
+
 +++README_REQUIREMENTS+++
 
 see [composer.json](composer.json) for details
 
 ### Suggested Modules
+
 +++README_SUGGESTED_MODULES+++
+
 see [composer.json](composer.json) for details
 
 
 ## Installation
+
 +++README_INSTALLATION+++
 ```
 composer require sunnysideup/+++module-name-goes-here+++
 ```
 
 ### Configuration
+
 +++README_CONFIGURATION+++
+
 In the `_config` folder, you will find `*.yml.example` file(s) that show options for
 the configuration of this module. We recommend that you:
 
@@ -42,13 +51,19 @@ the configuration of this module. We recommend that you:
 
 
 ## Contributing
+
 +++README_CONTRIBUTING+++
+
 We welcome any contributions. See [Browse the API](CONTRIBUTING.md) for more details.
 
 ## Paid assistance
+
 +++README_ASSISTANCE+++
+
 You can pay us to create an improved / adapted version of this module for your own projects.  Please contact us if you like to find out more: [www.sunnysideup.co.nz](http://www.sunnysideup.co.nz)
 
 ## Author
+
 +++README_AUTHOR+++
+
 Sunny Side Up ltd.
