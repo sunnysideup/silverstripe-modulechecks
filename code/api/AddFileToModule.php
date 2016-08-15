@@ -29,7 +29,7 @@ abstract class AddFileToModule extends Object
     );
 
     protected function getReadMeComponent($componentName) {
-        $temp_dir = GitHubModule->Config()->get('absolute_temp_folder');
+        $temp_dir = GitHubModule::Config()->get('absolute_temp_folder');
         $moduleName = $this->gitObject->moduleName();
 
         $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . $componentName . '.md';
@@ -258,12 +258,12 @@ abstract class AddFileToModule extends Object
      */ 
     public function replaceWordsInFile() 
     {
-        foreach($this->gitReplaceArray as $searchTerm => $replaceMethod) {
+        foreach(AddFileToModule::gitReplaceArray as $searchTerm => $replaceMethod) {
 
             $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
             GeneralMethods::replaceInFile($fileName, $searchTerm, $this->gitObject->$replaceMethod());
         }
-        foreach($this->replaceArray as $searchTerm => $replaceMethod) {
+        foreach(AddFileToModule::replaceArray as $searchTerm => $replaceMethod) {
 
             $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
             GeneralMethods::replaceInFile($fileName, $searchTerm, $this->$replaceMethod());
@@ -280,24 +280,23 @@ abstract class AddFileToModule extends Object
     }
 
     /**
-     * @param string $file
-     * @param GitHubModule $gitObject
-     *
+     * @param string $text
      * @return string
      */ 
     public function replaceWordsInText($text)
     {
        
         $originalText = $text;
-        foreach($this->gitReplaceArray as $searchTerm => $replaceMethod) {
+        foreach(AddFileToModule::gitReplaceArray as $searchTerm => $replaceMethod) {
             $text = str_replace ($searchTerm, $this->gitObject->$replaceMethod(), $text);
         }
 
-        foreach($this->replaceArray as $searchTerm => $replaceMethod) {
+        foreach(AddFileToModule::replaceArray as $searchTerm => $replaceMethod) {
             $text = str_replace ($searchTerm, $this->$replaceMethod(), $text);
         }
   
-                
+        print ($text);
+        die();
         return $text;
         
     }    
