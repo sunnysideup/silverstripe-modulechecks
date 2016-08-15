@@ -46,7 +46,7 @@ the configuration of this module. We recommend that you:
 We welcome any contributions. See [Browse the API](CONTRIBUTING.md) for more details.
 
 ## Paid assistance
-+++README_ASSITANCE+++
++++README_ASSISTANCE+++
 You can pay us to create an improved / adapted version of this module for your own projects.  Please contact us if you like to find out more: [www.sunnysideup.co.nz](http://www.sunnysideup.co.nz)
 
 ## Author

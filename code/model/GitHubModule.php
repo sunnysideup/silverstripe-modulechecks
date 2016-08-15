@@ -329,7 +329,7 @@ class GitHubModule extends DataObject {
         GeneralMethods::output_to_screen('Removing '.$dir.' and all its contents ...  ' ,"created");
         $this->gitRepo = null;
         FileSystem::removeFolder($dir); // removes contents but not the actual folder
-        rmdir ($dir);
+        //rmdir ($dir);
         return ! file_exists($dir);
     }
 
