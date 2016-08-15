@@ -1,12 +1,12 @@
-# Silverstripe +++short-module-name-first-letter-capital+++ Module
-[![Build Status](https://travis-ci.org/sunnysideup/silverstripe-+++medium-module-name-goes-here+++.svg?branch=master)](https://travis-ci.org/sunnysideup/silverstripe-+++medium-module-name-goes-here+++)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sunnysideup/silverstripe-+++medium-module-name-goes-here+++/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sunnysideup/silverstripe-+++medium-module-name-goes-here+++/?branch=master)
-[![codecov.io](https://codecov.io/github/sunnysideup/silverstripe-+++medium-module-name-goes-here+++/coverage.svg?branch=master)](https://codecov.io/github/sunnysideup/silverstripe-+++medium-module-name-goes-here+++?branch=master)
-![helpfulrobot](https://helpfulrobot.io/sunnysideup/+++medium-module-name-goes-here+++/badge)
+# Silverstripe +++short-module-name-first-letter-capital+++ module
+[![Build Status](https://travis-ci.org/sunnysideup/silverstripe-+++short-module-name-goes-here+++.svg?branch=master)](https://travis-ci.org/sunnysideup/silverstripe-+++short-module-name-goes-here+++)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sunnysideup/silverstripe-+++short-module-name-goes-here+++/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sunnysideup/silverstripe-+++short-module-name-goes-here+++/?branch=master)
+[![codecov.io](https://codecov.io/github/sunnysideup/silverstripe-+++short-module-name-goes-here+++/coverage.svg?branch=master)](https://codecov.io/github/sunnysideup/silverstripe-+++short-module-name-goes-here+++?branch=master)
+![helpfulrobot](https://helpfulrobot.io/sunnysideup/+++short-module-name-goes-here+++/badge)
 
-[![Latest Stable Version](https://poser.pugx.org/sunnysideup/+++medium-module-name-goes-here+++/version)](https://packagist.org/packages/sunnysideup/+++medium-module-name-goes-here+++)
-[![License](https://poser.pugx.org/sunnysideup/+++medium-module-name-goes-here+++/license)](https://packagist.org/packages/sunnysideup/+++medium-module-name-goes-here+++)
-[![Monthly Downloads](https://poser.pugx.org/sunnysideup/+++medium-module-name-goes-here+++/d/monthly)](https://packagist.org/packages/sunnysideup/+++medium-module-name-goes-here+++)
+[![Latest Stable Version](https://poser.pugx.org/sunnysideup/+++short-module-name-goes-here+++/version)](https://packagist.org/packages/sunnysideup/+++short-module-name-goes-here+++)
+[![License](https://poser.pugx.org/sunnysideup/+++short-module-name-goes-here+++/license)](https://packagist.org/packages/sunnysideup/+++short-module-name-goes-here+++)
+[![Monthly Downloads](https://poser.pugx.org/sunnysideup/+++short-module-name-goes-here+++/d/monthly)](https://packagist.org/packages/sunnysideup/+++short-module-name-goes-here+++)
 
 
 ## Documentation

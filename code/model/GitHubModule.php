@@ -132,12 +132,13 @@ class GitHubModule extends DataObject {
 
 
     function ModuleNameFirstLetterCapital() {
-        $shortName = ShortModuleName();
+        $shortName = $this->ShortModuleName();
 
-        $FirstLetterCapitalName = str_replace ('_', ' ', $shortName);
-        $FirstLetterCapitalName = str_replace ('-', ' ', $FirstLetterCapitalName);
+        $firstLetterCapitalName = str_replace ('_', ' ', $shortName);
+        $firstLetterCapitalName = str_replace ('-', ' ', $firstLetterCapitalName);
 
-        return ucfirst ($FirstLetterCapitalNaame);
+
+        return strtolower ($firstLetterCapitalName);
     }
     
 
