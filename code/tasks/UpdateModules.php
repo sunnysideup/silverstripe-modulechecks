@@ -53,9 +53,8 @@ class UpdateModules extends BuildTask
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
         //$modules = GitRepoFinder::get_all_repos();
-        $modules = array ('silverstripe-wishlist', 'silverstripe-youtubegallery');
+        $modules = array ('silverstripe-cms_edit_link_field');
         $limitedModules = $this->Config()->get('modules_to_update');
-
 
         if($limitedModules && count($limitedModules)) {
             $modules = array_intersect($modules, $limitedModules);

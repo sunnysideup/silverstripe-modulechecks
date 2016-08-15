@@ -25,70 +25,11 @@ abstract class AddFileToModule extends Object
         '+++README_INSTALLATION+++' => 'Installation',
         '+++README_AUTHOR+++' => 'Author',
         '+++README_ASSISTANCE+++' => 'Assistance',
-        '+++README_CONTRIBUTING+++' => 'Contributing'
-        '+++README_CONFIGURATION++' => 'Configuration'
+        '+++README_CONTRIBUTING+++' => 'Contributing',
+        '+++README_CONFIGURATION+++' => 'Configuration'
     );
 
-    protected function getReadMeComponent($componentName) {
-        $temp_dir = GitHubModule::Config()->get('absolute_temp_folder');
-        $moduleName = $this->gitObject->ModuleName;
 
-        $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . $componentName . '.md';
-
-        set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
-        $file = fopen($fileName, 'r');
-        restore_error_handler();
-
-        if ($file) {
-            $content = fread($file, filesize($filename));
-        }
-        else {
-            $content = "";
-        }
-    }
-
-    /*
-     * 
-     * */
-
-    private function catchFopenWarning($errno, $errstr) {
-        //
-    }
-
-
-    protected function Configuration() {
-        return $this->getReadMeComponent('configuration');
-    }
-
-    protected function Contributing() {
-        return $this->getReadMeComponent('contributing');
-    }
-
-    protected function Documentation() {
-        return $this->getReadMeComponent('documentation');
-    }
-
-    protected function Requirements() {
-        return $this->getReadMeComponent('requirements');
-    }
-
-    protected function Installation() {
-        return $this->getReadMeComponent('installation');
-    }
-
-    protected function Author() {
-        return $this->getReadMeComponent('author');
-    }
-
-    protected function Assistance() {
-        return $this->getReadMeComponent('assistance');
-    }
-
-    protected function SuggestedModules() {
-        return $this->getReadMeComponent('suggestedmodules');
-    }
-
-    
 
 
     /**
@@ -279,6 +220,68 @@ abstract class AddFileToModule extends Object
         return Injector::inst()->get('ModuleConfig');
     }
 
+
+    protected function getReadMeComponent($componentName) {
+        $temp_dir = GitHubModule::Config()->get('absolute_temp_folder');
+        $moduleName = $this->gitObject->ModuleName;
+
+        $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . strtoupper($componentName) . '.md';
+
+        set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
+        $file = fopen($fileName, 'r');
+        restore_error_handler();
+
+        if ($file) {
+            $content = fread($file, filesize($filename));
+        }
+        else {
+            $content = "";
+        }
+    }
+
+    /*
+     * 
+     * */
+    private function catchFopenWarning($errno, $errstr) {
+        //
+    }
+
+
+    protected function Configuration() {
+        return $this->getReadMeComponent('configuration');
+    }
+
+    protected function Contributing() {
+        return $this->getReadMeComponent('contributing');
+    }
+
+    protected function Documentation() {
+        return $this->getReadMeComponent('documentation');
+    }
+
+    protected function Requirements() {
+        return $this->getReadMeComponent('requirements');
+    }
+
+    protected function Installation() {
+        return $this->getReadMeComponent('installation');
+    }
+
+    protected function Author() {
+        return $this->getReadMeComponent('author');
+    }
+
+    protected function Assistance() {
+        return $this->getReadMeComponent('assistance');
+    }
+
+    protected function SuggestedModules() {
+        return $this->getReadMeComponent('suggestedmodules');
+    }
+
+    
+
+
     /**
      * @param string $file
      * @param GitHubModule $gitObject
@@ -287,13 +290,13 @@ abstract class AddFileToModule extends Object
      */ 
     public function replaceWordsInFile() 
     {
-        foreach(AddFileToModule::gitReplaceArray as $searchTerm => $replaceMethod) {
+        foreach($this->gitReplaceArray as $searchTerm => $replaceMethod) {
 
             $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
             GeneralMethods::replaceInFile($fileName, $searchTerm, $this->gitObject->$replaceMethod());
         }
-        foreach(AddFileToModule::replaceArray as $searchTerm => $replaceMethod) {
-
+        
+        foreach($this->replaceArray as $searchTerm => $replaceMethod) {
             $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
             GeneralMethods::replaceInFile($fileName, $searchTerm, $this->$replaceMethod());
         }  
@@ -323,9 +326,6 @@ abstract class AddFileToModule extends Object
         foreach($this->replaceArray as $searchTerm => $replaceMethod) {
             $text = str_replace ($searchTerm, $this->$replaceMethod(), $text);
         }
-  
-        print ($text);
-        die();
         return $text;
         
     }    

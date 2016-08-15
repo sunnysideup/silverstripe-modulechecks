@@ -1,4 +1,4 @@
-# Silverstipe +++medium-module-name-goes-here+++ Module
+# Silverstripe +++short-module-name-first-letter-capital+++ Module
 [![Build Status](https://travis-ci.org/sunnysideup/silverstripe-+++module-name-goes-here+++.svg?branch=master)](https://travis-ci.org/sunnysideup/silverstripe-+++module-name-goes-here+++)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/sunnysideup/silverstripe-+++module-name-goes-here+++/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/sunnysideup/silverstripe-+++module-name-goes-here+++/?branch=master)
 [![codecov.io](https://codecov.io/github/sunnysideup/silverstripe-+++module-name-goes-here+++/coverage.svg?branch=master)](https://codecov.io/github/sunnysideup/silverstripe-+++module-name-goes-here+++?branch=master)
