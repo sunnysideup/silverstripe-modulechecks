@@ -10,7 +10,7 @@
 abstract class AddFileToModule extends Object
 {
 
-    protected static $gitReplaceArray = array(
+    protected $gitReplaceArray = array(
         '+++long-module-name-goes-here+++' => 'LongModuleName',
         '+++medium-module-name-goes-here+++' => 'MediumModuleName',
         '+++short-module-name-goes-here+++' => 'ShortModuleName',
@@ -18,7 +18,7 @@ abstract class AddFileToModule extends Object
     );
 
 
-    protected static $replaceArray = array(
+    protected $replaceArray = array(
         '+++README_DOCUMENTATION+++' => 'Documentation',
         '+++README_SUGGESTED_MODULES+++' => 'SuggestedModules',
         '+++README_REQUIREMENTS+++' => 'Requirements',
@@ -26,16 +26,17 @@ abstract class AddFileToModule extends Object
         '+++README_AUTHOR+++' => 'Author',
         '+++README_ASSISTANCE+++' => 'Assistance',
         '+++README_CONTRIBUTING+++' => 'Contributing'
+        '+++README_CONFIGURATION++' => 'Configuration'
     );
 
     protected function getReadMeComponent($componentName) {
         $temp_dir = GitHubModule::Config()->get('absolute_temp_folder');
-        $moduleName = $this->gitObject->moduleName();
+        $moduleName = $this->gitObject->ModuleName;
 
         $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . $componentName . '.md';
 
         set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
-        $file = fopen($filename, 'r');
+        $file = fopen($fileName, 'r');
         restore_error_handler();
 
         if ($file) {
@@ -55,8 +56,36 @@ abstract class AddFileToModule extends Object
     }
 
 
+    protected function Configuration() {
+        return $this->getReadMeComponent('configuration');
+    }
+
+    protected function Contributing() {
+        return $this->getReadMeComponent('contributing');
+    }
+
+    protected function Documentation() {
+        return $this->getReadMeComponent('documentation');
+    }
+
+    protected function Requirements() {
+        return $this->getReadMeComponent('requirements');
+    }
+
+    protected function Installation() {
+        return $this->getReadMeComponent('installation');
+    }
+
     protected function Author() {
-        return $this->getReadMeComponent("author");
+        return $this->getReadMeComponent('author');
+    }
+
+    protected function Assistance() {
+        return $this->getReadMeComponent('assistance');
+    }
+
+    protected function SuggestedModules() {
+        return $this->getReadMeComponent('suggestedmodules');
     }
 
     
@@ -287,11 +316,11 @@ abstract class AddFileToModule extends Object
     {
        
         $originalText = $text;
-        foreach(AddFileToModule::gitReplaceArray as $searchTerm => $replaceMethod) {
+        foreach($this->gitReplaceArray as $searchTerm => $replaceMethod) {
             $text = str_replace ($searchTerm, $this->gitObject->$replaceMethod(), $text);
         }
 
-        foreach(AddFileToModule::replaceArray as $searchTerm => $replaceMethod) {
+        foreach($this->replaceArray as $searchTerm => $replaceMethod) {
             $text = str_replace ($searchTerm, $this->$replaceMethod(), $text);
         }
   

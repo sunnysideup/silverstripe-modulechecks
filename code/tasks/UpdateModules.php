@@ -44,11 +44,11 @@ class UpdateModules extends BuildTask
         increase_time_limit_to(3600);
 
         //Check temp module folder is empty
-        $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
+        /*$tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
         $tempDirFiles = scandir($tempFolder);
         if (count($tempDirFiles) > 2) {
             die ( '<h2>' . $tempFolder . ' is not empty, please delete or move files </h2>');
-        }
+        }*/
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
