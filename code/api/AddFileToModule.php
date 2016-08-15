@@ -30,9 +30,6 @@ abstract class AddFileToModule extends Object
         '+++README_CONFIGURATION+++' => 'Configuration'
     );
 
-
-
-
     /**
      * root dir for module
      * e.g. /var/www/modules/mymodule

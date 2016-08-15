@@ -1,4 +1,4 @@
-# Contributing to +++module_name_goes_here+++
+# Contributing to +++short-module-name-first-letter-capital+++
 
 Please read the [generic write up for contributing](https://docs.silverstripe.org/en/4.0/contributing/) on silverstripe.org for some general information.  In practice, we would be stoked with any feedback / help you can provide.
 
