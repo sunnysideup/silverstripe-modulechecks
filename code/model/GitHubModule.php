@@ -172,7 +172,7 @@ class GitHubModule extends DataObject {
 
             //create comms
             $this->commsWrapper = new GitWrapper();
-
+            
             // Stream output of subsequent Git commands in real time to STDOUT and STDERR.
             if(Director::is_cli()) {
                 $this->commsWrapper->streamOutput();
@@ -201,13 +201,15 @@ class GitHubModule extends DataObject {
                 while ( ! $this->gitRepo ) {
                     $cloneAttempts ++;
                     if ($cloneAttempts == 4) {
-                        user_error ('Failed to clone module after ' . ($this->LongModuleName() - 1). ' attemps.', E_USER_ERROR);
+                        user_error ('Failed to clone module ' . $this->LongModuleName() . ' after ' . ($cloneAttempts  - 1). ' attemps.', E_USER_ERROR);
                     }
                     try {
+                        $this->commsWrapper->setTimeout(240); //Big modules need a longer timeout
                         $this->gitRepo = $this->commsWrapper->cloneRepository(
                             $this->fullGitURL(),
                             $this->Directory()
                         );
+                        $this->commsWrapper->setTimeout(60);
                     }
                     catch (Exception $e) {
                         if (strpos($e->getMessage(), 'already exists and is not an empty directory') !== false) {
@@ -216,6 +218,7 @@ class GitHubModule extends DataObject {
                         
                         GeneralMethods::outputToScreen ('<li>Failed to clone repository: ' .  $e->getMessage() . '</li>');
                         GeneralMethods::outputToScreen ('<li>Waiting 8 seconds to try again ...: </li>');
+                        $this->removeClone();
                         sleep (8);
                     }
                 }
@@ -336,16 +339,28 @@ class GitHubModule extends DataObject {
 
         $git = $this->checkOrSetGitcommsWrapper();
         if ($git) {
-            try {
-                $git->push();
+            $pushed = false;
+            $pushAttempts = 0;
+            while ( ! $pushed ) {
+                $pushAttempts ++;
+                try {
+                    $git->push();
+                    $pushed = true;
+                }   
+                catch (Exception $e) {
 
+                    if ($pushAttempts == 3) {
+                        $git->getOutput();
+                        print_r($e);
+                        throw $e;
+                    }
+                    else {
+                        GeneralMethods::outputToScreen ('<li>Failed to push repository: ' .  $e->getMessage() . '</li>');
+                        GeneralMethods::outputToScreen ('<li>Waiting 8 seconds to try again ...: </li>');                        
+                        sleep (8);
+                    }
+                }
             }
-            catch (Exception $e) {
-                $git->getOutput();
-                print_r($e);
-                throw $e;
-            }
-
             return $this;
         }
         return false;
