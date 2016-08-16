@@ -68,12 +68,15 @@ class UpdateModules extends BuildTask
          * */
         $files = ClassInfo::subclassesFor('AddFileToModule');
 
+
+
         array_shift($files);
         $limitedFileClasses = $this->Config()->get('files_to_update');
         if($limitedFileClasses && count($limitedFileClasses)) {
             $files = array_intersect($files, $limitedFileClasses);
         }
 
+        
         /*
          * Get commands to run on modules
          * */

@@ -195,10 +195,30 @@ class GitHubModule extends DataObject {
                 $this->gitRepo = $this->commsWrapper->workingCopy($this->Directory());
             } else {
                 GeneralMethods::output_to_screen("cloning ... ".$this->fullGitURL(),'created');
-                $this->gitRepo = $this->commsWrapper->cloneRepository(
-                    $this->fullGitURL(),
-                    $this->Directory()
-                );
+
+                $this->gitRepo = null;
+                $cloneAttempts = 0;
+                while ( ! $this->gitRepo ) {
+                    $cloneAttempts ++;
+                    if ($cloneAttempts == 4) {
+                        user_error ('Failed to clone module after ' . ($this->LongModuleName() - 1). ' attemps.', E_USER_ERROR);
+                    }
+                    try {
+                        $this->gitRepo = $this->commsWrapper->cloneRepository(
+                            $this->fullGitURL(),
+                            $this->Directory()
+                        );
+                    }
+                    catch (Exception $e) {
+                        if (strpos($e->getMessage(), 'already exists and is not an empty directory') !== false) {
+                            user_error ($e->getMessage(), E_USER_ERROR);
+                        }
+                        
+                        GeneralMethods::outputToScreen ('<li>Failed to clone repository: ' .  $e->getMessage() . '</li>');
+                        GeneralMethods::outputToScreen ('<li>Waiting 8 seconds to try again ...: </li>');
+                        sleep (8);
+                    }
+                }
             }
             $this->gitRepo->config("push.default", "simple");
             $this->gitRepo->config("user.name", $this->Config()->get('github_user_name'));
@@ -397,7 +417,10 @@ class GitHubModule extends DataObject {
         return $gitHubModule;
     }
 
-
+    public function retry ($function, $params, $wait = 10) {
+        sleep ($wait);
+        call_user_func_array ($function, $params);
+    }
 
 
 }
