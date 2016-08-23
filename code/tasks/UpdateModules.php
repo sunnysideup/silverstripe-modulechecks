@@ -52,9 +52,26 @@ class UpdateModules extends BuildTask
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        //$modules = GitRepoFinder::get_all_repos();
+        $modules = GitRepoFinder::get_all_repos();
         
-        $modules = array ('silverstripe-pagerater');
+        /*$modules = array (
+                'silverstripe-forsale',
+                'silverstripe-frontendeditor',
+                'silverstripe-geobrowser',
+                'silverstripe-gift_voucher',
+                'silverstripe-advertisements',
+                'silverstripe-affiliations',
+                'silverstripe-assets_sync_one_folder',
+                'silverstripe-blog_shared_categorisation',
+                'silverstripe-business_directory',
+                'silverstripe-calendar',
+                'silverstripe-campaignmonitor',
+                'silverstripe-cms_edit_link_field',
+                'silverstripe-cms_tricks_for_apps',
+                'silverstripe-comments_add_recaptcha',
+                'silverstripe-contact_list',
+                'silverstripe-copyfactory'
+        );*/
         
         $limitedModules = $this->Config()->get('modules_to_update');
 
