@@ -210,9 +210,40 @@ class UpdateModules extends BuildTask
     }
 
     private function checkUpdateTag($moduleObject) {
-            
+
+        $aWeekAgo = strtotime("-1 weeks");
         $tag = $moduleObject->getLatestTag();
-        $moduleObject->getLatestCommitTime();
+
+        $commitTime = $moduleObject->getLatestCommitTime();
+
+        $createTag = false;
+
+        if ( ! $tag ) {
+            $createTag = true;
+            $newTagNumber = 1;
+        }
+
+        else if ($tag && $commitTime > $tag['timestamp'] && $commitTime < $aWeekAgo) {
+            $createTag = true;
+            $newTagNumber = $tag['tagnumber'] + 1;
+            
+        }
+
+        if ($createTag) {
+            
+            $newTagString = $newTagNumber . '.0.0';
+
+            GeneralMethods::outputToScreen ("<li> Creating new tag  $newTagString ... </li>");
+
+            //git tag -a 0.0.1 -m "testing tag"
+            $options = array (
+                'a' => $newTagString,
+                'm' => $this->Config()->get('tag_create_message')
+            );
+
+            $moduleObject->createTag ($options);
+            
+        }
     
     }
 }

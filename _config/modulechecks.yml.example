@@ -11,6 +11,8 @@ GitHubModule:
   
   absolute_temp_folder: "/var/www/temp_modules"
   path_to_private_key: "/var/www/.ssh/id_rsa"
+
+  tag_create_message: "Auto-created tag."
   
 UpdateModules:  
 

@@ -435,18 +435,22 @@ class GitHubModule extends DataObject {
 
 
     public function getLatestCommitTime() {
-        //git rev-list --format=format:'%ci' --max-count=1 `git rev-parse HEAD`
+        //git log -1 --format=%cd .
 
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
             $options = array (
-                'format' => "format=format:'%ci'",
-                'max-count' => '1',
+                'format' => "%cd",
+                '1' => true
             );
                 
-            $result = $git->rev_list (`git rev-parse HEAD`, $options);
-            print_r ($result);
-            die();
+            $result = $git->log ($options);
+            if ($result) {
+                return (strtotime($result));
+            }
+            else {
+                return false;
+            }            
         }
         else {
             return false;
@@ -508,16 +512,12 @@ class GitHubModule extends DataObject {
         }
     }
 
-    protected function createTag($tag, $tagMessage = 'New version')
+    public function createTag($tagCommandOptions)
     {
 
-        $options = array (
-            'a' => $tag,
-            'm' => $message
-            );
             
-        $this->gitRepo->command('tag', $options);
-
+        $this->gitRepo->tag($tagCommandOptions);
+        $this->gitRepo->push(array('tags' => true));
         
         /*
          git tag -a 0.0.1 -m "testing tag"
