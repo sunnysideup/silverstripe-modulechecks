@@ -163,7 +163,7 @@ class GitHubModule extends DataObject {
      * @return Git Repo Object
      */
     public function checkOrSetGitCommsWrapper($forceNew = false) {
-        //if there is a wrapper the is also a repo....
+        //check if one has been created already...
         if( ! $this->gitRepo ) {
 
             //basic check
@@ -433,16 +433,73 @@ class GitHubModule extends DataObject {
         return $gitHubModule;
     }
 
-    public function retry ($function, $params, $wait = 10) {
-        sleep ($wait);
-        call_user_func_array ($function, $params);
+
+
+    public function getLatestTag() {
+        $git = $this->checkOrSetGitCommsWrapper();
+        if ($git) {
+        
+        // git log --tags --simplify-by-decoration --pretty="format:%ai %d"
+
+            $options = array (
+                'tags' => true,
+                'simplify-by-decoration' => true,
+                'pretty' => 'format:%ai %d'
+            );
+                
+            $result = $git->log($options);
+
+            $resultLines  =  explode ("\n", $result->getOutput());
+/*
+2012-12-04 02:41:18 +0000 
+2012-12-04 02:46:26 +0000  (tag: 2.4)
+2012-12-04 02:41:18 +0000  
+ 
+ * */       $latestTimeStamp = 0;
+            $latestTag = false;
+            for ($resultLines as $line) {
+                $isTagInLine = (strpos ($line, 'tag') !== False))
+                if ($isTagInLine) {
+                    $tagStr = trim(substr($line, 25));
+                    $dateStr = trim(substr($line, 0, 26));
+
+                    $timeStamp = strtotime ($dateStr);
+                    if ($latestTimeStamp < $timestamp) {
+                        $latestTimeStamp = $timestamp;
+                        $latestTag = $tagStr;
+                    }
+                }
+            }
+
+           
+            
+            print_r ($latestTag);
+        }
     }
 
-    protected static function createTag($tag) {
+    protected function createTag($tag, $tagMessage = 'New version')
+    {
+
+        $options = array (
+            'a' => $tag,
+            'm' => $message
+            );
+            
+        $this->gitRepo->command('tag', $options);
+
+        
+        /*
+         git tag -a 0.0.1 -m "testing tag"
+         
+         git push --tags 
+         * */
+    }
+/*
+    protected function createTagviaAPI($tag) {
 
         
 
-        POST /repos/:owner/:repo/git/tags
+        // POST /repos/:owner/:repo/git/tags
 
         $gitUserName = $this->Config()->get('git_user_name');
 
@@ -454,17 +511,17 @@ class GitHubModule extends DataObject {
             'tagger' => array (
                 'name'  => $this->Config()->get('git_user_name'),
                 'email' => $this->Config()->get('git_user_email');
-                'date' => 
+                'date' => date ('Y:m:d H:i:s')
         
             )
                 
         }
 
-        GitHubModule->GitApiCall('repo/git/tags', $params, 'POST');
+      //  GitHubModule->GitApiCall('repo/git/tags', $params, 'POST');
     }
     
 
-    protected static function gitApiCall($gitAPIcommand, $data, $method = 'GET');
+    protected function gitApiCall($gitAPIcommand, $data, $method = 'GET');
 
         
 
@@ -491,6 +548,6 @@ class GitHubModule extends DataObject {
        
         $returned = curl_exec($ch);
 
-        reutrn $return;
-    }
+        return $return;
+    }*/
 }

@@ -98,7 +98,8 @@ class UpdateModules extends BuildTask
 
             
             $moduleObject = GitHubModule::get_or_create_github_module($module);
-
+            $moduleObject->getLatestTag();
+            die();
 
             // Check if all necessary files are perfect on GitHub repo already,
             // if so we can skip that module. But! ... if there are commands to run
