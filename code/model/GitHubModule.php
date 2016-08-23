@@ -14,6 +14,7 @@ require_once '../vendor/autoload.php';
 class GitHubModule extends DataObject {
 
 
+
     /**
      * e.g.
      * @var string
@@ -437,5 +438,59 @@ class GitHubModule extends DataObject {
         call_user_func_array ($function, $params);
     }
 
+    protected static function createTag($tag) {
 
+        
+
+        POST /repos/:owner/:repo/git/tags
+
+        $gitUserName = $this->Config()->get('git_user_name');
+
+        $params = array (
+            'tag' => trim($tag);
+            'message' => 'Version update',
+            'object' => SHA
+            'type' => 'commit',
+            'tagger' => array (
+                'name'  => $this->Config()->get('git_user_name'),
+                'email' => $this->Config()->get('git_user_email');
+                'date' => 
+        
+            )
+                
+        }
+
+        GitHubModule->GitApiCall('repo/git/tags', $params, 'POST');
+    }
+    
+
+    protected static function gitApiCall($gitAPIcommand, $data, $method = 'GET');
+
+        
+
+        $gitUserName = $this->Config()->get('git_user_name');
+        $url = 'https://api.github.com/repos/' . $gitUserName . '/' . $this->ModuleName . '/' . $gitAPIcommand; 
+         
+        $method = trim(strtoupper($method));
+        $ch = curl_init($url);
+        $header = ""; // Content-Type: multipart/form-data; boundary='123456f'";
+
+        if ($method == "GET") {
+            $url .= http_build_query($data);
+        }
+        
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
+
+        if ($method == "POST") {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        }
+       
+        $returned = curl_exec($ch);
+
+        reutrn $return;
+    }
 }

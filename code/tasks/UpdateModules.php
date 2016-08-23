@@ -94,7 +94,7 @@ class UpdateModules extends BuildTask
             if ( stripos($module, 'silverstripe-')  === false ) {
                 $module = "silverstripe-" . $module;
             }
-            echo "<h2>".($count+1) . ". ".$module."</h2>";
+            echo "<h2>" . ($count+1) . ". ".$module."</h2>";
 
             
             $moduleObject = GitHubModule::get_or_create_github_module($module);
