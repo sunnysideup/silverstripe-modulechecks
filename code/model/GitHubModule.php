@@ -434,13 +434,28 @@ class GitHubModule extends DataObject {
     }
 
 
+    public function getLatestCommitTime() {
+        //git rev-list --format=format:'%ci' --max-count=1 `git rev-parse HEAD`
+
+        $git = $this->checkOrSetGitCommsWrapper();
+        if ($git) {
+            $options = array (
+                'format' => "format=format:'%ci'",
+                'max-count' => '1',
+            );
+                
+            $result = $git->rev_list (`git rev-parse HEAD`, $options);
+            print_r ($result);
+            die();
+        }
+        else {
+            return false;
+        }
+    }
 
     public function getLatestTag() {
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
-        
-        // git log --tags --simplify-by-decoration --pretty="format:%ai %d"
-
             $options = array (
                 'tags' => true,
                 'simplify-by-decoration' => true,
@@ -450,30 +465,46 @@ class GitHubModule extends DataObject {
             $result = $git->log($options);
 
             $resultLines  =  explode ("\n", $result->getOutput());
-/*
-2012-12-04 02:41:18 +0000 
-2012-12-04 02:46:26 +0000  (tag: 2.4)
-2012-12-04 02:41:18 +0000  
- 
- * */       $latestTimeStamp = 0;
+
+            if (count($resultLines) == 0) {
+                return false;
+            }
+            
+            $latestTimeStamp = 0;
             $latestTag = false;
-            for ($resultLines as $line) {
-                $isTagInLine = (strpos ($line, 'tag') !== False))
+            foreach ($resultLines as $line) {
+                $isTagInLine = (strpos ($line, 'tag') !== false);
                 if ($isTagInLine) {
                     $tagStr = trim(substr($line, 25));
                     $dateStr = trim(substr($line, 0, 26));
 
                     $timeStamp = strtotime ($dateStr);
-                    if ($latestTimeStamp < $timestamp) {
-                        $latestTimeStamp = $timestamp;
+
+                    if ($latestTimeStamp < $timeStamp) {
+                        $latestTimeStamp = $timeStamp;
                         $latestTag = $tagStr;
                     }
                 }
             }
 
-           
+        }
+
+        if (isset($latestTag) && $latestTag) {
+            $latestTag = str_replace('(tag:', '', $latestTag) ;
+            $latestTag = str_replace(')', '', $latestTag) ;
+
+            $tagParts = explode ('.', $latestTag);
+
+            if (count($tagParts) != 3) return false;
             
-            print_r ($latestTag);
+            return array (
+                'tagstring' => $latestTag,
+                'tagnumber' => (int) $tagParts[0],
+                'timestamp' => $latestTimeStamp);
+                
+        }
+        else {
+            return false;
         }
     }
 

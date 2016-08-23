@@ -52,9 +52,9 @@ class UpdateModules extends BuildTask
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        $modules = GitRepoFinder::get_all_repos();
+        //$modules = GitRepoFinder::get_all_repos();
         
-        //modules = array ('silverstripe-cms_edit_link_field');
+        $modules = array ('silverstripe-pagerater');
         
         $limitedModules = $this->Config()->get('modules_to_update');
 
@@ -98,8 +98,8 @@ class UpdateModules extends BuildTask
 
             
             $moduleObject = GitHubModule::get_or_create_github_module($module);
-            $moduleObject->getLatestTag();
-            die();
+
+            $this->checkUpdateTag($moduleObject);
 
             // Check if all necessary files are perfect on GitHub repo already,
             // if so we can skip that module. But! ... if there are commands to run
@@ -209,5 +209,10 @@ class UpdateModules extends BuildTask
         
     }
 
-
+    private function checkUpdateTag($moduleObject) {
+            
+        $tag = $moduleObject->getLatestTag();
+        $moduleObject->getLatestCommitTime();
+    
+    }
 }
