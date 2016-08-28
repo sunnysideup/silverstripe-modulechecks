@@ -53,6 +53,7 @@ class UpdateModules extends BuildTask
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
         $modules = GitRepoFinder::get_all_repos();
+        $updateComposerJson = $this->Config()->get('update_composer_json');
         
         /*$modules = array (
                 'silverstripe-forsale',
@@ -122,7 +123,7 @@ class UpdateModules extends BuildTask
             // if so we can skip that module. But! ... if there are commands to run
             // over the files in the repo, then we need to clone the repo anyhow,
             // so skip the check
-            if (count($commands) == 0 ) {
+            if (count($commands) == 0 && ! $updateComposerJson) {
                 $moduleFilesOK = true;
                 
                 foreach($files as $file) {
@@ -147,6 +148,12 @@ class UpdateModules extends BuildTask
             }
             
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
+
+            if ($updateComposerJson) {
+                $composerJsonObj = new CheckComposerJson ($moduleObject);
+                $composerJsonObj->updateJsonData();
+            }
+            
             foreach($files as $file) {
                 //run file update
                 $obj = $file::create($moduleObject);
@@ -243,7 +250,6 @@ class UpdateModules extends BuildTask
         else if ($tag && $commitTime > $tag['timestamp'] && $commitTime < $aWeekAgo) {
             $createTag = true;
             $newTagNumber = $tag['tagnumber'] + 1;
-            
         }
 
         if ($createTag) {
