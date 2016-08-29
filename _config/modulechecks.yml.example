@@ -29,3 +29,12 @@ UpdateModules:
     
   commands_to_run:
     - MyCommandLine
+
+
+  tag_create_message: "Auto-created tag. For more information please contact SunnySideUp"
+
+  update_composer_json: true
+
+ComposerJson:
+  updates:
+    - ComposerRemoveHomePage
