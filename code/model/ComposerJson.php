@@ -16,7 +16,7 @@ class ComposerJson extends Object {
 
         set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
         $file = fopen ($filename, 'r');
-        reset_error_handler();
+        restore_error_handler();
         if ($file) {
             $json = fread($file, filesize($filename));
             $array = json_decode ($json);

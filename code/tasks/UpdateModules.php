@@ -52,12 +52,12 @@ class UpdateModules extends BuildTask
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        $modules = GitRepoFinder::get_all_repos();
+        //$modules = GitRepoFinder::get_all_repos();
         $updateComposerJson = $this->Config()->get('update_composer_json');
         
-        /*$modules = array (
+        $modules = array (
                 'silverstripe-forsale',
-                'silverstripe-frontendeditor',
+                /*'silverstripe-frontendeditor',
                 'silverstripe-geobrowser',
                 'silverstripe-gift_voucher',
                 'silverstripe-advertisements',
@@ -71,8 +71,8 @@ class UpdateModules extends BuildTask
                 'silverstripe-cms_tricks_for_apps',
                 'silverstripe-comments_add_recaptcha',
                 'silverstripe-contact_list',
-                'silverstripe-copyfactory'
-        );*/
+                'silverstripe-copyfactory'*/
+        );
         
         $limitedModules = $this->Config()->get('modules_to_update');
 
@@ -118,6 +118,8 @@ class UpdateModules extends BuildTask
             $moduleObject = GitHubModule::get_or_create_github_module($module);
 
             $this->checkUpdateTag($moduleObject);
+
+            $moduleObject->removeSVN();
 
             // Check if all necessary files are perfect on GitHub repo already,
             // if so we can skip that module. But! ... if there are commands to run
@@ -177,7 +179,8 @@ class UpdateModules extends BuildTask
 
 
     private function checkFile($module, $filename) {
-        return file_exists($this->Config()->get('absolute_temp_folder').'/'.$module.'/'.$filename);
+        $folder = GitHubModule::Config()->get('absolute_temp_folder');
+        return file_exists($folder.'/'.$module.'/'.$filename);
     }
 
     private function checkReadMe($module) {
