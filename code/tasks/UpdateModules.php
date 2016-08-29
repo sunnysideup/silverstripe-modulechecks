@@ -57,11 +57,11 @@ class UpdateModules extends BuildTask
         
         $modules = array (
                 'silverstripe-forsale',
-                /*'silverstripe-frontendeditor',
+                'silverstripe-frontendeditor',
                 'silverstripe-geobrowser',
                 'silverstripe-gift_voucher',
                 'silverstripe-advertisements',
-                'silverstripe-affiliations',
+                'silverstripe-affiliations'
                 'silverstripe-assets_sync_one_folder',
                 'silverstripe-blog_shared_categorisation',
                 'silverstripe-business_directory',
@@ -71,7 +71,7 @@ class UpdateModules extends BuildTask
                 'silverstripe-cms_tricks_for_apps',
                 'silverstripe-comments_add_recaptcha',
                 'silverstripe-contact_list',
-                'silverstripe-copyfactory'*/
+                'silverstripe-copyfactory'
         );
         
         $limitedModules = $this->Config()->get('modules_to_update');

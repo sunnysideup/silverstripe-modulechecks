@@ -19,23 +19,31 @@ class ComposerJson extends Object {
             $json = fread($file, filesize($filename));
             $array = json_decode ($json);
             $this->jsonData = $array;
-            print_r ($array);
-            die();
         }
         fclose ($file);
 
-        return (isset($array));
+        return (isset($this->jsonData));
 
     }
 
     public function updateJsonData() {
 
+        GeneralMethods::outputToScreen ("<li> Updating composer.json </li>");
         if ( ! isset($this->jsonData)) {
             $this->readJsonFromFile();
         }
         
 
-        $composerUpdates = ClassInfo::subclassesFor('ComposerJsonUpdate');
+        $composerUpdates = ClassInfo::subclassesFor('UpdateComposer');
+        array_shift($composerUpdates);
+
+
+        $limitedComposerUpdates = $this->Config()->get('updates');
+        
+        if($limitedComposerUpdates && count($limitedComposerUpdates)) {
+            $composerUpdates = array_intersect($composerUpdates, $limitedComposerUpdates);
+        }        
+
 
         foreach ($composerUpdates as $composerUpdate) {
                 $obj = $composerUpdate::create($this);
@@ -52,13 +60,16 @@ class ComposerJson extends Object {
         }
         
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
-        $filename = $folder . '/' . $this->gitHubModuleInstance->moduleName . '/composer.json';
+        $filename = $folder . '/' . $this->gitHubModuleInstance->ModuleName . '/composer.json';
+
+        
 
         $file = fopen ($filename, 'w');
         if ($file) {
-            fwrite ($file, json_encode($this->jsonData));
+            fwrite ($file, json_encode($this->jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
         fclose ($file);
+
         return true;
     }
 }
