@@ -52,12 +52,12 @@ class UpdateModules extends BuildTask
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        $modules = GitRepoFinder::get_all_repos();
+        //$modules = GitRepoFinder::get_all_repos();
         $updateComposerJson = $this->Config()->get('update_composer_json');
         
-        /*$modules = array (
+        $modules = array (
                 'silverstripe-forsale',
-                'silverstripe-frontendeditor',
+                /*'silverstripe-frontendeditor',
                 'silverstripe-geobrowser',
                 'silverstripe-gift_voucher',
                 'silverstripe-advertisements',
@@ -71,8 +71,8 @@ class UpdateModules extends BuildTask
                 'silverstripe-cms_tricks_for_apps',
                 'silverstripe-comments_add_recaptcha',
                 'silverstripe-contact_list',
-                'silverstripe-copyfactory'
-        );*/
+                'silverstripe-copyfactory'*/
+        );
         
         $limitedModules = $this->Config()->get('modules_to_update');
 
@@ -150,7 +150,7 @@ class UpdateModules extends BuildTask
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
 
             if ($updateComposerJson) {
-                $composerJsonObj = new CheckComposerJson ($moduleObject);
+                $composerJsonObj = new ComposerJson ($moduleObject);
                 $composerJsonObj->updateJsonData();
             }
             
