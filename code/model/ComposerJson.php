@@ -14,13 +14,16 @@ class ComposerJson extends Object {
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
         $filename = $folder . '/' . $this->moduleName . '/composer.json'; 
 
+        set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
         $file = fopen ($filename, 'r');
+        reset_error_handler();
         if ($file) {
             $json = fread($file, filesize($filename));
             $array = json_decode ($json);
             $this->jsonData = $array;
+            fclose ($file);            
         }
-        fclose ($file);
+
 
         return (isset($this->jsonData));
 
@@ -28,29 +31,35 @@ class ComposerJson extends Object {
 
     public function updateJsonData() {
 
-        GeneralMethods::outputToScreen ("<li> Updating composer.json </li>");
+        
         if ( ! isset($this->jsonData)) {
             $this->readJsonFromFile();
         }
         
 
-        $composerUpdates = ClassInfo::subclassesFor('UpdateComposer');
-        array_shift($composerUpdates);
+        if (isset($this->jsonData)) {
+            GeneralMethods::outputToScreen ("<li> Updating composer.json </li>");
+            $composerUpdates = ClassInfo::subclassesFor('UpdateComposer');
+            array_shift($composerUpdates);
 
 
-        $limitedComposerUpdates = $this->Config()->get('updates');
-        
-        if($limitedComposerUpdates && count($limitedComposerUpdates)) {
-            $composerUpdates = array_intersect($composerUpdates, $limitedComposerUpdates);
-        }        
+            $limitedComposerUpdates = $this->Config()->get('updates');
+            
+            if($limitedComposerUpdates && count($limitedComposerUpdates)) {
+                $composerUpdates = array_intersect($composerUpdates, $limitedComposerUpdates);
+            }        
 
 
-        foreach ($composerUpdates as $composerUpdate) {
-                $obj = $composerUpdate::create($this);
-                $obj->run(); 
+            foreach ($composerUpdates as $composerUpdate) {
+                    $obj = $composerUpdate::create($this);
+                    $obj->run(); 
+            }
+
+            $this->writeJsonToFile();
         }
-
-        $this->writeJsonToFile();
+        else {
+            GeneralMethods::outputToScreen ('<li style = "color: red;"> ' . $this->moduleName. '  has no composer.json !!!</li>');
+        }
     }
 
     private function writeJsonToFile() {
@@ -71,5 +80,9 @@ class ComposerJson extends Object {
         fclose ($file);
 
         return true;
+    }
+
+    private function catchFopenWarning() {
+
     }
 }
