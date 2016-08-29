@@ -52,10 +52,10 @@ class UpdateModules extends BuildTask
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        //$modules = GitRepoFinder::get_all_repos();
+        $modules = GitRepoFinder::get_all_repos();
         $updateComposerJson = $this->Config()->get('update_composer_json');
         
-        $modules = array (
+        /*$modules = array (
                 'silverstripe-forsale',
                 'silverstripe-frontendeditor',
                 'silverstripe-geobrowser',
@@ -72,7 +72,7 @@ class UpdateModules extends BuildTask
                 'silverstripe-comments_add_recaptcha',
                 'silverstripe-contact_list',
                 'silverstripe-copyfactory'
-        );
+        );*/
         
         $limitedModules = $this->Config()->get('modules_to_update');
 
