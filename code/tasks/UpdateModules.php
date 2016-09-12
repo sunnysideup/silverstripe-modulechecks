@@ -56,13 +56,13 @@ class UpdateModules extends BuildTask
         $updateComposerJson = $this->Config()->get('update_composer_json');
         
         $modules = array (
-                'silverstripe-forsale',
-                /*'silverstripe-frontendeditor',
+                'silverstripe-assets_sync_one_folder',        
+                'silverstripe-frontendeditor',
+                'silverstripe-gift_voucher',
                 'silverstripe-geobrowser',
                 'silverstripe-gift_voucher',
                 'silverstripe-advertisements',
-                'silverstripe-affiliations'
-                'silverstripe-assets_sync_one_folder',
+                'silverstripe-affiliations',
                 'silverstripe-blog_shared_categorisation',
                 'silverstripe-business_directory',
                 'silverstripe-calendar',
@@ -71,7 +71,7 @@ class UpdateModules extends BuildTask
                 'silverstripe-cms_tricks_for_apps',
                 'silverstripe-comments_add_recaptcha',
                 'silverstripe-contact_list',
-                'silverstripe-copyfactory'*/
+                'silverstripe-copyfactory'
         );
         
         $limitedModules = $this->Config()->get('modules_to_update');

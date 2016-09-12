@@ -382,7 +382,7 @@ class GitHubModule extends DataObject {
     }
 
 
-    
+    /*
     public function removeSVN() {
         $SvnFolder = $this->Directory() . '/.svn';
 
@@ -395,7 +395,7 @@ class GitHubModule extends DataObject {
 
         exec ('chdir ' .$this->Directory(). '; find . -type d -name ".svn" -exec rm  -Rf "{}" \;');
     }
-    
+    */
     /**
      * retrieves a raw file from Github
      *

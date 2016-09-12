@@ -42,7 +42,6 @@ class ComposerJson extends Object {
             $composerUpdates = ClassInfo::subclassesFor('UpdateComposer');
             array_shift($composerUpdates);
 
-
             $limitedComposerUpdates = $this->Config()->get('updates');
             
             if($limitedComposerUpdates && count($limitedComposerUpdates)) {
