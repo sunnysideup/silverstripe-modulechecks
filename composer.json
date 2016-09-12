@@ -20,8 +20,7 @@
         }
     ],
     "require": {
-        "friendsofphp/php-cs-fixer": "^1.12",
-        "cpliakas/git-wrapper": "*"
+        "friendsofphp/php-cs-fixer": "^1.12"
     },
     "extra": {
         "installer-name": "modulechecks"
