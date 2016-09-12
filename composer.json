@@ -20,8 +20,7 @@
         }
     ],
     "require": {
-        "silverstripe/framework": "*",
-        "cpliakas/git-wrapper": "*"
+        "friendsofphp/php-cs-fixer": "^1.12"
     },
     "extra": {
         "installer-name": "modulechecks"

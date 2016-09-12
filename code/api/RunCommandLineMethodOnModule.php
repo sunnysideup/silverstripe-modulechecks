@@ -1,6 +1,6 @@
 <?php
 
-abstract class RunCommandLineMethodOnModule
+abstract class RunCommandLineMethodOnModule extends Object
 {
 
       /**
@@ -52,9 +52,10 @@ abstract class RunCommandLineMethodOnModule
        */
       protected function runCommand()
       {
+          GeneralMethods::outputToScreen('Running' . $this->command);
           return exec(
               ' cd '.$this->rootDirForModule.';
-                '.$command.'
+                '.$this->command.'
                 '
           );
       }

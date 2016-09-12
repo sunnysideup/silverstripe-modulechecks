@@ -119,8 +119,6 @@ class UpdateModules extends BuildTask
 
             $this->checkUpdateTag($moduleObject);
 
-            $moduleObject->removeSVN();
-
             // Check if all necessary files are perfect on GitHub repo already,
             // if so we can skip that module. But! ... if there are commands to run
             // over the files in the repo, then we need to clone the repo anyhow,
