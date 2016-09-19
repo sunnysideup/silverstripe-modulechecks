@@ -81,7 +81,16 @@ class ComposerJson extends Object {
         return true;
     }
 
+    public function getDescription() {
+        if ( ! $this->jsonData) { //if not loaded
+            return false;
+        }
+
+        return $this->jsonData->description;
+    }
+
+
     private function catchFopenWarning() {
 
-    }
+    }    
 }

@@ -74,11 +74,11 @@ class UpdateModules extends BuildTask
                 'silverstripe-copyfactory'
         );
         
-        $limitedModules = $this->Config()->get('modules_to_update');
+        /*$limitedModules = $this->Config()->get('modules_to_update');
 
         if($limitedModules && count($limitedModules)) {
             $modules = array_intersect($modules, $limitedModules);
-        }
+        }*/
 
         
         /*
@@ -142,7 +142,7 @@ class UpdateModules extends BuildTask
                 }
 
                 if ($moduleFilesOK) {
-                    GeneralMethods::outputToScreen ("<li> All files in $module OK, skipping moving to next module ... </li>");
+                    GeneralMethods::outputToScreen ("<li> All files in $module OK, skipping to next module ... </li>");
                     continue;
                 }
             }
@@ -152,8 +152,9 @@ class UpdateModules extends BuildTask
             if ($updateComposerJson) {
                 $composerJsonObj = new ComposerJson ($moduleObject);
                 $composerJsonObj->updateJsonData();
+                $moduleObject->setDescription($composerJsonObj->getDescription());
             }
-            
+
             foreach($files as $file) {
                 //run file update
                 $obj = $file::create($moduleObject);
@@ -166,11 +167,17 @@ class UpdateModules extends BuildTask
                 $obj->run();
                 //run command
             }         
+
+            //Update Repository description
+            $moduleObject->updateGitHubInfo(array());
             
             if( ! $moduleObject->add()) { die("ERROR in add"); }
             if( ! $moduleObject->commit()) { die("ERROR in commit"); }
             if( ! $moduleObject->push()) { die("ERROR in push"); }
             if( ! $moduleObject->removeClone()) { die("ERROR in removeClone"); }
+
+            
+            
         }
         //to do ..
     }

@@ -67,8 +67,10 @@ class GitHubModule extends DataObject {
     protected $gitRepo = null;
 
     private static $db = array (
-        'ModuleName' => 'VarChar(100)'
+        'ModuleName' => 'VarChar(100)',
+        'Description' => 'VarChar(300)'
     );
+
 
     private static $indexes = array (
         'ModuleName' => true,
@@ -84,6 +86,9 @@ class GitHubModule extends DataObject {
         return $this->Directory();
     }
 
+    public function getDescription() {
+        return $this->Description();
+    }
     /**
      * absolute path
      * @return string | null
@@ -141,7 +146,10 @@ class GitHubModule extends DataObject {
 
         return strtolower ($firstLetterCapitalName);
     }
-    
+
+    function setDescription($str) {
+        $this->Description = trim($str);
+    }
 
     /**
      * check if URL exists and returns it
@@ -381,21 +389,6 @@ class GitHubModule extends DataObject {
         return ! file_exists($dir);
     }
 
-
-    /*
-    public function removeSVN() {
-        $SvnFolder = $this->Directory() . '/.svn';
-
-        try {
-            $this->gitRepo->rm('.svn');
-        }
-        catch (Exception $e) {
-            // ...
-        }
-
-        exec ('chdir ' .$this->Directory(). '; find . -type d -name ".svn" -exec rm  -Rf "{}" \;');
-    }
-    */
     /**
      * retrieves a raw file from Github
      *
@@ -427,9 +420,8 @@ class GitHubModule extends DataObject {
     }
 
     /*
-     * 
+     * This function is just used to suppression of warnings
      * */
-
     private function catchFopenWarning($errno, $errstr) {
         //
     }
@@ -449,7 +441,7 @@ class GitHubModule extends DataObject {
 
 
     public function getLatestCommitTime() {
-        //git log -1 --format=%cd .
+        // equivalent to git log -1 --format=%cd .
 
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
@@ -528,47 +520,39 @@ class GitHubModule extends DataObject {
 
     public function createTag($tagCommandOptions)
     {
-
-            
         $this->gitRepo->tag($tagCommandOptions);
         $this->gitRepo->push(array('tags' => true));
-        
-        /*
-         git tag -a 0.0.1 -m "testing tag"
-         
-         git push --tags 
-         * */
+
     }
-/*
-    protected function createTagviaAPI($tag) {
 
-        
+    public function updateGitHubInfo($array) {
+        // see https://developer.github.com/v3/repos/#edit
+        $defaultValues =array(
+            'name' => $this->LongModuleName(),
+            'private' => false,
+            'has_wiki' => true,
+            'has_downloads' => true
+            );
 
-        // POST /repos/:owner/:repo/git/tags
-
-        $gitUserName = $this->Config()->get('git_user_name');
-
-        $params = array (
-            'tag' => trim($tag);
-            'message' => 'Version update',
-            'object' => SHA
-            'type' => 'commit',
-            'tagger' => array (
-                'name'  => $this->Config()->get('git_user_name'),
-                'email' => $this->Config()->get('git_user_email');
-                'date' => date ('Y:m:d H:i:s')
-        
-            )
-                
+        if ($this->Description) {
+            $array['description'] = $this->Description;
         }
 
-      //  GitHubModule->GitApiCall('repo/git/tags', $params, 'POST');
+        foreach ($defaultValues as $key=>$value) {
+            if (! isset($array[$key])) {
+                $array[$key]  = $value;
+            }
+        }
+
+        GeneralMethods::OutputToScreen('updating Git Repo information ...');
+
+        $this->gitApiCall('repo', $array, 'PATCH');
     }
-    
 
-    protected function gitApiCall($gitAPIcommand, $data, $method = 'GET');
 
-        
+    protected function gitApiCall($gitAPIcommand, $data, $method = 'GET') {
+
+        GeneralMethods::OutputToScreen('Running Git API command' .$gitAPIcommand. ' using ' .$method. ' method...');
 
         $gitUserName = $this->Config()->get('git_user_name');
         $url = 'https://api.github.com/repos/' . $gitUserName . '/' . $this->ModuleName . '/' . $gitAPIcommand; 
@@ -577,9 +561,13 @@ class GitHubModule extends DataObject {
         $ch = curl_init($url);
         $header = ""; // Content-Type: multipart/form-data; boundary='123456f'";
 
-        if ($method == "GET") {
+        if ($method == 'GET') {
             $url .= http_build_query($data);
         }
+
+        $gitApiUserName = trim($this->Config()->get('git_api_login_username'));
+        $gitApiUserPassword = trim($this->Config()->get('git_api_login_password'));
+        
         
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -587,12 +575,25 @@ class GitHubModule extends DataObject {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
 
-        if ($method == "POST") {
+        if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
+            curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName. ':' . $gitApiUserPassword);
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        }
+        
+        if ($method == 'PATCH') {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+        }
+
+        if ($method == 'POST' || $method == 'PATCH') {
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         }
+
+        print_r($data);
+
+        die('sdfdsf');
        
         $returned = curl_exec($ch);
 
         return $return;
-    }*/
+    }
 }
