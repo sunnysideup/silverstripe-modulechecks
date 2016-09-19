@@ -44,35 +44,16 @@ class UpdateModules extends BuildTask
         increase_time_limit_to(3600);
 
         //Check temp module folder is empty
-        /*$tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
+        $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
         $tempDirFiles = scandir($tempFolder);
-        if (count($tempDirFiles) > 2) {
+        /*if (count($tempDirFiles) > 2) {
             die ( '<h2>' . $tempFolder . ' is not empty, please delete or move files </h2>');
         }*/
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        //$modules = GitRepoFinder::get_all_repos();
+        $modules = GitRepoFinder::get_all_repos();
         $updateComposerJson = $this->Config()->get('update_composer_json');
-        
-        $modules = array (
-                'silverstripe-assets_sync_one_folder',        
-                'silverstripe-frontendeditor',
-                'silverstripe-gift_voucher',
-                'silverstripe-geobrowser',
-                'silverstripe-gift_voucher',
-                'silverstripe-advertisements',
-                'silverstripe-affiliations',
-                'silverstripe-blog_shared_categorisation',
-                'silverstripe-business_directory',
-                'silverstripe-calendar',
-                'silverstripe-campaignmonitor',
-                'silverstripe-cms_edit_link_field',
-                'silverstripe-cms_tricks_for_apps',
-                'silverstripe-comments_add_recaptcha',
-                'silverstripe-contact_list',
-                'silverstripe-copyfactory'
-        );
         
         $limitedModules = $this->Config()->get('modules_to_update');
 
@@ -169,7 +150,7 @@ class UpdateModules extends BuildTask
             }         
 
             //Update Repository description
-            $moduleObject->updateGitHubInfo(array());
+            //$moduleObject->updateGitHubInfo(array());
             
             if( ! $moduleObject->add()) { die("ERROR in add"); }
             if( ! $moduleObject->commit()) { die("ERROR in commit"); }
