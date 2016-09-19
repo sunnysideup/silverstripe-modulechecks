@@ -74,11 +74,11 @@ class UpdateModules extends BuildTask
                 'silverstripe-copyfactory'
         );
         
-        /*$limitedModules = $this->Config()->get('modules_to_update');
+        $limitedModules = $this->Config()->get('modules_to_update');
 
         if($limitedModules && count($limitedModules)) {
             $modules = array_intersect($modules, $limitedModules);
-        }*/
+        }
 
         
         /*

@@ -530,8 +530,10 @@ class GitHubModule extends DataObject {
         $defaultValues =array(
             'name' => $this->LongModuleName(),
             'private' => false,
-            'has_wiki' => true,
-            'has_downloads' => true
+            'has_wiki' => false,
+            'has_issues' => true,
+            'has_downloads' => true,
+            'homepage' => 'http://ssmods.com/'
             );
 
         if ($this->Description) {
@@ -546,23 +548,29 @@ class GitHubModule extends DataObject {
 
         GeneralMethods::OutputToScreen('updating Git Repo information ...');
 
-        $this->gitApiCall('repo', $array, 'PATCH');
+        $this->gitApiCall($array, '',  'PATCH');
     }
 
 
-    protected function gitApiCall($gitAPIcommand, $data, $method = 'GET') {
+    protected function gitApiCall($data, $gitAPIcommand = '', $method = 'GET') {
 
-        GeneralMethods::OutputToScreen('Running Git API command' .$gitAPIcommand. ' using ' .$method. ' method...');
+        $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        GeneralMethods::OutputToScreen('Running Git API command ' .$gitAPIcommand. ' using ' .$method. ' method...');
 
         $gitUserName = $this->Config()->get('git_user_name');
-        $url = 'https://api.github.com/repos/' . $gitUserName . '/' . $this->ModuleName . '/' . $gitAPIcommand; 
+        $url = 'https://api.github.com/repos/' . trim($gitUserName) . '/' . trim($this->ModuleName);
+
+        if (trim($gitAPIcommand)) {
+            $url .= '/' . trim($gitAPIcommand);
+        }
          
         $method = trim(strtoupper($method));
         $ch = curl_init($url);
-        $header = ""; // Content-Type: multipart/form-data; boundary='123456f'";
+        $header = "Content-Type: application/json";
 
         if ($method == 'GET') {
-            $url .= http_build_query($data);
+            $url .= '?'.http_build_query($data);
         }
 
         $gitApiUserName = trim($this->Config()->get('git_api_login_username'));
@@ -572,28 +580,34 @@ class GitHubModule extends DataObject {
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_USERAGENT,
+            'Silverstripe-update-module-module');
+        
 
         if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
-            curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName. ':' . $gitApiUserPassword);
+            curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         }
         
-        if ($method == 'PATCH') {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
-        }
-
         if ($method == 'POST' || $method == 'PATCH') {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+        }
+       
+        $curlResult = curl_exec($ch);
+
+        if ( ! $curlResult ){
+            die ("Curl failed.");
         }
 
-        print_r($data);
+        print_r($url);
+        print_r('<br/>');
+        print_r($curlResult );
 
-        die('sdfdsf');
-       
-        $returned = curl_exec($ch);
+        die();
 
-        return $return;
+        return $curlResult;
     }
 }
