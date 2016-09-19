@@ -569,7 +569,7 @@ class GitHubModule extends DataObject {
         $ch = curl_init($url);
         $header = "Content-Type: application/json";
 
-        if ($method == 'GET') {
+        if ($method == 'GET' || $method == 'PATCH') {
             $url .= '?'.http_build_query($data);
         }
 
@@ -592,7 +592,7 @@ class GitHubModule extends DataObject {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         }
         
-        if ($method == 'POST' || $method == 'PATCH') {
+        if ($method == 'POST' ) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
         }
        
