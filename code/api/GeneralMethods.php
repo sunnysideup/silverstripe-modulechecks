@@ -63,7 +63,7 @@ class GeneralMethods extends Object
     public static function replaceInFile($fileName, $search, $replacement) {
         $file = fopen ($fileName, 'r');
         if ($file) {
-            $content = fread($file, filesize($fileName));
+            $content = fread($file, filesize($fileName) * 2);
             $newContent = str_replace($search, $replacement, $content);
             fclose ($file);
 
