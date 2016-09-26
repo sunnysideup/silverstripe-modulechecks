@@ -471,8 +471,13 @@ class GitHubModule extends DataObject {
                 'simplify-by-decoration' => true,
                 'pretty' => 'format:%ai %d'
             );
-                
+
+            $cwd = getcwd();
+            chdir($this->Directory);
+            
             $result = $git->log($options);
+
+            chdir($cwd);
 
             $resultLines  =  explode ("\n", $result->getOutput());
 
@@ -509,7 +514,7 @@ class GitHubModule extends DataObject {
             
             return array (
                 'tagstring' => $latestTag,
-                'tagnumber' => (int) $tagParts[0],
+                'tagparts' => $tagParts,
                 'timestamp' => $latestTimeStamp);
                 
         }
@@ -559,7 +564,7 @@ class GitHubModule extends DataObject {
         GeneralMethods::OutputToScreen('Running Git API command ' .$gitAPIcommand. ' using ' .$method. ' method...');
 
         $gitUserName = $this->Config()->get('git_user_name');
-        $url = 'https://api.github.com/repos/' . trim($gitUserName) . '/' . trim($this->ModuleName);
+        $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($this->ModuleName);
 
         if (trim($gitAPIcommand)) {
             $url .= '/' . trim($gitAPIcommand);
@@ -569,12 +574,17 @@ class GitHubModule extends DataObject {
         $ch = curl_init($url);
         $header = "Content-Type: application/json";
 
-        if ($method == 'GET' || $method == 'PATCH') {
+        if ($method == 'GET') {
             $url .= '?'.http_build_query($data);
         }
 
         $gitApiUserName = trim($this->Config()->get('git_api_login_username'));
         $gitApiUserPassword = trim($this->Config()->get('git_api_login_password'));
+        
+        $gitApiAccessToken = trim($this->Config()->get('git_personal_access_token'));
+        if (trim($gitApiAccessToken)) {
+            $gitApiUserPassword = $gitApiAccessToken;
+        }
         
         
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
@@ -599,7 +609,7 @@ class GitHubModule extends DataObject {
         $curlResult = curl_exec($ch);
 
         if ( ! $curlResult ){
-            die ("Curl failed.");
+            die ('Curl failed.');
         }
 
         print_r($url);

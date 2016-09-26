@@ -46,13 +46,18 @@ class UpdateModules extends BuildTask
         //Check temp module folder is empty
         $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
         $tempDirFiles = scandir($tempFolder);
-        /*if (count($tempDirFiles) > 2) {
+        if (count($tempDirFiles) > 2) {
             die ( '<h2>' . $tempFolder . ' is not empty, please delete or move files </h2>');
-        }*/
+        }
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
         $modules = GitRepoFinder::get_all_repos();
+
+        /*$modules = array (
+            'silverstripe-ecommerce_dashboard',
+            'silverstripe-gift_voucher'
+            );*/
         $updateComposerJson = $this->Config()->get('update_composer_json');
         
         $limitedModules = $this->Config()->get('modules_to_update');
@@ -138,6 +143,7 @@ class UpdateModules extends BuildTask
 
             foreach($files as $file) {
                 //run file update
+                
                 $obj = $file::create($moduleObject);
                 $obj->run();
             }
@@ -157,7 +163,6 @@ class UpdateModules extends BuildTask
             if( ! $moduleObject->push()) { die("ERROR in push"); }
             if( ! $moduleObject->removeClone()) { die("ERROR in removeClone"); }
 
-            
             
         }
         //to do ..
@@ -233,19 +238,20 @@ class UpdateModules extends BuildTask
 
         if ( ! $tag ) {
             $createTag = true;
-            $newTagNumber = 1;
+            $newTagString = '1.0.0';
         }
+
+        
 
         else if ($tag && $commitTime > $tag['timestamp'] && $commitTime < $aWeekAgo) {
             $createTag = true;
-            $newTagNumber = $tag['tagnumber'] + 1;
+            $tag['tagparts'][1] = $tag['tagparts'][1] + 1;
+            $newTagString = trim(implode ('.', $tag['tagparts']));
         }
 
         if ($createTag) {
-            
-            $newTagString = $newTagNumber . '.0.0';
 
-            GeneralMethods::outputToScreen ("<li> Creating new tag  $newTagString ... </li>");
+            GeneralMethods::outputToScreen ('<li> Creating new tag  '.$newTagString.' ... </li>');
 
             //git tag -a 0.0.1 -m "testing tag"
             $options = array (

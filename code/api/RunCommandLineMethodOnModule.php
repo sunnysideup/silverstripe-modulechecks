@@ -52,11 +52,17 @@ abstract class RunCommandLineMethodOnModule extends Object
        */
       protected function runCommand()
       {
-          GeneralMethods::outputToScreen('Running' . $this->command);
-          return exec(
+        if ($this->command != null) {
+            GeneralMethods::outputToScreen('Running ' . $this->command);
+            return exec(
               ' cd '.$this->rootDirForModule.';
                 '.$this->command.'
                 '
-          );
+                );
+        }
       }
+
+    public static function CheckCommandExists($cmd) {
+        return !empty(shell_exec("which $cmd"));
+    }
 }

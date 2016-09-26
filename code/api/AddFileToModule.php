@@ -174,6 +174,8 @@ abstract class AddFileToModule extends Object
      */
     protected function saveFile($fileContent)
     {
+        GeneralMethods::outputToScreen ("<li> Adding " . $this->fileLocation . " to module  </li>");
+        
         /*
          * If fileLocation  contains folder, name then need to check
          * if folder exists
@@ -193,7 +195,7 @@ abstract class AddFileToModule extends Object
             user_error('could not find or create directory ' . $this->rootDirForModule.'/'.$folderPath);
         }
         
-        $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
+        $fileName = $this->rootDirForModule.'/'.$this->fileLocation;$this->fileLocation;
 
         $file = fopen ($fileName, "w");
 

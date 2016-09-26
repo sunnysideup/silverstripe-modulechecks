@@ -46,6 +46,19 @@ for the UpdateModules task to run:
 To use the module, set the configs in the task and
 then browse to /dev/tasks/ModuleChecks to run ...
 
+To install PHPDOX:
+
+wget https://github.com/theseer/phpdox/releases/download/0.9.0/phpdox-0.9.0.phar
+chmod +x phpdox-0.9.0.phar
+sudo mv phpdox-0.9.0.phar /usr/bin/phpdox
+
+For PHPDOx, you may also need to install/enable XSL module:
+
+sudo apt-get install php5-xsl
+sudo php5enmod xsl
+sudo service apache2 restart
+
+
 
 ## Developers ##
 
