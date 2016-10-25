@@ -7,6 +7,7 @@
  */
 class UpdateModules extends BuildTask
 {
+    protected $enabled = true;
 
     protected $title = "Update Modules";
 
@@ -59,14 +60,14 @@ class UpdateModules extends BuildTask
             'silverstripe-gift_voucher'
             );*/
         $updateComposerJson = $this->Config()->get('update_composer_json');
-        
+
         $limitedModules = $this->Config()->get('modules_to_update');
 
         if($limitedModules && count($limitedModules)) {
             $modules = array_intersect($modules, $limitedModules);
         }
 
-        
+
         /*
          * Get files to add to modules
          * */
@@ -80,11 +81,11 @@ class UpdateModules extends BuildTask
             $files = array_intersect($files, $limitedFileClasses);
         }
 
-        
+
         /*
          * Get commands to run on modules
          * */
-         
+
         $commands = ClassInfo::subclassesFor('RunCommandLineMethodOnModule');
         array_shift($commands);
         $limitedCommands = $this->Config()->get('commands_to_run');
@@ -92,7 +93,7 @@ class UpdateModules extends BuildTask
             $commands = array_intersect($commands, $limitedCommands);
         }
 
-       
+
         foreach($modules as $count => $module) {
 
             if ( stripos($module, 'silverstripe-')  === false ) {
@@ -100,7 +101,7 @@ class UpdateModules extends BuildTask
             }
             echo "<h2>" . ($count+1) . ". ".$module."</h2>";
 
-            
+
             $moduleObject = GitHubModule::get_or_create_github_module($module);
 
             $this->checkUpdateTag($moduleObject);
@@ -111,7 +112,7 @@ class UpdateModules extends BuildTask
             // so skip the check
             if (count($commands) == 0 && ! $updateComposerJson) {
                 $moduleFilesOK = true;
-                
+
                 foreach($files as $file) {
                     $fileObj = $file::create($moduleObject);
                     $checkFileName = $fileObj->getFileLocation();
@@ -132,7 +133,7 @@ class UpdateModules extends BuildTask
                     continue;
                 }
             }
-            
+
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
 
             if ($updateComposerJson) {
@@ -143,7 +144,7 @@ class UpdateModules extends BuildTask
 
             foreach($files as $file) {
                 //run file update
-                
+
                 $obj = $file::create($moduleObject);
                 $obj->run();
             }
@@ -153,21 +154,35 @@ class UpdateModules extends BuildTask
                 $obj = $command::create($moduleObject->Directory());
                 $obj->run();
                 //run command
-            }         
+            }
 
             //Update Repository description
             //$moduleObject->updateGitHubInfo(array());
-            
+
             if( ! $moduleObject->add()) { die("ERROR in add"); }
             if( ! $moduleObject->commit()) { die("ERROR in commit"); }
             if( ! $moduleObject->push()) { die("ERROR in push"); }
             if( ! $moduleObject->removeClone()) { die("ERROR in removeClone"); }
 
-            
+
         }
         //to do ..
     }
 
+    protected function checkConfigYML($module)
+    {
+        $configYml = ConfigYML::create($module);
+        $loadedYml =$configYml->readYMLFromFile();
+
+        if ($loadedYml) {
+            print_r ($this->yaml_data);
+            die();
+        }
+        else {
+
+            die("sdfasdfasd");
+        }
+    }
 
     private function checkFile($module, $filename) {
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
@@ -180,14 +195,14 @@ class UpdateModules extends BuildTask
 
     private function checkDirExcludedWords($directory, $wordArray) {
         $filesAndFolders = scandir ($directory);
-        
+
         $problem_files = array();
         foreach ($filesAndFolders as $fileOrFolder) {
-            
+
             if ($fileOrFolder == '.' or $fileOrFolder == '..') {
                 continue;
             }
-            
+
             $fileOrFolderFullPath = $directory . '/' . $fileOrFolder;
             if (is_dir($fileOrFolderFullPath)) {
                 $dir = $fileOrFolderFullPath;
@@ -196,7 +211,7 @@ class UpdateModules extends BuildTask
             if (is_file($fileOrFolderFullPath)) {
                 $file = $fileOrFolderFullPath;
                 $matchedWords = $this->checkFileExcludedWords($file, $wordArray);
-                
+
                 if ($matchedWords) {
                    $problem_files[$file] = $matchedWords;
                 }
@@ -209,11 +224,11 @@ class UpdateModules extends BuildTask
         $file = fopen($fileName, 'r');
 
         $matchedWords = array();
-        
+
         if (! $file) return false;
         $fileContent = fread($file, filesize($fileName));
 
-        
+
         foreach ($wordArray as $word)  {
             $matches = array();
             $matchCount = preg_match_all('/' . $word . '/i', $fileContent);
@@ -224,7 +239,7 @@ class UpdateModules extends BuildTask
 
         fclose($file);
         return $matchedWords;
-        
+
     }
 
     private function checkUpdateTag($moduleObject) {
@@ -241,7 +256,7 @@ class UpdateModules extends BuildTask
             $newTagString = '1.0.0';
         }
 
-        
+
 
         else if ($tag && $commitTime > $tag['timestamp'] && $commitTime < $aWeekAgo) {
             $createTag = true;
@@ -260,8 +275,8 @@ class UpdateModules extends BuildTask
             );
 
             $moduleObject->createTag ($options);
-            
+
         }
-    
+
     }
 }
