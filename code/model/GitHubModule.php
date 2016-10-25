@@ -130,7 +130,7 @@ class GitHubModule extends DataObject {
     /**
      * @todo: check that silverstripe- is at the start of string.
      * @return string
-     */ 
+     */
     function ShortModuleName()
     {
         return str_replace('silverstripe-', '', $this->ModuleName);
@@ -181,7 +181,7 @@ class GitHubModule extends DataObject {
 
             //create comms
             $this->commsWrapper = new GitWrapper();
-            
+
             // Stream output of subsequent Git commands in real time to STDOUT and STDERR.
             if(Director::is_cli()) {
                 $this->commsWrapper->streamOutput();
@@ -224,7 +224,7 @@ class GitHubModule extends DataObject {
                         if (strpos($e->getMessage(), 'already exists and is not an empty directory') !== false) {
                             user_error ($e->getMessage(), E_USER_ERROR);
                         }
-                        
+
                         GeneralMethods::outputToScreen ('<li>Failed to clone repository: ' .  $e->getMessage() . '</li>');
                         GeneralMethods::outputToScreen ('<li>Waiting 8 seconds to try again ...: </li>');
                         $this->removeClone();
@@ -355,7 +355,7 @@ class GitHubModule extends DataObject {
                 try {
                     $git->push();
                     $pushed = true;
-                }   
+                }
                 catch (Exception $e) {
 
                     if ($pushAttempts == 3) {
@@ -365,7 +365,7 @@ class GitHubModule extends DataObject {
                     }
                     else {
                         GeneralMethods::outputToScreen ('<li>Failed to push repository: ' .  $e->getMessage() . '</li>');
-                        GeneralMethods::outputToScreen ('<li>Waiting 8 seconds to try again ...: </li>');                        
+                        GeneralMethods::outputToScreen ('<li>Waiting 8 seconds to try again ...: </li>');
                         sleep (8);
                     }
                 }
@@ -396,7 +396,7 @@ class GitHubModule extends DataObject {
      */
 
     public function getRawFileFromGithub($fileName) {
-        
+
         $gitUserName = $this->Config()->get('git_user_name');
         $branch = 'master';
 
@@ -405,7 +405,7 @@ class GitHubModule extends DataObject {
         set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
         $file = fopen($rawURL, 'r');
         restore_error_handler();
-        
+
         if ( ! $file){
             GeneralMethods::outputToScreen('<li>Could not find ' . $rawURL . '</li>');
             return false;
@@ -449,14 +449,14 @@ class GitHubModule extends DataObject {
                 'format' => "%cd",
                 '1' => true
             );
-                
+
             $result = $git->log ($options);
             if ($result) {
                 return (strtotime($result));
             }
             else {
                 return false;
-            }            
+            }
         }
         else {
             return false;
@@ -474,17 +474,23 @@ class GitHubModule extends DataObject {
 
             $cwd = getcwd();
             chdir($this->Directory);
-            
+
             $result = $git->log($options);
+
+
+
 
             chdir($cwd);
 
             $resultLines  =  explode ("\n", $result->getOutput());
 
+
+            print_r($resultLines);
+
             if (count($resultLines) == 0) {
                 return false;
             }
-            
+
             $latestTimeStamp = 0;
             $latestTag = false;
             foreach ($resultLines as $line) {
@@ -493,6 +499,7 @@ class GitHubModule extends DataObject {
                     $tagStr = trim(substr($line, 25));
                     $dateStr = trim(substr($line, 0, 26));
 
+                    print_r ($line);
                     $timeStamp = strtotime ($dateStr);
 
                     if ($latestTimeStamp < $timeStamp) {
@@ -511,12 +518,12 @@ class GitHubModule extends DataObject {
             $tagParts = explode ('.', $latestTag);
 
             if (count($tagParts) != 3) return false;
-            
+
             return array (
                 'tagstring' => $latestTag,
                 'tagparts' => $tagParts,
                 'timestamp' => $latestTimeStamp);
-                
+
         }
         else {
             return false;
@@ -569,7 +576,7 @@ class GitHubModule extends DataObject {
         if (trim($gitAPIcommand)) {
             $url .= '/' . trim($gitAPIcommand);
         }
-         
+
         $method = trim(strtoupper($method));
         $ch = curl_init($url);
         $header = "Content-Type: application/json";
@@ -580,13 +587,13 @@ class GitHubModule extends DataObject {
 
         $gitApiUserName = trim($this->Config()->get('git_api_login_username'));
         $gitApiUserPassword = trim($this->Config()->get('git_api_login_password'));
-        
+
         $gitApiAccessToken = trim($this->Config()->get('git_personal_access_token'));
         if (trim($gitApiAccessToken)) {
             $gitApiUserPassword = $gitApiAccessToken;
         }
-        
-        
+
+
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -595,17 +602,17 @@ class GitHubModule extends DataObject {
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_USERAGENT,
             'Silverstripe-update-module-module');
-        
+
 
         if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
             curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         }
-        
+
         if ($method == 'POST' ) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
         }
-       
+
         $curlResult = curl_exec($ch);
 
         if ( ! $curlResult ){

@@ -53,12 +53,46 @@ class UpdateModules extends BuildTask
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        $modules = GitRepoFinder::get_all_repos();
+        // $modules = GitRepoFinder::get_all_repos();
 
-        /*$modules = array (
-            'silverstripe-ecommerce_dashboard',
-            'silverstripe-gift_voucher'
-            );*/
+        $modules = array (
+            "silverstripe-gift_voucher",
+            "silverstripe-ecommerce_nutritional_products",
+            "silverstripe-ecommerce_countries",
+            "silverstripe-ecommerce_discount_coupon_countries",
+            "silverstripe-templateoverview",
+            "silverstripe-blog_shared_categorisation",
+            "silverstripe-webpack_requirements_backend",
+            "silverstripe-share_this_simple",
+            "silverstripe-phone_field",
+            "silverstripe-perfect_cms_images",
+            "silverstripe-email_address_database_field",
+            "silverstripe-ecommerce_stockists",
+            "silverstripe-ecommerce_dashboard",
+            "silverstripe-ecommerce_cloud_flare_geoip",
+            "silverstripe-comments_add_recaptcha",
+            "silverstripe-table_filter_sort",
+            "silverstripe-email_reminder",
+            "silverstripe-contact_list",
+            "silverstripe-cms_tricks_for_apps",
+            "silverstripe-cms_edit_link_field",
+            "silverstripe-frontendeditor",
+            "silverstripe-assets_sync_one_folder",
+            "silverstripe-payment_omnipay",
+            "silverstripe-sectionizer",
+            "silverstripe-ecommerce_vote",
+            "silverstripe-user_image_upload",
+            "silverstripe-ecommerce_reports",
+            "silverstripe-ecommerce_orderstep_feedback",
+            "silverstripe-silverstripe-ecommerce_orderstep_feedback",
+            "silverstripe-us_phone_number",
+            "silverstripe-title_dataobject",
+            "silverstripe-payment_stripe",
+            "silverstripe-silverstripe-assets_sync_one_folder",
+
+            );
+
+        $modules = array('silverstripe-blog_shared_categorisation');
         $updateComposerJson = $this->Config()->get('update_composer_json');
 
         $limitedModules = $this->Config()->get('modules_to_update');
@@ -135,6 +169,10 @@ class UpdateModules extends BuildTask
             }
 
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
+
+
+            //$this->checkConfigYML($moduleObject);
+
 
             if ($updateComposerJson) {
                 $composerJsonObj = new ComposerJson ($moduleObject);
@@ -247,6 +285,10 @@ class UpdateModules extends BuildTask
         $aWeekAgo = strtotime("-1 weeks");
         $tag = $moduleObject->getLatestTag();
 
+        print_r("<hr/>");
+        var_dump ($tag);
+        print_r ($tag);
+        print_r("<hr/>");
         $commitTime = $moduleObject->getLatestCommitTime();
 
         $createTag = false;
@@ -277,6 +319,8 @@ class UpdateModules extends BuildTask
             $moduleObject->createTag ($options);
 
         }
+
+
 
     }
 }

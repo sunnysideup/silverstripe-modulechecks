@@ -9,6 +9,7 @@
 
 class ModuleChecks extends BuildTask {
 
+
     private static $packagist_user_name = '';
 
     /**

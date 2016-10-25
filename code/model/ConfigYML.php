@@ -1,22 +1,32 @@
 <?php
+/*
+use Symfony\Component\Yaml;
+
 
 Class ConfigYML extends Object {
 
     public function ConfigYML($gitHubModuleInstance) {
         if (! $gitHubModuleInstance) {
-            user_error ("CheckComposerJson needs an instance of GitHubModule");
+            user_error ("ConfigYML needs an instance of GitHubModule");
         }
         $this->gitHubModuleInstance = $gitHubModuleInstance;
         $this->moduleName = $gitHubModuleInstance->ModuleName;
     }
 
-    private function readYMLFromFile() {
+    public function readYMLFromFile() {
+
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
         $filename = $folder . '/' . $this->moduleName . '/_config/config.yml';
 
-        $this->yaml_data = yaml_parse_file  ($filename);
+        try {
+            $this->yaml_data = Yaml::parse(file_get_contents($folder));
+        } catch (Exception $e) {
+            printf("Unable to parse the YAML string: %s", $e->getMessage());
+            return false;
+        }
 
-        return ($this->yaml_data);
+
+        return $this->yaml_data;
 
     }
 
@@ -25,3 +35,4 @@ Class ConfigYML extends Object {
     }
 
 }
+*/

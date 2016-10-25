@@ -44,7 +44,9 @@ for the UpdateModules task to run:
 /var/www/.ssh/known_hosts file also needs to be created.
 
 A temporary folder for working with the module also needs
-to be created and setup in the config.
+to be created and setup in the config. e.g. /var/www/temp_modules
+The module will not run without a temporary folder, or
+if it contains any files.
 
 To use the module, set the configs in the task and
 then browse to /dev/tasks/ModuleChecks to run ...
