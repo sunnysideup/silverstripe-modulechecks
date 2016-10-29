@@ -56,6 +56,7 @@ class UpdateModules extends BuildTask
         // $modules = GitRepoFinder::get_all_repos();
 
         $modules = array (
+            'silverstripe-ecommerce_tax',
             "silverstripe-gift_voucher",
             "silverstripe-ecommerce_nutritional_products",
             "silverstripe-ecommerce_countries",
@@ -92,7 +93,7 @@ class UpdateModules extends BuildTask
 
             );
 
-        $modules = array('silverstripe-blog_shared_categorisation');
+        $modules = array('silverstripe-ecommerce_tax');
         $updateComposerJson = $this->Config()->get('update_composer_json');
 
         $limitedModules = $this->Config()->get('modules_to_update');
@@ -107,6 +108,7 @@ class UpdateModules extends BuildTask
          * */
         $files = ClassInfo::subclassesFor('AddFileToModule');
 
+        print_r($files);
 
 
         array_shift($files);
@@ -114,6 +116,9 @@ class UpdateModules extends BuildTask
         if($limitedFileClasses && count($limitedFileClasses)) {
             $files = array_intersect($files, $limitedFileClasses);
         }
+
+
+        print_r($files);
 
 
         /*
@@ -285,10 +290,6 @@ class UpdateModules extends BuildTask
         $aWeekAgo = strtotime("-1 weeks");
         $tag = $moduleObject->getLatestTag();
 
-        print_r("<hr/>");
-        var_dump ($tag);
-        print_r ($tag);
-        print_r("<hr/>");
         $commitTime = $moduleObject->getLatestCommitTime();
 
         $createTag = false;

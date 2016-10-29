@@ -43,6 +43,11 @@ for the UpdateModules task to run:
 
 /var/www/.ssh/known_hosts file also needs to be created.
 
+CAUTION: The readme file for that this module will write is not customised
+and will overwrite any customised readme content that exists. Use the
+files_to_update in the config to adjust the files that get updated,
+
+
 A temporary folder for working with the module also needs
 to be created and setup in the config. e.g. /var/www/temp_modules
 The module will not run without a temporary folder, or
@@ -57,7 +62,7 @@ wget https://github.com/theseer/phpdox/releases/download/0.9.0/phpdox-0.9.0.phar
 chmod +x phpdox-0.9.0.phar
 sudo mv phpdox-0.9.0.phar /usr/bin/phpdox
 
-For PHPDOx, you may also need to install/enable XSL module:
+For PHPDOX, you may also need to install/enable XSL module:
 
 sudo apt-get install php5-xsl
 sudo php5enmod xsl

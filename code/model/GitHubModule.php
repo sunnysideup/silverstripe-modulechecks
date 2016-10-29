@@ -484,8 +484,11 @@ class GitHubModule extends DataObject {
 
             $resultLines  =  explode ("\n", $result->getOutput());
 
+            // 2016-10-14 12:29:08 +1300 (HEAD -> master, tag: 2.3.0, tag: 2.2.0, tag: 2.1.0, origin/master, origin/HEAD)\
+            // or
+            // 2016-08-29 17:18:22 +1200 (tag: 2.0.0)
+            //print_r($resultLines);
 
-            print_r($resultLines);
 
             if (count($resultLines) == 0) {
                 return false;
@@ -499,7 +502,24 @@ class GitHubModule extends DataObject {
                     $tagStr = trim(substr($line, 25));
                     $dateStr = trim(substr($line, 0, 26));
 
-                    print_r ($line);
+
+                    //extract tag numbers from $tagStr
+
+                    $matches = array();
+                    // print_r ("original!!! " .  $tagStr);
+                    $result = preg_match_all('/tag: \d{1,3}.\d{1,3}.\d{1,3}/', $tagStr, $matches);
+                    if ($result === false)
+                    {
+                        continue;
+                    }
+                    elseif ($result > 1)
+                    {
+                        $tagStr = $matches[0][0];
+                    }
+                    //print_r ($matches);
+
+                    $tagStr  = str_replace('(', '', $tagStr);
+                    $tagStr  = str_replace(')', '', $tagStr);
                     $timeStamp = strtotime ($dateStr);
 
                     if ($latestTimeStamp < $timeStamp) {
@@ -512,8 +532,8 @@ class GitHubModule extends DataObject {
         }
 
         if (isset($latestTag) && $latestTag) {
-            $latestTag = str_replace('(tag:', '', $latestTag) ;
-            $latestTag = str_replace(')', '', $latestTag) ;
+            $latestTag = str_replace('tag:', '', $latestTag) ;
+
 
             $tagParts = explode ('.', $latestTag);
 

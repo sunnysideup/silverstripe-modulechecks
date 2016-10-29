@@ -1,5 +1,5 @@
 <?php
-class FixPSR2 extends RunCommandLineMethodOnModule {
+clss FixPSR2 extends RunCommandLineMethodOnModule {
 
     public function __construct($rootDirForModule = '') {
         parent::__construct($rootDirForModule);
