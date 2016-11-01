@@ -40,8 +40,7 @@ for the UpdateModules task to run:
 
   absolute_temp_folder - temporary folder for modules to be cloned into - must be writeable by www-data
   path_to_private_key: path to id_rsa file, for example, /var/www/.ssh/id_rsa
-
-/var/www/.ssh/known_hosts file also needs to be created.
+  The known_hosts file also needs to be created.
 
 CAUTION: The readme file for that this module will write is not customised
 and will overwrite any customised readme content that exists. Use the

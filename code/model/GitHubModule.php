@@ -7,7 +7,6 @@
  */
 
 
-
 use GitWrapper\GitWrapper;
 require_once '../vendor/autoload.php';
 
@@ -156,7 +155,7 @@ class GitHubModule extends DataObject {
      * @var string | null
      */
     public function URL () {
-        $username = $this->Config()->get('github_user_name');
+        $username = $this->Config()->get('git_user_name');
         return 'https://github.com/'.$username.'/'.$this->ModuleName;
     }
 
@@ -233,7 +232,7 @@ class GitHubModule extends DataObject {
                 }
             }
             $this->gitRepo->config("push.default", "simple");
-            $this->gitRepo->config("user.name", $this->Config()->get('github_user_name'));
+            $this->gitRepo->config("user.name", $this->Config()->get('git_user_name'));
             $this->gitRepo->config("user.email", $this->Config()->get('git_user_email'));
             $this->commsWrapper->git('config -l');
         }
@@ -647,4 +646,65 @@ class GitHubModule extends DataObject {
 
         return $curlResult;
     }
+
+    public function addRepoToScrutinzer () {
+
+        if (! trim($this->Config()->get('scrutinizer_api_key'))) {
+            GeneralMethods::outputToScreen ("<li> not Scrutinizer API key set </li>");
+            return false;
+        }
+        //see https://scrutinizer-ci.com/docs/api/#repositories
+
+
+        $scrutinizerApiPath = "https://scrutinizer-ci.com/api";
+        $endPoint = "repositories/g?access_token=" . trim($this->Config()->get('scrutinizer_api_key'));
+        $url = $scrutinizerApiPath . "/" . $endPoint;
+        $username = $this->Config()->get('git_user_name');
+        $repoName =  $username.'/'.$this->ModuleName;
+
+
+        $postFields = array (
+            'name' => $repoName,
+            );
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postFields));
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch,CURLOPT_POST, count($postFields));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+
+        $curlResult = curl_exec($ch);
+
+        if ( ! $curlResult ){
+            die ('Curl failed.');
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+
+        if ($httpcode == 201) {
+            GeneralMethods::outputToScreen ("<li> Added $repoName to Scrutinizer ... </li>");
+        }
+        else{
+            GeneralMethods::outputToScreen ("<li> could not add $repoName to Scrutinizer ... </li>");
+        }
+
+
+       /* print_r($repoName);
+        print_r($url);
+        print_r('<br/>');
+        print_r($curlResult );
+
+
+
+
+        die();*/
+
+    }
+
+
+
+
 }

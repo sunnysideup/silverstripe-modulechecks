@@ -53,9 +53,9 @@ class UpdateModules extends BuildTask
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        // $modules = GitRepoFinder::get_all_repos();
+        $modules = GitRepoFinder::get_all_repos();
 
-        $modules = array (
+        /*$modules = array (
             'silverstripe-ecommerce_tax',
             "silverstripe-gift_voucher",
             "silverstripe-ecommerce_nutritional_products",
@@ -91,9 +91,9 @@ class UpdateModules extends BuildTask
             "silverstripe-payment_stripe",
             "silverstripe-silverstripe-assets_sync_one_folder",
 
-            );
+            );*/
 
-        $modules = array('silverstripe-ecommerce_tax');
+
         $updateComposerJson = $this->Config()->get('update_composer_json');
 
         $limitedModules = $this->Config()->get('modules_to_update');
@@ -108,24 +108,19 @@ class UpdateModules extends BuildTask
          * */
         $files = ClassInfo::subclassesFor('AddFileToModule');
 
-        print_r($files);
-
-
         array_shift($files);
         $limitedFileClasses = $this->Config()->get('files_to_update');
         if($limitedFileClasses && count($limitedFileClasses)) {
             $files = array_intersect($files, $limitedFileClasses);
         }
 
-
-        print_r($files);
-
-
         /*
          * Get commands to run on modules
          * */
 
         $commands = ClassInfo::subclassesFor('RunCommandLineMethodOnModule');
+
+
         array_shift($commands);
         $limitedCommands = $this->Config()->get('commands_to_run');
         if($limitedCommands && count($limitedCommands)) {
@@ -207,6 +202,7 @@ class UpdateModules extends BuildTask
             if( ! $moduleObject->push()) { die("ERROR in push"); }
             if( ! $moduleObject->removeClone()) { die("ERROR in removeClone"); }
 
+            $moduleObject->addRepoToScrutinzer();
 
         }
         //to do ..
@@ -324,4 +320,6 @@ class UpdateModules extends BuildTask
 
 
     }
+
+
 }
