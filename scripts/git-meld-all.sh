@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # how to install?
@@ -11,8 +10,10 @@ rootFolder=$PWD
 
 # Defining Colors
 RED='\033[1;31m'
+RED2='\033[0;31m'
 GREEN='\033[1;32m'
-BLUE='\033[0;34m'
+BLUE='\033[1;34m'
+BLUE2='\033[0;34m'
 CYAN='\033[0;36m'
 ORANGE='\033[0;33m'
 YELLOW='\033[1;33m'
@@ -21,38 +22,42 @@ NC='\033[0m' # No Color
 # Vendor to look for
 vendor="sunnysideup"
 
+gitCustomStatus (){
+    git status --porcelain | while read status file; do
+	case $status in 
+	    $1) echo -e "$3 $2$1\t$file${NC}";;
+	esac
+    done
+}
+
 for folder in $folders; do
     if [ -f $folder/.git/config ] ; then # is a git working copy
 	# Belongs to sunnysideup
 	if ( grep --quiet $vendor $folder/.git/config ) || [[ $folder == "." ]]; then
 	    cd $folder
-	    folderChanges=`git diff --name-only  HEAD`
+	    folderChanges=`git status --porcelain`
 	    if [[ $folderChanges ]];then
 		echo -e "-- ${CYAN}You have modified files in $folder${NC}"
 
-		untrackedFiles=`git ls-files --others --exclude-standard`
-		for file in $untrackedFiles;do 
-		    echo -e "--> ${RED}$file${NC}"
-		done
-
-		modifiedFiles=`git ls-files -m`
-		for file in $modifiedFiles;do
-		    echo -e "--> ${YELLOW}$file${NC}"
-		done
-
-		addedFiles=`git diff --name-only --cached`
-		for file in $addedFiles;do
-		    echo -e "--> ${GREEN}$file${NC}"
-		done
+		gitCustomStatus M "${YELLOW}" "+++"    # Modified
+		gitCustomStatus A "${GREEN}" "+++"     # Added
+		gitCustomStatus R "${BLUE2}" "+++"     # Renamed
+		gitCustomStatus C "${BLUE}" "+++"      # Copied
+		gitCustomStatus D "${RED}" "---"       # Deleted
 		
-		echo -e "-- ${ORANGE}Would you like to commit changes?${NC} [y/n]"
+		if [[ `git status --porcelain | grep "^?? "` ]];then
+		    echo -e "\n-- ${CYAN} Untracked files${NC}"
+		    gitCustomStatus2 ?? "${RED2}" "   " # Untracked
+		fi
+		
+		echo -e "\n-- ${ORANGE}Would you like to commit changes?${NC} [y/n]"
 		read commit
 
 		if [[ $commit == "y" ]];then
 		    git add --all
 		    meld .
 		fi
-		echo -e "-- ${CYAN}Completed ${BLUE}$folder${NC} --"
+		echo -e "-- ${CYAN}Completed ${BLUE2}$folder${NC} --"
 		echo ""
 
 	    fi
@@ -63,4 +68,4 @@ done
 
 echo -e "-- ${CYAN}END${NC} --------------------";
 
-    
+
