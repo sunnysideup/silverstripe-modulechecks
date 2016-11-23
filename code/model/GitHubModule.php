@@ -656,56 +656,62 @@ class GitHubModule extends DataObject {
 		
 
         $gitUserName = GitHubModule::Config()->get('git_user_name');
-        $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos?page=10';
-		$data = array();
-
-        $method = 'GET';
-        $ch = curl_init($url);
-        $header = "Content-Type: application/json";
-
-        if ($method == 'GET') {
-            $url .= '?'.http_build_query($data);
-        }
-
-        $gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
-        $gitUserName = trim(GitHubModule::Config()->get('git_user_name'));
-        $gitApiUserPassword = trim(GitHubModule::Config()->get('git_api_login_password'));
-
-        $gitApiAccessToken = trim(GitHubModule::Config()->get('git_personal_access_token'));
-        if (trim($gitApiAccessToken)) {
-            $gitApiUserPassword = $gitApiAccessToken;
-        }
-
-
-        curl_setopt($ch, CURLOPT_VERBOSE, 1);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_USERAGENT,
-            'sunnysideupdevs');
-
-
-        if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
-            curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
-            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        }
-
-
-        $curlResult = curl_exec($ch);
-
-        if ( ! $curlResult ){
-			GeneralMethods::OutputToScreen('Could not retrieve list of modules from GitHub');
-            die ('');
-        }
+        $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
+		$array  = array();
+		for($page = 0; $page < 10; $page++) {
 		
-		$array = json_decode($curlResult);
-		
+			$data = array(
+				'per_page' => 100,
+				'page'=>$page
+			);
+
+			$method = 'GET';
+			$ch = curl_init($url);
+			$header = "Content-Type: application/json";
+
+			if ($method == 'GET') {
+				$url .= '?'.http_build_query($data);
+			}
+
+			$gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
+			$gitUserName = trim(GitHubModule::Config()->get('git_user_name'));
+			$gitApiUserPassword = trim(GitHubModule::Config()->get('git_api_login_password'));
+
+			$gitApiAccessToken = trim(GitHubModule::Config()->get('git_personal_access_token'));
+			if (trim($gitApiAccessToken)) {
+				$gitApiUserPassword = $gitApiAccessToken;
+			}
+
+
+			curl_setopt($ch, CURLOPT_VERBOSE, 1);
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+			curl_setopt($ch, CURLOPT_USERAGENT,
+				'sunnysideupdevs');
+
+
+			if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
+				curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
+				curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+			}
+
+
+			$curlResult = curl_exec($ch);
+
+			if ( ! $curlResult ){
+				GeneralMethods::OutputToScreen('Could not retrieve list of modules from GitHub');
+				die ('');
+			}
+			
+			$array = array_merge( $array, json_decode($curlResult));
+		}
 
 		
 		$modules = array();
-		print_r(count($array));
+		
 		if(count($array) > 0 )
 		
 		 {

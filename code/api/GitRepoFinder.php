@@ -30,10 +30,7 @@ class GitRepoFinder extends Object
     public static function get_all_repos_no_oauth($username = '', $getNamesWithPrefix = false)
     
         {
-        /*
-         * To do: Add OAuth capability to get around API limit - Check Git Wrapper Module
-         * 
-         * */
+
         if(!$username) {
             $username = Config::inst()->get('GitHubModule', "git_user_name");
             print("<li></li>");
