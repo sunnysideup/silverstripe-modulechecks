@@ -53,10 +53,10 @@ class UpdateModules extends BuildTask
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        $modules = GitRepoFinder::get_all_repos();
+        //$modules = GitRepoFinder::get_all_repos();
 
         $modules = array (
-            'silverstripe-ecommerce_tax',
+            'silverstripe-client_request_tracking',
             /*"silverstripe-gift_voucher",
             "silverstripe-ecommerce_nutritional_products",
             "silverstripe-ecommerce_countries",
@@ -288,6 +288,11 @@ class UpdateModules extends BuildTask
 
         $commitTime = $moduleObject->getLatestCommitTime();
 
+		if (! $commitTime) // if no commits, cannot create a tag
+		{
+			return false;
+		}
+
         $createTag = false;
 
         if ( ! $tag ) {
@@ -317,7 +322,7 @@ class UpdateModules extends BuildTask
 
         }
 
-
+		return true;
 
     }
 

@@ -446,8 +446,22 @@ class GitHubModule extends DataObject {
                 'format' => "%cd",
                 '1' => true
             );
-
+			
+			try {
             $result = $git->log ($options);
+			}
+			catch (Exception $e) {
+				$errStr = $e->getMessage();
+                if (stripos($errStr, 'does not have any commits') === false) {
+                    print_r($e);
+                    throw $e;
+                }
+                else {
+                    
+                    return false;
+                }
+			}            
+            
             if ($result) {
                 return (strtotime($result));
             }
@@ -472,9 +486,20 @@ class GitHubModule extends DataObject {
             $cwd = getcwd();
             chdir($this->Directory);
 
-            $result = $git->log($options);
-
-
+			try {
+				$result = $git->log($options);
+			}
+			catch (Exception $e) {
+				$errStr = $e->getMessage();
+                if (stripos($errStr, 'does not have any commits') === false) {
+                    print_r($e);
+                    throw $e;
+                }
+                else {
+                    GeneralMethods::output_to_screen('Unable to get tag because there are no commits to the repository');
+                    return false;
+                }
+			}
 
 
             chdir($cwd);
