@@ -279,10 +279,8 @@ class GitHubModule extends DataObject {
      *
      * @return bool | this
      */
-    public function commit($message = '') {
-        if(!$message) {
-            $message = 'fix ups';
-        }
+    public function commit($message = 'PATCH: module clean-up') {
+
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
 
@@ -692,15 +690,6 @@ class GitHubModule extends DataObject {
         }
 
 
-       /* print_r($repoName);
-        print_r($url);
-        print_r('<br/>');
-        print_r($curlResult );
-
-
-
-
-        die();*/
 
     }
 

@@ -55,9 +55,9 @@ class UpdateModules extends BuildTask
         $gitUserName = $this->Config()->get('git_user_name');
         $modules = GitRepoFinder::get_all_repos();
 
-        /*$modules = array (
+        $modules = array (
             'silverstripe-ecommerce_tax',
-            "silverstripe-gift_voucher",
+            /*"silverstripe-gift_voucher",
             "silverstripe-ecommerce_nutritional_products",
             "silverstripe-ecommerce_countries",
             "silverstripe-ecommerce_discount_coupon_countries",
@@ -89,9 +89,9 @@ class UpdateModules extends BuildTask
             "silverstripe-us_phone_number",
             "silverstripe-title_dataobject",
             "silverstripe-payment_stripe",
-            "silverstripe-silverstripe-assets_sync_one_folder",
+            "silverstripe-silverstripe-assets_sync_one_folder",*/
 
-            );*/
+            );
 
 
         $updateComposerJson = $this->Config()->get('update_composer_json');
