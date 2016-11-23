@@ -54,7 +54,13 @@ class UpdateModules extends BuildTask
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
         //$modules = GitRepoFinder::get_all_repos();
-
+		
+		$modules = GitHubModule::getRepoList();
+		
+		print_r($modules);
+		
+		die();
+		
         $modules = array (
             'silverstripe-client_request_tracking',
             /*"silverstripe-gift_voucher",

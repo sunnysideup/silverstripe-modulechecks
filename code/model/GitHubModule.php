@@ -605,21 +605,61 @@ class GitHubModule extends DataObject {
         $this->gitApiCall($array, '',  'PATCH');
     }
 
-
     protected function gitApiCall($data, $gitAPIcommand = '', $method = 'GET') {
-
         $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
         GeneralMethods::OutputToScreen('Running Git API command ' .$gitAPIcommand. ' using ' .$method. ' method...');
-
         $gitUserName = $this->Config()->get('git_user_name');
         $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($this->ModuleName);
-
         if (trim($gitAPIcommand)) {
             $url .= '/' . trim($gitAPIcommand);
         }
-
         $method = trim(strtoupper($method));
+        $ch = curl_init($url);
+        $header = "Content-Type: application/json";
+        if ($method == 'GET') {
+            $url .= '?'.http_build_query($data);
+        }
+        $gitApiUserName = trim($this->Config()->get('git_api_login_username'));
+        $gitApiUserPassword = trim($this->Config()->get('git_api_login_password'));
+        $gitApiAccessToken = trim($this->Config()->get('git_personal_access_token'));
+        if (trim($gitApiAccessToken)) {
+            $gitApiUserPassword = $gitApiAccessToken;
+        }
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_USERAGENT,
+            'Silverstripe-update-module-module');
+        if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
+            curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        }
+        if ($method == 'POST' ) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+        }
+        $curlResult = curl_exec($ch);
+        if ( ! $curlResult ){
+            die ('Curl failed.');
+        }
+        print_r($url);
+        print_r('<br/>');
+        print_r($curlResult );
+        die();
+        return $curlResult;
+    }
+    
+    
+	public static function getRepoList() {
+		
+
+        $gitUserName = GitHubModule::Config()->get('git_user_name');
+        $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos?page=10';
+		$data = array();
+
+        $method = 'GET';
         $ch = curl_init($url);
         $header = "Content-Type: application/json";
 
@@ -627,10 +667,11 @@ class GitHubModule extends DataObject {
             $url .= '?'.http_build_query($data);
         }
 
-        $gitApiUserName = trim($this->Config()->get('git_api_login_username'));
-        $gitApiUserPassword = trim($this->Config()->get('git_api_login_password'));
+        $gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
+        $gitUserName = trim(GitHubModule::Config()->get('git_user_name'));
+        $gitApiUserPassword = trim(GitHubModule::Config()->get('git_api_login_password'));
 
-        $gitApiAccessToken = trim($this->Config()->get('git_personal_access_token'));
+        $gitApiAccessToken = trim(GitHubModule::Config()->get('git_personal_access_token'));
         if (trim($gitApiAccessToken)) {
             $gitApiUserPassword = $gitApiAccessToken;
         }
@@ -643,7 +684,7 @@ class GitHubModule extends DataObject {
         curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
         curl_setopt($ch, CURLOPT_USERAGENT,
-            'Silverstripe-update-module-module');
+            'sunnysideupdevs');
 
 
         if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
@@ -651,23 +692,69 @@ class GitHubModule extends DataObject {
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         }
 
-        if ($method == 'POST' ) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
-        }
 
         $curlResult = curl_exec($ch);
 
         if ( ! $curlResult ){
-            die ('Curl failed.');
+			GeneralMethods::OutputToScreen('Could not retrieve list of modules from GitHub');
+            die ('');
         }
+		
+		$array = json_decode($curlResult);
+		
 
-        print_r($url);
-        print_r('<br/>');
-        print_r($curlResult );
+		
+		$modules = array();
+		print_r(count($array));
+		if(count($array) > 0 )
+		
+		 {
+                    foreach($array as $repo) {
+						
+						// see http://stackoverflow.com/questions/4345554/convert-php-object-to-associative-array
+						$repo = json_decode(json_encode($repo), true);
 
-        die();
 
-        return $curlResult;
+                        //dont bother about forks
+                        if(isset($repo["fork"]) && !$repo["fork"]) {
+                            //make sure we are the owners
+
+                            if($repo["owner"]["login"] == $gitUserName) {
+
+                                $isSSModule =  ( stripos($repo["name"], 'silverstripe-')  !== false );
+                                //check it is silverstripe module
+                                $getNamesWithPrefix = false;
+                                
+                                if (!$getNamesWithPrefix) {
+                                    $name = $repo["name"];                                    
+                                }
+                                else {
+                                    $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);                                    
+                                }
+                                
+                                //if(strlen($name) < strlen($repo["name"])) {
+                                if($isSSModule) {
+                                    //is it listed yet?
+                                    if(!in_array($name, $modules)) {
+										
+                                        array_push ($modules, $name);
+                                    }
+                                }
+                                else {
+                                    GeneralMethods::OutputToScreen("skipping ".$repo["name"]." as it does not appear to me a silverstripe module");
+                                }
+                            }
+                            else {
+                                GeneralMethods::OutputToScreen("skipping ".$repo["name"]." as it has a different owner");
+                            }
+                        }
+                        elseif(isset($repo["name"])) {
+                            DB::alteration_message("skipping ".$repo["name"]." as it is a fork");
+                        }
+                    }
+                }
+
+        return $modules;
     }
 
     public function addRepoToScrutinzer () {

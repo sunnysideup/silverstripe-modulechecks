@@ -22,12 +22,9 @@ class GitRepoFinder extends Object
 
     public static function get_all_repos($username = '', $getNamesWithPrefix = false) {
         $oauth_token = GitRepoFinder::Config()->get('github_oauth_token');
-        if ($oauth_token) {
-            return GitRepoFinder::get_all_repos_oauth($username, $getNamesWithPrefix);
-        }
-        else {
-            return GitRepoFinder::get_all_repos_no_oauth($username, $getNamesWithPrefix);
-        }
+
+        return GitRepoFinder::get_all_repos_no_oauth($username, $getNamesWithPrefix);
+
     }
 
     public static function get_all_repos_no_oauth($username = '', $getNamesWithPrefix = false)
@@ -105,20 +102,4 @@ class GitRepoFinder extends Object
         return self::$_modules;
     }
 
-    public static function get_all_repos_oauth ($username = '', $getNamesWithPrefix = false) {
-
-    /*
-            $header[]         = 'Content-Type: application/x-www-form-urlencoded';
-
-            curl_setopt($ch, CURLOPT_HTTPHEADER,     $header);
-            curl_setopt($ch, CURLOPT_POST,        true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, urlencode("oauth_consumer_key=example.com&
-           oauth_signature_method=RSA-SHA1&
-           oauth_signature=wOJIO9A2W5mFwDgiDvZbTSMK%2FPY%3D&
-           oauth_timestamp=137131200&
-           oauth_nonce=4572616e48616d6d65724c61686176&
-           oauth_version=1.0"));
-     *
-     */
-    }
 }
