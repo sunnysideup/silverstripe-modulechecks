@@ -50,7 +50,8 @@ files_to_update in the config to adjust the files that get updated,
 A temporary folder for working with the module also needs
 to be created and setup in the config. e.g. /var/www/temp_modules
 The module will not run without a temporary folder, or
-if it contains any files.
+if it contains any files. The tempoarary folder needs to be writable
+by www-data
 
 To use the module, set the configs in the task and
 then browse to /dev/tasks/ModuleChecks to run ...
