@@ -53,51 +53,9 @@ class UpdateModules extends BuildTask
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        //$modules = GitRepoFinder::get_all_repos();
 		
 		$modules = GitHubModule::getRepoList();
 		
-		print_r($modules);
-		
-		die();
-		
-        $modules = array (
-            'silverstripe-client_request_tracking',
-            /*"silverstripe-gift_voucher",
-            "silverstripe-ecommerce_nutritional_products",
-            "silverstripe-ecommerce_countries",
-            "silverstripe-ecommerce_discount_coupon_countries",
-            "silverstripe-templateoverview",
-            "silverstripe-blog_shared_categorisation",
-            "silverstripe-webpack_requirements_backend",
-            "silverstripe-share_this_simple",
-            "silverstripe-phone_field",
-            "silverstripe-perfect_cms_images",
-            "silverstripe-email_address_database_field",
-            "silverstripe-ecommerce_stockists",
-            "silverstripe-ecommerce_dashboard",
-            "silverstripe-ecommerce_cloud_flare_geoip",
-            "silverstripe-comments_add_recaptcha",
-            "silverstripe-table_filter_sort",
-            "silverstripe-email_reminder",
-            "silverstripe-contact_list",
-            "silverstripe-cms_tricks_for_apps",
-            "silverstripe-cms_edit_link_field",
-            "silverstripe-frontendeditor",
-            "silverstripe-assets_sync_one_folder",
-            "silverstripe-payment_omnipay",
-            "silverstripe-sectionizer",
-            "silverstripe-ecommerce_vote",
-            "silverstripe-user_image_upload",
-            "silverstripe-ecommerce_reports",
-            "silverstripe-ecommerce_orderstep_feedback",
-            "silverstripe-silverstripe-ecommerce_orderstep_feedback",
-            "silverstripe-us_phone_number",
-            "silverstripe-title_dataobject",
-            "silverstripe-payment_stripe",
-            "silverstripe-silverstripe-assets_sync_one_folder",*/
-
-            );
 
 
         $updateComposerJson = $this->Config()->get('update_composer_json');
@@ -107,6 +65,7 @@ class UpdateModules extends BuildTask
         if($limitedModules && count($limitedModules)) {
             $modules = array_intersect($modules, $limitedModules);
         }
+
 
 
         /*
