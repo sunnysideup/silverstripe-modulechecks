@@ -1,10 +1,9 @@
 <?php
 
 
-class AddEditorConfigToModule extends AddFileToModule {
-
+class AddEditorConfigToModule extends AddFileToModule
+{
     protected $sourceLocation = 'source/.editorconfig';
 
     protected $fileLocation = '.editorconfig';
-
 }

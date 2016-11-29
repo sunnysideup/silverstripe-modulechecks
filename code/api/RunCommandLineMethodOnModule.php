@@ -18,51 +18,54 @@ abstract class RunCommandLineMethodOnModule extends Object
        */
       protected $command = '';
 
-      function setRootDirForModule($rootDirForModule)
-      {
-          $this->$rootDirForModule = $rootDirForModule;
-      }
+    public function setRootDirForModule($rootDirForModule)
+    {
+        $this->$rootDirForModule = $rootDirForModule;
+    }
 
       /**
        *
        *
        * @param string
        */
-      function setCommand($command)
+      public function setCommand($command)
       {
           $this->command = $command;
       }
 
-      public function __construct($rootDirForModule = ''){
-          $this->rootDirForModule = $rootDirForModule;
-      }
+    public function __construct($rootDirForModule = '')
+    {
+        $this->rootDirForModule = $rootDirForModule;
+    }
 
-      function run() {
-          if( ! $this->rootDirForModule) {
-              user_error('no root dir for module has been set');
-          }
-          if( ! $this->command) {
-              user_error('command not set');
-          }
-          $this->runCommand();
-      }
+    public function run()
+    {
+        if (! $this->rootDirForModule) {
+            user_error('no root dir for module has been set');
+        }
+        if (! $this->command) {
+            user_error('command not set');
+        }
+        $this->runCommand();
+    }
 
       /**
        * runs a command from the root dir or the module
        */
       protected function runCommand()
       {
-        if ($this->command != null) {
-            GeneralMethods::outputToScreen('Running ' . $this->command);
-            return exec(
+          if ($this->command != null) {
+              GeneralMethods::outputToScreen('Running ' . $this->command);
+              return exec(
               ' cd '.$this->rootDirForModule.';
                 '.$this->command.'
                 '
                 );
-        }
+          }
       }
 
-    public static function CheckCommandExists($cmd) {
+    public static function CheckCommandExists($cmd)
+    {
         return !empty(shell_exec("which $cmd"));
     }
 }

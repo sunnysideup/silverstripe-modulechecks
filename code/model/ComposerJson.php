@@ -1,69 +1,68 @@
 <?php
 
-class ComposerJson extends Object {
-
-    public function ComposerJson($gitHubModuleInstance) {
+class ComposerJson extends Object
+{
+    public function ComposerJson($gitHubModuleInstance)
+    {
         if (! $gitHubModuleInstance) {
-            user_error ("CheckComposerJson needs an instance of GitHubModule");
+            user_error("CheckComposerJson needs an instance of GitHubModule");
         }
         $this->gitHubModuleInstance = $gitHubModuleInstance;
         $this->moduleName = $gitHubModuleInstance->ModuleName;
     }
 
-    private function readJsonFromFile() {
+    private function readJsonFromFile()
+    {
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
-        $filename = $folder . '/' . $this->moduleName . '/composer.json'; 
+        $filename = $folder . '/' . $this->moduleName . '/composer.json';
 
         set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
-        $file = fopen ($filename, 'r');
+        $file = fopen($filename, 'r');
         restore_error_handler();
         if ($file) {
             $json = fread($file, filesize($filename));
-            $array = json_decode ($json);
+            $array = json_decode($json);
             $this->jsonData = $array;
-            fclose ($file);            
+            fclose($file);
         }
 
 
         return (isset($this->jsonData));
-
     }
 
-    public function updateJsonData() {
-
-        
-        if ( ! isset($this->jsonData)) {
+    public function updateJsonData()
+    {
+        if (! isset($this->jsonData)) {
             $this->readJsonFromFile();
         }
         
 
         if (isset($this->jsonData)) {
-            GeneralMethods::outputToScreen ("<li> Updating composer.json </li>");
+            GeneralMethods::outputToScreen("<li> Updating composer.json </li>");
             $composerUpdates = ClassInfo::subclassesFor('UpdateComposer');
             array_shift($composerUpdates);
 
             $limitedComposerUpdates = $this->Config()->get('updates');
             
-            if($limitedComposerUpdates && count($limitedComposerUpdates)) {
+            if ($limitedComposerUpdates && count($limitedComposerUpdates)) {
                 $composerUpdates = array_intersect($composerUpdates, $limitedComposerUpdates);
-            }        
+            }
 
 
             foreach ($composerUpdates as $composerUpdate) {
-                    $obj = $composerUpdate::create($this);
-                    $obj->run(); 
+                $obj = $composerUpdate::create($this);
+                $obj->run();
             }
 
             $this->writeJsonToFile();
-        }
-        else {
-            GeneralMethods::outputToScreen ('<li style = "color: red;"> ' . $this->moduleName. '  has no composer.json !!!</li>');
+        } else {
+            GeneralMethods::outputToScreen('<li style = "color: red;"> ' . $this->moduleName. '  has no composer.json !!!</li>');
         }
     }
 
-    private function writeJsonToFile() {
-
-        if ( ! $this->jsonData) { //if not loaded
+    private function writeJsonToFile()
+    {
+        if (! $this->jsonData) { //if not loaded
             return false;
         }
         
@@ -72,17 +71,18 @@ class ComposerJson extends Object {
 
         
 
-        $file = fopen ($filename, 'w');
+        $file = fopen($filename, 'w');
         if ($file) {
-            fwrite ($file, json_encode($this->jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            fwrite($file, json_encode($this->jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         }
-        fclose ($file);
+        fclose($file);
 
         return true;
     }
 
-    public function getDescription() {
-        if ( ! $this->jsonData) { //if not loaded
+    public function getDescription()
+    {
+        if (! $this->jsonData) { //if not loaded
             return false;
         }
 
@@ -90,7 +90,7 @@ class ComposerJson extends Object {
     }
 
 
-    private function catchFopenWarning() {
-
-    }    
+    private function catchFopenWarning()
+    {
+    }
 }

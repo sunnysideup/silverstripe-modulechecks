@@ -9,7 +9,7 @@ class ModuleConfig implements ModuleConfigInterface
      */
    public function params()
    {
-        return array();
+       return array();
    }
 
     /**
@@ -19,6 +19,4 @@ class ModuleConfig implements ModuleConfigInterface
     {
         return null;
     }
-
-
 }

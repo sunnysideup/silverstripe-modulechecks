@@ -22,6 +22,4 @@ interface ModuleConfigInterface
      * @return [type]              [description]
      */
     public function customiseFile($location, $fileContent);
-
-
 }
