@@ -755,9 +755,8 @@ class GitHubModule extends DataObject
             GeneralMethods::outputToScreen("<li> not Scrutinizer API key set </li>");
             return false;
         }
+
         //see https://scrutinizer-ci.com/docs/api/#repositories
-
-
         $scrutinizerApiPath = "https://scrutinizer-ci.com/api";
         $endPoint = "repositories/g?access_token=" . trim($this->Config()->get('scrutinizer_api_key'));
         $url = $scrutinizerApiPath . "/" . $endPoint;

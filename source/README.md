@@ -13,8 +13,9 @@
 
 +++README_DOCUMENTATION+++
 
-
-[Browse the API](docs/en/index.xhtml)
+ * [Developer Docs](docs/en/INDEX.md)
+ * [User Guide](docs/en/userguide.md)
+ * [API](http://ssmods.com/apis/+++short-module-name-goes-here+++/docs/en/api/)
 
 ## Requirements
 
@@ -40,10 +41,12 @@ composer require sunnysideup/+++module-name-goes-here+++
 
 +++README_CONFIGURATION+++
 
-In the `_config` folder, you will find `*.yml.example` file(s) that show options for
-the configuration of this module. We recommend that you:
+In the `_config` folder you will find the `+++short-module-name-goes-here+++.yml.example`
+file that shows options for the configuration of this module.
 
-  1. copy these `*.yml.example` files into your
+We recommend that you:
+
+  1. copy these `+++short-module-name-goes-here+++.yml.example` files into your
 `mysite/_config` folder
   2. remove the .example extension
   3. delete the lines you not care about, and
@@ -54,7 +57,7 @@ the configuration of this module. We recommend that you:
 
 +++README_CONTRIBUTING+++
 
-We welcome any contributions. See [Browse the API](CONTRIBUTING.md) for more details.
+We welcome any contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 ## Paid assistance
 
@@ -66,4 +69,4 @@ You can pay us to create an improved / adapted version of this module for your o
 
 +++README_AUTHOR+++
 
-Sunny Side Up ltd.
+Sunny Side Up Ltd.

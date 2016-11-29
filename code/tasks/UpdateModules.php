@@ -60,7 +60,9 @@ class UpdateModules extends BuildTask
 
 
         $updateComposerJson = $this->Config()->get('update_composer_json');
+        
 
+		
         $limitedModules = $this->Config()->get('modules_to_update');
 
         if ($limitedModules && count($limitedModules)) {
@@ -135,7 +137,9 @@ class UpdateModules extends BuildTask
             $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
 
 
-            //$this->checkConfigYML($moduleObject);
+			$this->moveOldReadMe($moduleObject);
+
+            $this->checkConfigYML($moduleObject);
 
 
             if ($updateComposerJson) {
@@ -144,7 +148,38 @@ class UpdateModules extends BuildTask
                 $moduleObject->setDescription($composerJsonObj->getDescription());
             }
 
+<<<<<<< HEAD
+			$excludedWords = $this->Config()->get('excluded_words');
+			
+			
+			if (count($excludedWords) > 0) 
+			{
+				$folder = GitHubModule::Config()->get('absolute_temp_folder') . '/' . $moduleObject->moduleName . '/';
+
+				$results = $this->checkDirExcludedWords($folder.'/'.$moduleObject->modulename, $excludedWords);
+				
+				
+				if ($results && count ($results > 0)) 
+				{
+					$msg = "<h4>the following excluded words were found: </h4>";
+					foreach ($results as $file => $words) {
+						foreach ($words as $word) {
+							$msg .= "<li>$word in $file</li>";
+						}
+					}
+					
+					
+					trigger_error ("excluded words found in files(s)");
+					GeneralMethods::outputToScreen ($msg);
+				}
+				
+			}
+
+
+            foreach($files as $file) {
+=======
             foreach ($files as $file) {
+>>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
                 //run file update
 
                 $obj = $file::create($moduleObject);
@@ -181,6 +216,10 @@ class UpdateModules extends BuildTask
 
     protected function checkConfigYML($module)
     {
+<<<<<<< HEAD
+        $configYml = ConfigYML::create($module)->reWrite();
+ 
+=======
         $configYml = ConfigYML::create($module);
         $loadedYml =$configYml->readYMLFromFile();
 
@@ -190,6 +229,7 @@ class UpdateModules extends BuildTask
         } else {
             die("sdfasdfasd");
         }
+>>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
     }
 
     private function checkFile($module, $filename)
@@ -209,27 +249,52 @@ class UpdateModules extends BuildTask
 
         $problem_files = array();
         foreach ($filesAndFolders as $fileOrFolder) {
+<<<<<<< HEAD
+
+            if ($fileOrFolder == '.' || $fileOrFolder == '..' || $fileOrFolder == '.git'  ) {
+=======
             if ($fileOrFolder == '.' or $fileOrFolder == '..') {
+>>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
                 continue;
             }
 
             $fileOrFolderFullPath = $directory . '/' . $fileOrFolder;
             if (is_dir($fileOrFolderFullPath)) {
                 $dir = $fileOrFolderFullPath;
+<<<<<<< HEAD
+                $problem_files = array_merge ($this->checkDirExcludedWords ($dir, $wordArray) , $problem_files);
+=======
                 $this->checkDirExcludedWords($dir, $wordArray);
+>>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
             }
             if (is_file($fileOrFolderFullPath)) {
                 $file = $fileOrFolderFullPath;
                 $matchedWords = $this->checkFileExcludedWords($file, $wordArray);
 
                 if ($matchedWords) {
+<<<<<<< HEAD
+		
+                   $problem_files[$file] = $matchedWords;
+=======
                     $problem_files[$file] = $matchedWords;
+>>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
                 }
             }
         }
+
         return $problem_files;
     }
 
+<<<<<<< HEAD
+    private function checkFileExcludedWords($fileName, $wordArray) {
+		
+
+        $matchedWords = array();
+
+		$fileName = str_replace ('////', '/',  $fileName);
+		if (filesize ($fileName) == 0 ) return $matchedWords; 
+
+=======
     private function checkFileExcludedWords($fileName, $wordArray)
     {
         $file = fopen($fileName, 'r');
@@ -240,17 +305,31 @@ class UpdateModules extends BuildTask
             return false;
         }
         $fileContent = fread($file, filesize($fileName));
+>>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
 
+        $fileContent = file_get_contents($fileName);
+		if (!$fileContent) (die ("could not open $fileName</br>"));
 
+<<<<<<< HEAD
+        foreach ($wordArray as $word)  {
+			
+
+=======
         foreach ($wordArray as $word) {
+>>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
             $matches = array();
             $matchCount = preg_match_all('/' . $word . '/i', $fileContent);
+            
+            
+           
+            
+            
             if ($matchCount > 0) {
-                $matchedWords[] = $word;
+                array_push ($matchedWords, $word);
+
             }
         }
 
-        fclose($file);
         return $matchedWords;
     }
 
@@ -290,4 +369,41 @@ class UpdateModules extends BuildTask
 
         return true;
     }
+<<<<<<< HEAD
+    
+    protected function moveOldReadMe($moduleObject) {
+		$tempDir = GitHubModule::Config()->get('absolute_temp_folder');
+		$oldReadMe = $tempDir . '/' .  $moduleObject->ModuleName . '/' .'README.md';
+		
+		if (!file_exists($oldReadMe))
+		{
+			return false;
+		}
+		
+
+		$oldreadmeDestinationFiles = array (
+				'docs/en/INDEX.md',
+				'docs/en/README.old.md', 
+			);
+
+
+		$copied = false;
+		foreach ($oldreadmeDestinationFiles as $file) {
+			$filePath = $tempDir . '/' .  $moduleObject->ModuleName . '/' . $file;
+			
+			if (!file_exists($filePath)) {
+				$copied = true;
+				copy($oldReadMe, $filePath);
+			}
+			
+		}
+		if ($copied) 
+		{
+			unlink ($oldReadMe);
+		}
+	}
+
+
+=======
+>>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
 }
