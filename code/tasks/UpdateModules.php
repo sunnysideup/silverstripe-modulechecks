@@ -41,22 +41,21 @@ class UpdateModules extends BuildTask
      */
     private static $commands_to_run = array();
 
-    public function run($request)
-    {
+    public function run($request) {
         increase_time_limit_to(3600);
 
         //Check temp module folder is empty
         $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
         $tempDirFiles = scandir($tempFolder);
         if (count($tempDirFiles) > 2) {
-            die('<h2>' . $tempFolder . ' is not empty, please delete or move files </h2>');
+            die ( '<h2>' . $tempFolder . ' is not empty, please delete or move files </h2>');
         }
 
         //Get list of all modules from GitHub
         $gitUserName = $this->Config()->get('git_user_name');
-        
-        $modules = GitHubModule::getRepoList();
-        
+		
+		$modules = GitHubModule::getRepoList();
+		
 
 
         $updateComposerJson = $this->Config()->get('update_composer_json');
@@ -65,7 +64,7 @@ class UpdateModules extends BuildTask
 		
         $limitedModules = $this->Config()->get('modules_to_update');
 
-        if ($limitedModules && count($limitedModules)) {
+        if($limitedModules && count($limitedModules)) {
             $modules = array_intersect($modules, $limitedModules);
         }
 
@@ -78,7 +77,7 @@ class UpdateModules extends BuildTask
 
         array_shift($files);
         $limitedFileClasses = $this->Config()->get('files_to_update');
-        if ($limitedFileClasses && count($limitedFileClasses)) {
+        if($limitedFileClasses && count($limitedFileClasses)) {
             $files = array_intersect($files, $limitedFileClasses);
         }
 
@@ -91,13 +90,14 @@ class UpdateModules extends BuildTask
 
         array_shift($commands);
         $limitedCommands = $this->Config()->get('commands_to_run');
-        if ($limitedCommands && count($limitedCommands)) {
+        if($limitedCommands && count($limitedCommands)) {
             $commands = array_intersect($commands, $limitedCommands);
         }
 
 
-        foreach ($modules as $count => $module) {
-            if (stripos($module, 'silverstripe-')  === false) {
+        foreach($modules as $count => $module) {
+
+            if ( stripos($module, 'silverstripe-')  === false ) {
                 $module = "silverstripe-" . $module;
             }
             echo "<h2>" . ($count+1) . ". ".$module."</h2>";
@@ -114,22 +114,23 @@ class UpdateModules extends BuildTask
             if (count($commands) == 0 && ! $updateComposerJson) {
                 $moduleFilesOK = true;
 
-                foreach ($files as $file) {
+                foreach($files as $file) {
                     $fileObj = $file::create($moduleObject);
                     $checkFileName = $fileObj->getFileLocation();
                     $GitHubFileText = $moduleObject -> getRawFileFromGithub($checkFileName);
                     if ($GitHubFileText) {
                         $fileCheck = $fileObj->compareWithText($GitHubFileText);
-                        if (! $fileCheck) {
+                        if ( ! $fileCheck) {
                             $moduleFilesOK = false;
                         }
-                    } else {
+                    }
+                    else {
                         $moduleFilesOK = false;
                     }
                 }
 
                 if ($moduleFilesOK) {
-                    GeneralMethods::outputToScreen("<li> All files in $module OK, skipping to next module ... </li>");
+                    GeneralMethods::outputToScreen ("<li> All files in $module OK, skipping to next module ... </li>");
                     continue;
                 }
             }
@@ -143,12 +144,11 @@ class UpdateModules extends BuildTask
 
 
             if ($updateComposerJson) {
-                $composerJsonObj = new ComposerJson($moduleObject);
+                $composerJsonObj = new ComposerJson ($moduleObject);
                 $composerJsonObj->updateJsonData();
                 $moduleObject->setDescription($composerJsonObj->getDescription());
             }
 
-<<<<<<< HEAD
 			$excludedWords = $this->Config()->get('excluded_words');
 			
 			
@@ -177,16 +177,13 @@ class UpdateModules extends BuildTask
 
 
             foreach($files as $file) {
-=======
-            foreach ($files as $file) {
->>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
                 //run file update
 
                 $obj = $file::create($moduleObject);
                 $obj->run();
             }
 
-            foreach ($commands as $command) {
+            foreach($commands as $command) {
                 //run file update
                 $obj = $command::create($moduleObject->Directory());
                 $obj->run();
@@ -196,88 +193,54 @@ class UpdateModules extends BuildTask
             //Update Repository description
             //$moduleObject->updateGitHubInfo(array());
 
-            if (! $moduleObject->add()) {
-                die("ERROR in add");
-            }
-            if (! $moduleObject->commit()) {
-                die("ERROR in commit");
-            }
-            if (! $moduleObject->push()) {
-                die("ERROR in push");
-            }
-            if (! $moduleObject->removeClone()) {
-                die("ERROR in removeClone");
-            }
+            if( ! $moduleObject->add()) { die("ERROR in add"); }
+            if( ! $moduleObject->commit()) { die("ERROR in commit"); }
+            if( ! $moduleObject->push()) { die("ERROR in push"); }
+            if( ! $moduleObject->removeClone()) { die("ERROR in removeClone"); }
 
             $moduleObject->addRepoToScrutinzer();
+
         }
         //to do ..
     }
 
     protected function checkConfigYML($module)
     {
-<<<<<<< HEAD
         $configYml = ConfigYML::create($module)->reWrite();
  
-=======
-        $configYml = ConfigYML::create($module);
-        $loadedYml =$configYml->readYMLFromFile();
-
-        if ($loadedYml) {
-            print_r($this->yaml_data);
-            die();
-        } else {
-            die("sdfasdfasd");
-        }
->>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
     }
 
-    private function checkFile($module, $filename)
-    {
+    private function checkFile($module, $filename) {
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
         return file_exists($folder.'/'.$module.'/'.$filename);
     }
 
-    private function checkReadMe($module)
-    {
+    private function checkReadMe($module) {
         return $this->checkFile($module, "README.MD");
     }
 
-    private function checkDirExcludedWords($directory, $wordArray)
-    {
-        $filesAndFolders = scandir($directory);
+    private function checkDirExcludedWords($directory, $wordArray) {
+        $filesAndFolders = scandir ($directory);
 
         $problem_files = array();
         foreach ($filesAndFolders as $fileOrFolder) {
-<<<<<<< HEAD
 
             if ($fileOrFolder == '.' || $fileOrFolder == '..' || $fileOrFolder == '.git'  ) {
-=======
-            if ($fileOrFolder == '.' or $fileOrFolder == '..') {
->>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
                 continue;
             }
 
             $fileOrFolderFullPath = $directory . '/' . $fileOrFolder;
             if (is_dir($fileOrFolderFullPath)) {
                 $dir = $fileOrFolderFullPath;
-<<<<<<< HEAD
                 $problem_files = array_merge ($this->checkDirExcludedWords ($dir, $wordArray) , $problem_files);
-=======
-                $this->checkDirExcludedWords($dir, $wordArray);
->>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
             }
             if (is_file($fileOrFolderFullPath)) {
                 $file = $fileOrFolderFullPath;
                 $matchedWords = $this->checkFileExcludedWords($file, $wordArray);
 
                 if ($matchedWords) {
-<<<<<<< HEAD
 		
                    $problem_files[$file] = $matchedWords;
-=======
-                    $problem_files[$file] = $matchedWords;
->>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
                 }
             }
         }
@@ -285,7 +248,6 @@ class UpdateModules extends BuildTask
         return $problem_files;
     }
 
-<<<<<<< HEAD
     private function checkFileExcludedWords($fileName, $wordArray) {
 		
 
@@ -294,29 +256,13 @@ class UpdateModules extends BuildTask
 		$fileName = str_replace ('////', '/',  $fileName);
 		if (filesize ($fileName) == 0 ) return $matchedWords; 
 
-=======
-    private function checkFileExcludedWords($fileName, $wordArray)
-    {
-        $file = fopen($fileName, 'r');
-
-        $matchedWords = array();
-
-        if (! $file) {
-            return false;
-        }
-        $fileContent = fread($file, filesize($fileName));
->>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
 
         $fileContent = file_get_contents($fileName);
 		if (!$fileContent) (die ("could not open $fileName</br>"));
 
-<<<<<<< HEAD
         foreach ($wordArray as $word)  {
 			
 
-=======
-        foreach ($wordArray as $word) {
->>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
             $matches = array();
             $matchCount = preg_match_all('/' . $word . '/i', $fileContent);
             
@@ -331,45 +277,53 @@ class UpdateModules extends BuildTask
         }
 
         return $matchedWords;
+
     }
 
-    private function checkUpdateTag($moduleObject)
-    {
+    private function checkUpdateTag($moduleObject) {
+
         $aWeekAgo = strtotime("-1 weeks");
         $tag = $moduleObject->getLatestTag();
 
         $commitTime = $moduleObject->getLatestCommitTime();
 
-        if (! $commitTime) { // if no commits, cannot create a tag
-            return false;
-        }
+		if (! $commitTime) // if no commits, cannot create a tag
+		{
+			return false;
+		}
 
         $createTag = false;
 
-        if (! $tag) {
+        if ( ! $tag ) {
             $createTag = true;
             $newTagString = '1.0.0';
-        } elseif ($tag && $commitTime > $tag['timestamp'] && $commitTime < $aWeekAgo) {
+        }
+
+
+
+        else if ($tag && $commitTime > $tag['timestamp'] && $commitTime < $aWeekAgo) {
             $createTag = true;
             $tag['tagparts'][1] = $tag['tagparts'][1] + 1;
-            $newTagString = trim(implode('.', $tag['tagparts']));
+            $newTagString = trim(implode ('.', $tag['tagparts']));
         }
 
         if ($createTag) {
-            GeneralMethods::outputToScreen('<li> Creating new tag  '.$newTagString.' ... </li>');
+
+            GeneralMethods::outputToScreen ('<li> Creating new tag  '.$newTagString.' ... </li>');
 
             //git tag -a 0.0.1 -m "testing tag"
-            $options = array(
+            $options = array (
                 'a' => $newTagString,
                 'm' => $this->Config()->get('tag_create_message')
             );
 
-            $moduleObject->createTag($options);
+            $moduleObject->createTag ($options);
+
         }
 
-        return true;
+		return true;
+
     }
-<<<<<<< HEAD
     
     protected function moveOldReadMe($moduleObject) {
 		$tempDir = GitHubModule::Config()->get('absolute_temp_folder');
@@ -404,6 +358,4 @@ class UpdateModules extends BuildTask
 	}
 
 
-=======
->>>>>>> 18c1226d4f2d331251e5a396c55caff08c4b55c4
 }
