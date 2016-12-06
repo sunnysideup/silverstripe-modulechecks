@@ -173,7 +173,7 @@ class UpdateModules extends BuildTask
 					
 					trigger_error ("excluded words found in files(s)");
 					GeneralMethods::outputToScreen ($msg);
-					UpdateModules::unsolvedItems[$moduleObject->ModuleName] = $msg;
+					UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
 				}
 				
 			}
@@ -222,13 +222,13 @@ class UpdateModules extends BuildTask
 		
 		$headers = 'MIME-Version: 1.0' . "\r\n";
 		$headers .= ' Content-type: text/html; charset=iso-8859-1' . "\r\n";			
-		$headers .= ' From: moduleschecker' . "\r\n"
+		$headers .= ' From: nobody@sunnysideup.co.nz' . "\r\n";
 		
 		$dateStr =  date("Y/m/d H:i:s");
 		
 		$html = '<h1> Modules checker report at ' .$dateStr . '</h1>';
 		
-		if (count ($this->unsolvedItems) == 0) {
+		if (count (UpdateModules::$unsolvedItems) == 0) {
 			$html .= ' <h2> No unresolved problems in modules</h2>';
 		}
 		
@@ -237,9 +237,9 @@ class UpdateModules extends BuildTask
 				<h2> Unresolved problems in modules</h2>
 			
 			<table border = 1>
-					<tr></tr><th>Module</th><th>Problem</th></tr>';
+					<tr><th>Module</th><th>Problem</th></tr>';
 		
-			foreach (UpdateModules::unsolvedItemsunsolvedItems as $moduleName => $problem) {
+			foreach (UpdateModules::$unsolvedItems as $moduleName => $problem) {
 				
 				$html .= '<tr></tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
 				
@@ -249,9 +249,16 @@ class UpdateModules extends BuildTask
 			
 		}
 		
+		GeneralMethods::outputToScreen ('<li> Emailing report to ' .$mailTo. ' </li>');
 		
 		
-		return mail ($mailTo, 'Modules checker report at ' .$dateStr, $html, $headers);
+		$status =  mail ($mailTo, 'Modules checker report at ' . $dateStr, $html, $headers);
+	
+		if (! $status ) {
+			
+			GeneralMethods::outputToScreen ('<li> Email send Failed!</li>');
+			
+		}
 	
 	}
 

@@ -57,6 +57,7 @@ class ComposerJson extends Object
             $this->writeJsonToFile();
         } else {
             GeneralMethods::outputToScreen('<li style = "color: red;"> ' . $this->moduleName. '  has no composer.json !!!</li>');
+            UpdateModules::$unsolvedItems[$this->moduleName] = 'No composer.json';
         }
     }
 
