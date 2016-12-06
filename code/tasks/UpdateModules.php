@@ -204,6 +204,50 @@ class UpdateModules extends BuildTask
         //to do ..
     }
 
+	protected function emailReport() {
+		
+		
+		$mailTo = $this->Config()->get('report_email');
+		$debug = $this->Config()->get('debug');
+		
+		if (! $mailTo || $debug) 
+		{
+			return false;
+		}
+		
+		$dateStr =  date("Y/m/d H:i:s");
+		
+		$html = '<h1> Modules checker report at ' .$dateStr . '</h1>';
+		
+		if (count ($this->unsolvedItems) == 0) {
+			$html .= ' <h2> No unresolved problems in modules</h2>';
+		}
+		
+		else {
+			$html .= '
+				<h2> Unresolved problems in modules</h2>
+			
+			<table border = 1>
+					<tr></tr><th>Module</th><th>Problem</th></tr>';
+		
+			foreach ($this->unsolvedItems as $moduleName => $problem) {
+				
+				$html .= '<td>'.$moduleName.'</td><td><'. $problem .'</td>';
+				
+			}
+			$html .= '</table>';
+			$headers = 'MIME-Version: 1.0' . "\ r\n";
+			$headers .= ' Content-type: text/html; charset=iso-8859-1' . "\ r\n";			
+			$headers .= ' From: moduleschecker' . "\ r\n";			
+			
+		}
+		
+		
+		
+		mail ($mailTo = 'Modules checker report at ' .$dateStr, $html, $headers);
+	
+	}
+
     protected function checkConfigYML($module)
     {
         $configYml = ConfigYML::create($module)->reWrite();
