@@ -205,24 +205,15 @@ class UpdateModules extends BuildTask
 
         }
         
-        $this->emailReport();
+        $this->writeLog();
         //to do ..
     }
 
-	protected function emailReport() {
+	protected function writeLog() {
 		
 		
 		$mailTo = $this->Config()->get('report_email');
 		$debug = $this->Config()->get('debug');
-		
-		if (! $mailTo || $debug) 
-		{
-			return false;
-		}
-		
-		$headers = 'MIME-Version: 1.0' . "\r\n";
-		$headers .= ' Content-type: text/html; charset=iso-8859-1' . "\r\n";			
-		$headers .= ' From: nobody@sunnysideup.co.nz' . "\r\n";
 		
 		$dateStr =  date("Y/m/d H:i:s");
 		
@@ -241,7 +232,7 @@ class UpdateModules extends BuildTask
 		
 			foreach (UpdateModules::$unsolvedItems as $moduleName => $problem) {
 				
-				$html .= '<tr></tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
+				$html .= '<tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
 				
 			}
 			$html .= '</table>';
@@ -249,16 +240,19 @@ class UpdateModules extends BuildTask
 			
 		}
 		
-		GeneralMethods::outputToScreen ('<li> Emailing report to ' .$mailTo. ' </li>');
 		
+		$logFolder = getcwd() . '/../modulechecks/logs/';
 		
-		$status =  mail ($mailTo, 'Modules checker report at ' . $dateStr, $html, $headers);
-	
-		if (! $status ) {
-			
-			GeneralMethods::outputToScreen ('<li> Email send Failed!</li>');
-			
+		GeneralMethods::outputToScreen ("Writing to log folder");
+		
+		$result = file_put_contents ( $logFolder . date('U') . '.html', $html);
+		
+		if ( ! $result )
+		{
+			GeneralMethods::outputToScreen ("Could not write log file");
 		}
+		
+
 	
 	}
 

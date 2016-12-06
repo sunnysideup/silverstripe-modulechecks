@@ -210,6 +210,7 @@ class GitHubModule extends DataObject {
                     $cloneAttempts ++;
                     if ($cloneAttempts == 4) {
                         user_error ('Failed to clone module ' . $this->LongModuleName() . ' after ' . ($cloneAttempts  - 1). ' attemps.', E_USER_ERROR);
+                        UpdateModules::$unsolvedItems[$this->ModuleName()] = 'Failed to clone modules';
                     }
                     try {
                         $this->commsWrapper->setTimeout(240); //Big modules need a longer timeout
