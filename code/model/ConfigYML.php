@@ -40,7 +40,10 @@ Class ConfigYML extends Object {
             
             
         } catch (Exception $e) {
-            GeneralMethods::output_to_screen("<li>Unable to parse the YAML string: %s <li>", $e->getMessage(), 'updated') ;
+            GeneralMethods::output_to_screen("<li>Unable to parse the YAML string: " .$e->getMessage(). " <li>", 'updated') ;
+            
+            UpdateModules::$unsolvedItems[$gitHubModuleInstance->ModuleName] = "Unable to parse the YAML string: " .$e->getMessage(
+            
 			trigger_error ("Error in YML file");
 	
 			return false;

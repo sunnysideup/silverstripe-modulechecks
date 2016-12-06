@@ -40,6 +40,8 @@ class UpdateModules extends BuildTask
      * @var array
      */
     private static $commands_to_run = array();
+    
+    public static $unsolvedItems = array();
 
     public function run($request) {
         increase_time_limit_to(3600);
@@ -161,16 +163,17 @@ class UpdateModules extends BuildTask
 				
 				if ($results && count ($results > 0)) 
 				{
-					$msg = "<h4>the following excluded words were found: </h4>";
+					$msg = "<h4>The following excluded words were found: </h4><ul>";
 					foreach ($results as $file => $words) {
 						foreach ($words as $word) {
 							$msg .= "<li>$word in $file</li>";
 						}
 					}
-					
+					$msg .= '</ul>';
 					
 					trigger_error ("excluded words found in files(s)");
 					GeneralMethods::outputToScreen ($msg);
+					UpdateModules::unsolvedItems[$moduleObject->ModuleName] = $msg;
 				}
 				
 			}
@@ -201,6 +204,8 @@ class UpdateModules extends BuildTask
             $moduleObject->addRepoToScrutinzer();
 
         }
+        
+        $this->emailReport();
         //to do ..
     }
 
@@ -214,6 +219,10 @@ class UpdateModules extends BuildTask
 		{
 			return false;
 		}
+		
+		$headers = 'MIME-Version: 1.0' . "\r\n";
+		$headers .= ' Content-type: text/html; charset=iso-8859-1' . "\r\n";			
+		$headers .= ' From: moduleschecker' . "\r\n"
 		
 		$dateStr =  date("Y/m/d H:i:s");
 		
@@ -230,21 +239,19 @@ class UpdateModules extends BuildTask
 			<table border = 1>
 					<tr></tr><th>Module</th><th>Problem</th></tr>';
 		
-			foreach ($this->unsolvedItems as $moduleName => $problem) {
+			foreach (UpdateModules::unsolvedItemsunsolvedItems as $moduleName => $problem) {
 				
-				$html .= '<td>'.$moduleName.'</td><td><'. $problem .'</td>';
+				$html .= '<tr></tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
 				
 			}
 			$html .= '</table>';
-			$headers = 'MIME-Version: 1.0' . "\ r\n";
-			$headers .= ' Content-type: text/html; charset=iso-8859-1' . "\ r\n";			
-			$headers .= ' From: moduleschecker' . "\ r\n";			
+;			
 			
 		}
 		
 		
 		
-		mail ($mailTo = 'Modules checker report at ' .$dateStr, $html, $headers);
+		return mail ($mailTo, 'Modules checker report at ' .$dateStr, $html, $headers);
 	
 	}
 
