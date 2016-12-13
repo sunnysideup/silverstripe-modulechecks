@@ -24,9 +24,7 @@
     ],
     "require": {
         "friendsofphp/php-cs-fixer": "^1.12",
-        "symfony/yaml": "^3.1",
-        "silverstripe/framework": "~3.1",
-        "silverstripe/cms": "~3.1"
+        "symfony/yaml": "^3.1"
     },
     "extra": {
         "installer-name": "modulechecks"

@@ -130,6 +130,8 @@ class UpdateModules extends BuildTask
                         $moduleFilesOK = false;
                     }
                 }
+                
+                
 
                 if ($moduleFilesOK) {
                     GeneralMethods::outputToScreen ("<li> All files in $module OK, skipping to next module ... </li>");
@@ -208,6 +210,16 @@ class UpdateModules extends BuildTask
         $this->writeLog();
         //to do ..
     }
+    
+    protected function renameTest($moduleObject) {
+		
+		$oldName = $moduleObject->Directory() . "tests/ModuleTest.php";
+		$newName = $moduleObject->Directory() . "tests/" . $moduleObject->ModuleName . "Test.php";
+		
+		unlink ($newName);
+		
+		rename($oldName, $newName);
+	}
 
 	protected function writeLog() {
 		
