@@ -188,10 +188,16 @@ class UpdateModules extends BuildTask
                 $obj->run();
             }
 
+			$moduleDir = $moduleObject->Directory();
+
             foreach($commands as $command) {
                 //run file update
-                $obj = $command::create($moduleObject->Directory());
+                
+                
+                $obj = $command::create($moduleDir);
                 $obj->run();
+                
+                
                 //run command
             }
 
@@ -206,6 +212,7 @@ class UpdateModules extends BuildTask
             $moduleObject->addRepoToScrutinzer();
 
         }
+ 
         
         $this->writeLog();
         //to do ..
@@ -213,12 +220,25 @@ class UpdateModules extends BuildTask
     
     protected function renameTest($moduleObject) {
 		
-		$oldName = $moduleObject->Directory() . "tests/ModuleTest.php";
+		$oldName = $moduleObject->Directory() . "/tests/ModuleTest.php";
+		
+		if ( ! file_exists($oldName) ) 
+		{
+			print_r ($oldName);
+			return false;
+		}
+		
+		
+		
 		$newName = $moduleObject->Directory() . "tests/" . $moduleObject->ModuleName . "Test.php";
+		
+		GeneralMethods::outputToScreen ("Renaming $oldName to $newName");
 		
 		unlink ($newName);
 		
 		rename($oldName, $newName);
+
+		
 	}
 
 	protected function writeLog() {
@@ -255,9 +275,11 @@ class UpdateModules extends BuildTask
 		
 		$logFolder = getcwd() . '/../modulechecks/logs/';
 		
-		GeneralMethods::outputToScreen ("Writing to log folder");
+		$filename = $logFolder . date('U') . '.html';
 		
-		$result = file_put_contents ( $logFolder . date('U') . '.html', $html);
+		GeneralMethods::outputToScreen ("Writing to $filename");
+		
+		$result = file_put_contents ( $filename, $html);
 		
 		if ( ! $result )
 		{

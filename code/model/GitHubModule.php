@@ -135,6 +135,22 @@ class GitHubModule extends DataObject {
         return str_replace('silverstripe-', '', $this->ModuleName);
     }
 
+    function ShortUCFirstName()
+    {
+		$array = explode ('_', $this->ShortModuleName());
+
+		$name = '';
+		
+        foreach ($array as $part) 
+        {
+
+			$name .= ucfirst ($part);
+			
+		}
+        
+        return $name;
+    }
+
 
     function ModuleNameFirstLetterCapital() {
         $shortName = $this->ShortModuleName();
