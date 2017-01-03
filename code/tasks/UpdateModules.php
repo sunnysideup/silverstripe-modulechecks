@@ -97,9 +97,34 @@ class UpdateModules extends BuildTask
         }
 
 
+		set_error_handler ('errorHandler');
         foreach($modules as $count => $module) {
+			
+			try {
+				
+				$this->processOneModule($module, $count, $files, $commands, $updateComposerJson);
+			}
+			catch (Exception $e) {
+				GeneralMethods::outputToScreen ("<li> Could not complete processing $module: " .  $e->getMessage() . " </li>");
+			}
+			
 
-            if ( stripos($module, 'silverstripe-')  === false ) {
+        }
+ 
+		restore_error_handler();
+        
+        $this->writeLog();
+        //to do ..
+    }
+    
+    protected function errorHandler(int $errno , string $errstr) {
+		GeneralMethods::outputToScreen ("<li> Could not complete processing module: " .  $errstr . " </li>");
+		return true;
+	}
+    
+    protected function processOneModule($module, $count, $files, $commands, $updateComposerJson) {
+		    
+		    if ( stripos($module, 'silverstripe-')  === false ) {
                 $module = "silverstripe-" . $module;
             }
             echo "<h2>" . ($count+1) . ". ".$module."</h2>";
@@ -173,7 +198,7 @@ class UpdateModules extends BuildTask
 					}
 					$msg .= '</ul>';
 					
-					trigger_error ("excluded words found in files(s)");
+					//trigger_error ("excluded words found in files(s)");
 					GeneralMethods::outputToScreen ($msg);
 					UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
 				}
@@ -210,13 +235,7 @@ class UpdateModules extends BuildTask
             if( ! $moduleObject->removeClone()) { die("ERROR in removeClone"); }
 
             $moduleObject->addRepoToScrutinzer();
-
-        }
- 
-        
-        $this->writeLog();
-        //to do ..
-    }
+	}
     
     protected function renameTest($moduleObject) {
 		

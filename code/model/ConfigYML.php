@@ -44,7 +44,7 @@ Class ConfigYML extends Object {
             
             UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to parse the YAML string: " .$e->getMessage();
             
-			trigger_error ("Error in YML file");
+			//trigger_error ("Error in YML file");
 	
 			return false;
         }
