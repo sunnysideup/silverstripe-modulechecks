@@ -120,7 +120,9 @@ class UpdateModules extends BuildTask
     protected function errorHandler(int $errno , string $errstr) {
 
 		GeneralMethods::outputToScreen ("<li> Could not complete processing module: " .  $errstr . " </li>");
-                UpdateModules::$unsolvedItems[$this->currentModule] = "Could not complete processing module: " . $errstr;
+  
+        UpdateModules::addUnsolvedProblem($this->currentModule, "Could not complete processing module: " . $errstr);
+              
 		return true;
 	}
     
@@ -239,6 +241,8 @@ class UpdateModules extends BuildTask
             $moduleObject->addRepoToScrutinzer();
 	}
     
+
+    
     protected function renameTest($moduleObject) {
 		
 		$oldName = $moduleObject->Directory() . "/tests/ModuleTest.php";
@@ -262,9 +266,18 @@ class UpdateModules extends BuildTask
 		
 	}
 
+	public static function addUnsolvedProblem($moduleName, $problemString) {
+		if (!isset (UpdateModules::$unsolvedItems[$moduleName]) )
+		{
+			UpdateModules::$unsolvedItems[$moduleName] = array();
+		}
+		array_push (UpdateModules::$unsolvedItems[$moduleName], $problemString);
+	}
+		
 	protected function writeLog() {
 		
 		
+
 		$mailTo = $this->Config()->get('report_email');
 		$debug = $this->Config()->get('debug');
 		
@@ -283,10 +296,12 @@ class UpdateModules extends BuildTask
 			<table border = 1>
 					<tr><th>Module</th><th>Problem</th></tr>';
 		
-			foreach (UpdateModules::$unsolvedItems as $moduleName => $problem) {
+			foreach (UpdateModules::$unsolvedItems as $moduleName => $problems) {
+
+				foreach ($problems as $problem) {
 				
-				$html .= '<tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
-				
+					$html .= '<tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
+				}
 			}
 			$html .= '</table>';
 ;			

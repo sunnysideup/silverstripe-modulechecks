@@ -36,7 +36,9 @@ Class ConfigYML extends Object {
 		if (! file_exists ($this->filename)) 
 		{
                     GeneralMethods::output_to_screen("<li>Unable to load: " . $this->filename, 'updated') ;
-                    UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to load " . $this->filename;
+                    //UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to load " . $this->filename;
+                    
+                    UpdateModules::addUnsolvedProblem($this->gitHubModuleInstance->ModuleName, "Unable to load " . $this->filename);
                     return false;
 		}
 			
@@ -49,9 +51,13 @@ Class ConfigYML extends Object {
         } catch (Exception $e) {
             GeneralMethods::output_to_screen("<li>Unable to parse the YAML string: " .$e->getMessage(). " <li>", 'updated') ;
             
-            UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to parse the YAML string: " .$e->getMessage();
+            //UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to parse the YAML string: " .$e->getMessage();
+            
+            UpdateModules::addUnsolvedProblem($this->gitHubModuleInstance->ModuleName, "Unable to parse the YAML string: " .$e->getMessage());
             
 			//trigger_error ("Error in YML file");
+	
+			$this->replaceFaultyYML();
 	
 			return false;
         }
@@ -61,6 +67,43 @@ Class ConfigYML extends Object {
 
     }
     
+    
+    public function replaceFaultyYML() {
+           
+    
+		if (file_exists ($this->filename)) {
+			
+			
+			$rawYML = file_get_contents($this->filename);
+			
+			$lines = explode("\n", $rawYML);
+			
+			$replacment = '';
+			
+			foreach ($lines as $index=>$line) {
+				if (strpos ($line, "After:" ) !==false) {
+					$replacment = "After: \r\n";
+					$listitems = explode (',', $line);
+					//print_r ($listitems);
+					foreach ($listitems as $item)
+					{
+						$item = str_replace('After: ', '', $item);
+						$replacment .= '  - '. $item . "\r\n";
+					}
+					$lines[$index] = $replacment;
+				}
+			}
+			$newYML = implode("\r\n", $lines);
+			file_put_contents($this->filename, $newYML);
+			
+			die("check $this->filename!!");
+		}
+		else
+		{
+			return false;
+		}
+           
+    }
     public function writeYAMLToFile() {
 		
 		GeneralMethods::output_to_screen("Writing config yml ... ",'updating');
@@ -71,8 +114,9 @@ Class ConfigYML extends Object {
 		
 		$yaml = Yaml::dump($this->yaml_data);
 		file_put_contents($this->filename, $yaml);
-		//file_put_contents('/home/jack/test.yml', $yaml);
 		return true;
+		
+		
 	}
 
     private function catchFopenWarning() {

@@ -226,7 +226,9 @@ class GitHubModule extends DataObject {
                     $cloneAttempts ++;
                     if ($cloneAttempts == 4) {
                         user_error ('Failed to clone module ' . $this->LongModuleName() . ' after ' . ($cloneAttempts  - 1). ' attemps.', E_USER_ERROR);
-                        UpdateModules::$unsolvedItems[$this->ModuleName()] = 'Failed to clone modules';
+                        //UpdateModules::$unsolvedItems[$this->ModuleName()] = 'Failed to clone modules';
+                        UpdateModules::addUnsolvedProblem($this->ModuleName() , 'Failed to clone modules');
+                        
                     }
                     try {
                         $this->commsWrapper->setTimeout(240); //Big modules need a longer timeout
@@ -810,7 +812,12 @@ class GitHubModule extends DataObject {
         $curlResult = curl_exec($ch);
 
         if ( ! $curlResult ){
-            die ('Curl failed.');
+            GeneralMethods::outputToScreen ("<li> could not add $repoName to Scrutinizer ... </li>");
+            //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (curl failure)";
+            
+            UpdateModules::addUnsolvedProblem($repoName, "Could not add $reopName to Scrutiniser (curl failure)");
+            
+            return false;
         }
 
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -821,6 +828,8 @@ class GitHubModule extends DataObject {
         }
         else{
             GeneralMethods::outputToScreen ("<li> could not add $repoName to Scrutinizer ... </li>");
+            //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (HttpCode $httpcode)";
+            UpdateModules::addUnsolvedProblem($repoName, "Could not add $reopName to Scrutiniser (HttpCode $httpcode)");
         }
 
 
