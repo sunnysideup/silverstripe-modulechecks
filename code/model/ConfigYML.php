@@ -32,6 +32,12 @@ Class ConfigYML extends Object {
     public function readYMLFromFile() {
 
 		GeneralMethods::output_to_screen("reading config yml ...  ",'updating');
+		
+		if (! file_exists ($this->filename)) 
+		{
+			GeneralMethods::output_to_screen("$filename does not exist ",'updating');
+			return false;
+		}
 			
         try {
             $this->yaml_data = Yaml::parse(file_get_contents($this->filename));
