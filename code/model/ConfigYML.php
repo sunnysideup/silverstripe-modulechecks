@@ -35,8 +35,9 @@ Class ConfigYML extends Object {
 		
 		if (! file_exists ($this->filename)) 
 		{
-			GeneralMethods::output_to_screen("$filename does not exist ",'updating');
-			return false;
+                    GeneralMethods::output_to_screen("<li>Unable to load: " . $this->filename, 'updated') ;
+                    UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to load " . $this->filename;
+                    return false;
 		}
 			
         try {

@@ -99,7 +99,7 @@ class UpdateModules extends BuildTask
 
 		set_error_handler ('errorHandler', E_ALL);
         foreach($modules as $count => $module) {
-			
+			$this->currentModule = $module;
 			try {
 				
 				$this->processOneModule($module, $count, $files, $commands, $updateComposerJson);
@@ -118,10 +118,10 @@ class UpdateModules extends BuildTask
     }
     
     protected function errorHandler(int $errno , string $errstr) {
-		
-		die ($errstr);
+
 		GeneralMethods::outputToScreen ("<li> Could not complete processing module: " .  $errstr . " </li>");
-		return false;
+                UpdateModules::$unsolvedItems[$this->currentModule] = "Could not complete processing module: " . $errstr;
+		return true;
 	}
     
     protected function processOneModule($module, $count, $files, $commands, $updateComposerJson) {
