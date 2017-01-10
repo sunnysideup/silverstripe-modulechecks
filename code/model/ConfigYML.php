@@ -70,6 +70,10 @@ Class ConfigYML extends Object {
     
     public function replaceFaultyYML() {
            
+        return false;
+           
+		/**function broken do not use**/
+    
     
 		if (file_exists ($this->filename)) {
 			
@@ -82,20 +86,28 @@ Class ConfigYML extends Object {
 			
 			foreach ($lines as $index=>$line) {
 				if (strpos ($line, "After:" ) !==false) {
-					$replacment = "After: \r\n";
+					$replacment = "After:";
 					$listitems = explode (',', $line);
 					//print_r ($listitems);
 					foreach ($listitems as $item)
 					{
+						if (! trim ($item)) {
+							continue;
+						}
+						
 						$item = str_replace('After: ', '', $item);
-						$replacment .= '  - '. $item . "\r\n";
+						$replacment .= '  - '. trim($item) . "";
 					}
 					$lines[$index] = $replacment;
 				}
 			}
-			$newYML = implode("\r\n", $lines);
+			$newYML = implode('', $lines);
 			
 			GeneralMethods::output_to_screen("Updating config.YML to correct syntax ... ",'updating');
+			
+			$file = fopen($this->filename, "w");
+			
+			
 			
 			file_put_contents($this->filename, $newYML);
 			

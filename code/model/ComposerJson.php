@@ -63,9 +63,6 @@ class ComposerJson extends Object
         }
     }
 
-    protected function checkOrAddExtra() {
-		
-	}
     
     protected function writeJsonToFile()
     {
