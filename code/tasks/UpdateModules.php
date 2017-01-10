@@ -173,7 +173,7 @@ class UpdateModules extends BuildTask
 
 			$this->moveOldReadMe($moduleObject);
 
-            $this->checkConfigYML($moduleObject);
+            // $this->checkConfigYML($moduleObject);
 
 
             if ($updateComposerJson) {
@@ -254,7 +254,7 @@ class UpdateModules extends BuildTask
 				UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
 				continue;					
 			}
-            if( ! $moduleObject->removeClone()) {
+            if( ! $moduleObject->removeClone()) 
 			{
 				$msg = "Could not remove local copy of repo";
 				GeneralMethods::outputToScreen ($msg);
@@ -328,12 +328,13 @@ class UpdateModules extends BuildTask
 				}
 			}
 			$html .= '</table>';
-;			
+	
 			
 		}
 		
 		
-		$logFolder = getcwd() . '/../modulechecks/logs/';
+		
+		$logFolder = $this->Config()->get('logfolder');
 		
 		$filename = $logFolder . date('U') . '.html';
 		
