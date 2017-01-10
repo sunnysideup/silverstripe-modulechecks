@@ -63,7 +63,11 @@ class ComposerJson extends Object
         }
     }
 
-    private function writeJsonToFile()
+    protected function checkOrAddExtra() {
+		
+	}
+    
+    protected function writeJsonToFile()
     {
         if (! $this->jsonData) { //if not loaded
             return false;
