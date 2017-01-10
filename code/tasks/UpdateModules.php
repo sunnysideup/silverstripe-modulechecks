@@ -173,7 +173,7 @@ class UpdateModules extends BuildTask
 
 			$this->moveOldReadMe($moduleObject);
 
-            // $this->checkConfigYML($moduleObject);
+            $this->checkConfigYML($moduleObject);
 
 
             if ($updateComposerJson) {

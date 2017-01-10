@@ -94,9 +94,12 @@ Class ConfigYML extends Object {
 				}
 			}
 			$newYML = implode("\r\n", $lines);
+			
+			GeneralMethods::output_to_screen("Updating config.YML to correct syntax ... ",'updating');
+			
 			file_put_contents($this->filename, $newYML);
 			
-			die("check $this->filename!!");
+			
 		}
 		else
 		{
