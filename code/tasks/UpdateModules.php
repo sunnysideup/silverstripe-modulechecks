@@ -233,12 +233,36 @@ class UpdateModules extends BuildTask
             //Update Repository description
             //$moduleObject->updateGitHubInfo(array());
 
-            if( ! $moduleObject->add()) { die("ERROR in add"); }
-            if( ! $moduleObject->commit()) { die("ERROR in commit"); }
-            if( ! $moduleObject->push()) { die("ERROR in push"); }
-            if( ! $moduleObject->removeClone()) { die("ERROR in removeClone"); }
-
-            $moduleObject->addRepoToScrutinzer();
+            if( ! $moduleObject->add()) {
+			
+				$msg = "Could not add files module to Repo";
+				GeneralMethods::outputToScreen ($msg);
+				UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+				continue;
+			
+			}
+            if( ! $moduleObject->commit()) 	{
+				$msg = "Could not commit files to Repo";
+				GeneralMethods::outputToScreen ($msg);
+				UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+				continue;				
+			}
+			
+            if( ! $moduleObject->push()) {
+				$msg = "Could not push files to Repo";
+				GeneralMethods::outputToScreen ($msg);
+				UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+				continue;					
+			}
+            if( ! $moduleObject->removeClone()) {
+			{
+				$msg = "Could not remove local copy of repo";
+				GeneralMethods::outputToScreen ($msg);
+				UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;				
+			}
+			
+			$moduleObject->addRepoToScrutinzer();
+            
 	}
     
 
@@ -380,7 +404,13 @@ class UpdateModules extends BuildTask
 
 
         $fileContent = file_get_contents($fileName);
-		if (!$fileContent) (die ("could not open $fileName</br>"));
+		if (!$fileContent) {
+			
+			$msg = "Could not open $fileName to check for excluded words";
+			
+			GeneralMethods::outputToScreen ($msg);
+			UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+		}
 
         foreach ($wordArray as $word)  {
 			

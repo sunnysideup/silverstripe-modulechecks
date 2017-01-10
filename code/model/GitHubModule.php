@@ -661,7 +661,9 @@ class GitHubModule extends DataObject {
         }
         $curlResult = curl_exec($ch);
         if ( ! $curlResult ){
-            die ('Curl failed.');
+			$msg = "curl exectution failed";
+            GeneralMethods::outputToScreen ($msg);
+			UpdateModules::$unsolvedItems["none"] = $msg;
         }
         print_r($url);
         print_r('<br/>');
@@ -722,6 +724,8 @@ class GitHubModule extends DataObject {
 
 			if ( ! $curlResult ){
 				GeneralMethods::OutputToScreen('Could not retrieve list of modules from GitHub');
+\
+				UpdateModules::$unsolvedItems[$"all"] =  ('Could not retrieve list of modules from GitHub');
 				die ('');
 			}
 			
