@@ -5,6 +5,10 @@
 # 2. edit ~/.bashrc to include this line ... export PATH=$PATH:~/local/bin/
 # 3. make sure the git-meld-all file can be executed
 
+# deleting foo.bar.orig files ... 
+find . -name "*.orig" -exec rm "{}" -i \;
+
+# find folders
 folders=`find . -mindepth 0 -maxdepth 1 -type d`
 rootFolder=$PWD
 
