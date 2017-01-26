@@ -61,6 +61,8 @@ for folder in $folders; do
 		    git add --all
 		    meld .
 		fi
+        git pull origin $(git rev-parse --abbrev-ref HEAD) 
+        git push origin $(git rev-parse --abbrev-ref HEAD)        
 		echo -e "-- ${CYAN}Completed ${BLUE2}$folder${NC} --"
 		echo ""
 
