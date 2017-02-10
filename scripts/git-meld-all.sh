@@ -34,6 +34,8 @@ gitCustomStatus (){
     esac
     done
 }
+git commit composer.lock -m "PATCH: composer.lock"
+git commit .gitignore -m "PATCH: .gitignore"
 
 for folder in $folders; do
     if [ -f $folder/.git/config ] ; then # is a git working copy
@@ -41,6 +43,7 @@ for folder in $folders; do
     if ( grep --quiet $vendor $folder/.git/config ) || [[ $folder == "." ]]; then
         cd $folder
         folderChanges=`git status --porcelain`
+
         if [[ $folderChanges ]];then
         echo -e "-- ${CYAN}You have modified files in $folder${NC}"
 
@@ -78,6 +81,7 @@ echo -e "-- ${CYAN}END${NC} --------------------";
 for folder in $folders; do
     if [ -f $folder/.git/config ] ; then # is a git working copy
         cd $folder
+        git status
         git pull origin master
         git push origin master
         cd $rootFolder
