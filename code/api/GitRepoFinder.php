@@ -22,7 +22,7 @@ class GitRepoFinder extends Object
 
     public static function get_all_repos($username = '', $getNamesWithPrefix = false)
     {
-        $oauth_token = GitRepoFinder::Config()->get('github_oauth_token');
+        # $oauth_token = GitRepoFinder::Config()->get('github_oauth_token');
 
         return GitRepoFinder::get_all_repos_no_oauth($username, $getNamesWithPrefix);
     }

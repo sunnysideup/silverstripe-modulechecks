@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * sets the default installation folder 
+ */
 class CheckOrAddExtraArray extends UpdateComposer {
 
 

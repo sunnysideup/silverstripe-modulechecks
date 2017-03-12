@@ -83,7 +83,7 @@ class UpdateModules extends BuildTask
             $files = array_intersect($files, $limitedFileClasses);
         }
 
-        /*
+        /* 
          * Get commands to run on modules
          * */
 
@@ -96,6 +96,9 @@ class UpdateModules extends BuildTask
             $commands = array_intersect($commands, $limitedCommands);
         }
 
+		print_r ($commands);
+		
+		die();
 
 		set_error_handler ('errorHandler', E_ALL);
         foreach($modules as $count => $module) {
@@ -302,7 +305,7 @@ class UpdateModules extends BuildTask
 		
 		
 
-		$mailTo = $this->Config()->get('report_email');
+		# $mailTo = $this->Config()->get('report_email');
 		$debug = $this->Config()->get('debug');
 		
 		$dateStr =  date("Y/m/d H:i:s");

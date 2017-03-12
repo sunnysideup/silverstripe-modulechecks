@@ -600,6 +600,9 @@ class GitHubModule extends DataObject {
 
     public function updateGitHubInfo($array) {
         // see https://developer.github.com/v3/repos/#edit
+        
+        # not working
+        
         $defaultValues =array(
             'name' => $this->LongModuleName(),
             'private' => false,
