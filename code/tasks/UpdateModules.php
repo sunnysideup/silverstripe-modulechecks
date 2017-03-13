@@ -445,17 +445,18 @@ class UpdateModules extends BuildTask
     private function checkUpdateTag($moduleObject) {
 
         $tagDelayString = $this->Config()->get('tag_delay');
+        $nextTag = null;
 
         if (!$tagDelayString)
         {
-            $tagDelayString = "-1 weeks";
+            $tagDelayString = "-3 weeks";
         }
 
 
         $tagDelay = strtotime($tagDelayString);
         if (!$tagDelay) {
-			$tagDelay = strtotime("-1 weeks");
-		}
+            $tagDelay = strtotime("-3 weeks");
+        }
 
         $tag = $moduleObject->getLatestTag();
 
@@ -468,6 +469,9 @@ class UpdateModules extends BuildTask
 
         $createTag = false;
 
+
+		$newTagString  = '';
+
         if ( ! $tag ) {
             $createTag = true;
             $newTagString = '1.0.0';
@@ -476,12 +480,13 @@ class UpdateModules extends BuildTask
 
 
         else if ($tag && $commitTime > $tag['timestamp'] && $commitTime < $tagDelay) {
-            $createTag = true;
-            $tag['tagparts'][1] = $tag['tagparts'][1] + 1;
-            $newTagString = trim(implode ('.', $tag['tagparts']));
+			$changeType = $moduleObject->getChangeTypeSinceLastTag();
+			
+			die ($changeType);
+			$newTagString = $this->findNextTag($tag, $changeType);
         }
 
-        if ($createTag) {
+        if ($newTagString) {
 
             GeneralMethods::outputToScreen ('<li> Creating new tag  '.$newTagString.' ... </li>');
 
@@ -498,6 +503,33 @@ class UpdateModules extends BuildTask
         return true;
 
     }
+
+	protected function findNextTag ($tag, $changeType)
+	{
+	
+		switch ($changeType) {
+	
+			case 'MAJOR':
+			$tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
+			$tag['tagparts'][1] = 0;
+			$tag['tagparts'][2] = 0;
+			break;
+
+			case 'MINOR':
+
+			$tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
+			$tag['tagparts'][2] = 0;
+			break;
+			
+			default:
+			case 'PATCH':
+			$tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
+			break;
+		}
+		
+		$newTagString = trim(implode ('.', $tag['tagparts']));
+		return $newTagString;
+	}
 
     protected function moveOldReadMe($moduleObject) {
         $tempDir = GitHubModule::Config()->get('absolute_temp_folder');

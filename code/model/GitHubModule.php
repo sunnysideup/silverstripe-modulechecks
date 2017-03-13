@@ -137,16 +137,16 @@ class GitHubModule extends DataObject {
 
     function ShortUCFirstName()
     {
-		$array = explode ('_', $this->ShortModuleName());
+        $array = explode ('_', $this->ShortModuleName());
 
-		$name = '';
-		
+        $name = '';
+        
         foreach ($array as $part) 
         {
 
-			$name .= ucfirst ($part);
-			
-		}
+            $name .= ucfirst ($part);
+            
+        }
         
         return $name;
     }
@@ -465,12 +465,12 @@ class GitHubModule extends DataObject {
                 'format' => "%cd",
                 '1' => true
             );
-			
-			try {
-            $result = $git->log ($options);
-			}
-			catch (Exception $e) {
-				$errStr = $e->getMessage();
+            
+            try {
+                $result = $git->log ($options);
+            }
+            catch (Exception $e) {
+                $errStr = $e->getMessage();
                 if (stripos($errStr, 'does not have any commits') === false) {
                     print_r($e);
                     throw $e;
@@ -479,7 +479,7 @@ class GitHubModule extends DataObject {
                     
                     return false;
                 }
-			}            
+            }            
             
             if ($result) {
                 return (strtotime($result));
@@ -493,102 +493,161 @@ class GitHubModule extends DataObject {
         }
     }
 
+    private $_latest_tag = null;
+
     public function getLatestTag() {
+        if($this->_latest_tag === null) {
+            $git = $this->checkOrSetGitCommsWrapper();
+            if ($git) {
+                $options = array (
+                    'tags' => true,
+                    'simplify-by-decoration' => true,
+                    'pretty' => 'format:%ai %d'
+                );
+
+                $cwd = getcwd();
+                chdir($this->Directory);
+
+                try {
+                    $result = $git->log($options);
+                }
+                catch (Exception $e) {
+                    $errStr = $e->getMessage();
+                    if (stripos($errStr, 'does not have any commits') === false) {
+                        print_r($e);
+                        throw $e;
+                    }
+                    else {
+                        GeneralMethods::output_to_screen('Unable to get tag because there are no commits to the repository');
+                        return false;
+                    }
+                }
+
+
+                chdir($cwd);
+
+                $resultLines  =  explode ("\n", $result->getOutput());
+
+                // 2016-10-14 12:29:08 +1300 (HEAD -> master, tag: 2.3.0, tag: 2.2.0, tag: 2.1.0, origin/master, origin/HEAD)\
+                // or
+                // 2016-08-29 17:18:22 +1200 (tag: 2.0.0)
+                //print_r($resultLines);
+
+
+                if (count($resultLines) == 0) {
+                    return false;
+                }
+
+                $latestTimeStamp = 0;
+                $latestTag = false;
+                foreach ($resultLines as $line) {
+                    $isTagInLine = (strpos ($line, 'tag') !== false);
+                    if ($isTagInLine) {
+                        $tagStr = trim(substr($line, 25));
+                        $dateStr = trim(substr($line, 0, 26));
+
+
+                        //extract tag numbers from $tagStr
+
+                        $matches = array();
+                        // print_r ("original!!! " .  $tagStr);
+                        $result = preg_match_all('/tag: \d{1,3}.\d{1,3}.\d{1,3}/', $tagStr, $matches);
+                        if ($result === false)
+                        {
+                            continue;
+                        }
+                        elseif ($result > 1)
+                        {
+                            $tagStr = $matches[0][0];
+                        }
+                        //print_r ($matches);
+
+                        $tagStr  = str_replace('(', '', $tagStr);
+                        $tagStr  = str_replace(')', '', $tagStr);
+                        $timeStamp = strtotime ($dateStr);
+
+                        if ($latestTimeStamp < $timeStamp) {
+                            $latestTimeStamp = $timeStamp;
+                            $latestTag = $tagStr;
+                        }
+                    }
+                }
+                if (isset($latestTag) && $latestTag) {
+                    $latestTag = str_replace('tag:', '', $latestTag) ;
+
+
+                    $tagParts = explode ('.', $latestTag);
+
+                    if (count($tagParts) != 3) return false;
+                    $this->_latest_tag = array (
+                        'tagstring' => $latestTag,
+                        'tagparts' => $tagParts,
+                        'timestamp' => $latestTimeStamp);
+
+                }
+                else {
+                    $this->_latest_tag = false;
+                }
+
+            }
+        }
+        return $this->_latest_tag;
+    }
+
+    /**
+     * git command used: //git log 0.0.1..HEAD --oneline
+     * return @string (major | minor | patch)
+     */
+    public function getChangeTypeSinceLastTag()
+    {
+        $latestTag = trim($this->getLatestTag()['tagstring']);
+        
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
+			
+			//var_dump ($git);
+			//die();
+            
             $options = array (
-                'tags' => true,
-                'simplify-by-decoration' => true,
-                'pretty' => 'format:%ai %d'
+                'oneline' => true
             );
 
             $cwd = getcwd();
             chdir($this->Directory);
 
-			try {
-				$result = $git->log($options);
-			}
-			catch (Exception $e) {
-				$errStr = $e->getMessage();
-                if (stripos($errStr, 'does not have any commits') === false) {
-                    print_r($e);
-                    throw $e;
-                }
-                else {
-                    GeneralMethods::output_to_screen('Unable to get tag because there are no commits to the repository');
-                    return false;
-                }
-			}
-
-
-            chdir($cwd);
-
-            $resultLines  =  explode ("\n", $result->getOutput());
-
-            // 2016-10-14 12:29:08 +1300 (HEAD -> master, tag: 2.3.0, tag: 2.2.0, tag: 2.1.0, origin/master, origin/HEAD)\
-            // or
-            // 2016-08-29 17:18:22 +1200 (tag: 2.0.0)
-            //print_r($resultLines);
-
-
-            if (count($resultLines) == 0) {
+            try {
+                $result = $git->log($latestTag.'..HEAD', $options);
+                print_r($latestTag);
+                print_r($result);
+				if(!is_array($result)) {
+					$result = explode("\n", $result);
+				}                
+				print_r ($result);				
+            }       
+            catch (Exception $e) {
+                $errStr = $e->getMessage();
+                GeneralMethods::output_to_screen('Unable to get next tag type (getChangeTypeSinceLastTag)');
                 return false;
             }
+            
+            chdir($cwd);            
+            $returnLine = 'PATCH';
 
-            $latestTimeStamp = 0;
-            $latestTag = false;
-            foreach ($resultLines as $line) {
-                $isTagInLine = (strpos ($line, 'tag') !== false);
-                if ($isTagInLine) {
-                    $tagStr = trim(substr($line, 25));
-                    $dateStr = trim(substr($line, 0, 26));
-
-
-                    //extract tag numbers from $tagStr
-
-                    $matches = array();
-                    // print_r ("original!!! " .  $tagStr);
-                    $result = preg_match_all('/tag: \d{1,3}.\d{1,3}.\d{1,3}/', $tagStr, $matches);
-                    if ($result === false)
-                    {
-                        continue;
-                    }
-                    elseif ($result > 1)
-                    {
-                        $tagStr = $matches[0][0];
-                    }
-                    //print_r ($matches);
-
-                    $tagStr  = str_replace('(', '', $tagStr);
-                    $tagStr  = str_replace(')', '', $tagStr);
-                    $timeStamp = strtotime ($dateStr);
-
-                    if ($latestTimeStamp < $timeStamp) {
-                        $latestTimeStamp = $timeStamp;
-                        $latestTag = $tagStr;
-                    }
+            
+            
+            
+            foreach($result as $line) {
+                if(stripos($line, 'MAJOR:') !== false) {
+                    $returnLine = 'MAJOR';
+                    break;
+                }
+                if(stripos($line,  'MINOR:') !== false) {
+                    $returnLine = 'MINOR';
                 }
             }
-
+            return $returnLine;
         }
-
-        if (isset($latestTag) && $latestTag) {
-            $latestTag = str_replace('tag:', '', $latestTag) ;
-
-
-            $tagParts = explode ('.', $latestTag);
-
-            if (count($tagParts) != 3) return false;
-
-            return array (
-                'tagstring' => $latestTag,
-                'tagparts' => $tagParts,
-                'timestamp' => $latestTimeStamp);
-
-        }
-        else {
-            return false;
-        }
+        
     }
 
     public function createTag($tagCommandOptions)
@@ -664,9 +723,9 @@ class GitHubModule extends DataObject {
         }
         $curlResult = curl_exec($ch);
         if ( ! $curlResult ){
-			$msg = "curl exectution failed";
+            $msg = "curl exectution failed";
             GeneralMethods::outputToScreen ($msg);
-			UpdateModules::$unsolvedItems["none"] = $msg;
+            UpdateModules::$unsolvedItems["none"] = $msg;
         }
         print_r($url);
         print_r('<br/>');
@@ -676,75 +735,75 @@ class GitHubModule extends DataObject {
     }
     
     
-	public static function getRepoList() {
-		
+    public static function getRepoList() {
+        
 
         $gitUserName = GitHubModule::Config()->get('git_user_name');
         $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
-		$array  = array();
-		for($page = 0; $page < 10; $page++) {
-		
-			$data = array(
-				'per_page' => 100,
-				'page'=>$page
-			);
+        $array  = array();
+        for($page = 0; $page < 10; $page++) {
+        
+            $data = array(
+                'per_page' => 100,
+                'page'=>$page
+            );
 
-			$method = 'GET';
-			$ch = curl_init($url);
-			$header = "Content-Type: application/json";
+            $method = 'GET';
+            $ch = curl_init($url);
+            $header = "Content-Type: application/json";
 
-			if ($method == 'GET') {
-				$url .= '?'.http_build_query($data);
-			}
+            if ($method == 'GET') {
+                $url .= '?'.http_build_query($data);
+            }
 
-			$gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
-			$gitUserName = trim(GitHubModule::Config()->get('git_user_name'));
-			$gitApiUserPassword = trim(GitHubModule::Config()->get('git_api_login_password'));
+            $gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
+            $gitUserName = trim(GitHubModule::Config()->get('git_user_name'));
+            $gitApiUserPassword = trim(GitHubModule::Config()->get('git_api_login_password'));
 
-			$gitApiAccessToken = trim(GitHubModule::Config()->get('git_personal_access_token'));
-			if (trim($gitApiAccessToken)) {
-				$gitApiUserPassword = $gitApiAccessToken;
-			}
-
-
-			curl_setopt($ch, CURLOPT_VERBOSE, 1);
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-			curl_setopt($ch, CURLOPT_USERAGENT,
-				'sunnysideupdevs');
+            $gitApiAccessToken = trim(GitHubModule::Config()->get('git_personal_access_token'));
+            if (trim($gitApiAccessToken)) {
+                $gitApiUserPassword = $gitApiAccessToken;
+            }
 
 
-			if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
-				curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
-				curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-			}
+            curl_setopt($ch, CURLOPT_VERBOSE, 1);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+            curl_setopt($ch, CURLOPT_USERAGENT,
+                'sunnysideupdevs');
 
 
-			$curlResult = curl_exec($ch);
+            if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
+                curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
+                curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            }
 
-			if ( ! $curlResult ){
-				GeneralMethods::OutputToScreen('Could not retrieve list of modules from GitHub');
 
-				UpdateModules::$unsolvedItems["all"] =  ('Could not retrieve list of modules from GitHub');
-				die ('');
-			}
-			
-			$array = array_merge( $array, json_decode($curlResult));
-		}
+            $curlResult = curl_exec($ch);
 
-		
-		$modules = array();
-		
-		if(count($array) > 0 )
-		
-		 {
+            if ( ! $curlResult ){
+                GeneralMethods::OutputToScreen('Could not retrieve list of modules from GitHub');
+
+                UpdateModules::$unsolvedItems["all"] =  ('Could not retrieve list of modules from GitHub');
+                die ('');
+            }
+            
+            $array = array_merge( $array, json_decode($curlResult));
+        }
+
+        
+        $modules = array();
+        
+        if(count($array) > 0 )
+        
+         {
                     foreach($array as $repo) {
-						
-						// see http://stackoverflow.com/questions/4345554/convert-php-object-to-associative-array
-						$repo = json_decode(json_encode($repo), true);
+                        
+                        // see http://stackoverflow.com/questions/4345554/convert-php-object-to-associative-array
+                        $repo = json_decode(json_encode($repo), true);
 
 
                         //dont bother about forks
@@ -768,7 +827,7 @@ class GitHubModule extends DataObject {
                                 if($isSSModule) {
                                     //is it listed yet?
                                     if(!in_array($name, $modules)) {
-										
+                                        
                                         array_push ($modules, $name);
                                     }
                                 }
