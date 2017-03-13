@@ -96,9 +96,6 @@ class UpdateModules extends BuildTask
             $commands = array_intersect($commands, $limitedCommands);
         }
 
-		print_r ($commands);
-		
-		die();
 
 		set_error_handler ('errorHandler', E_ALL);
         foreach($modules as $count => $module) {
