@@ -617,12 +617,12 @@ class GitHubModule extends DataObject {
 
             try {
                 $result = $git->log($latestTag.'..HEAD', $options);
-                print_r($latestTag);
-                print_r($result);
+                // print_r($latestTag);
+                // print_r($result);
 				if(!is_array($result)) {
 					$result = explode("\n", $result);
 				}                
-				print_r ($result);				
+				// print_r ($result);				
             }       
             catch (Exception $e) {
                 $errStr = $e->getMessage();

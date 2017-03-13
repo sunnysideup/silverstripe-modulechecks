@@ -481,8 +481,7 @@ class UpdateModules extends BuildTask
 
         else if ($tag && $commitTime > $tag['timestamp'] && $commitTime < $tagDelay) {
 			$changeType = $moduleObject->getChangeTypeSinceLastTag();
-			
-			die ($changeType);
+
 			$newTagString = $this->findNextTag($tag, $changeType);
         }
 
