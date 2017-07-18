@@ -140,14 +140,14 @@ class GitHubModule extends DataObject {
         $array = explode ('_', $this->ShortModuleName());
 
         $name = '';
-        
-        foreach ($array as $part) 
+
+        foreach ($array as $part)
         {
 
             $name .= ucfirst ($part);
-            
+
         }
-        
+
         return $name;
     }
 
@@ -228,7 +228,7 @@ class GitHubModule extends DataObject {
                         user_error ('Failed to clone module ' . $this->LongModuleName() . ' after ' . ($cloneAttempts  - 1). ' attemps.', E_USER_ERROR);
                         //UpdateModules::$unsolvedItems[$this->ModuleName()] = 'Failed to clone modules';
                         UpdateModules::addUnsolvedProblem($this->ModuleName() , 'Failed to clone modules');
-                        
+
                     }
                     try {
                         $this->commsWrapper->setTimeout(240); //Big modules need a longer timeout
@@ -465,7 +465,7 @@ class GitHubModule extends DataObject {
                 'format' => "%cd",
                 '1' => true
             );
-            
+
             try {
                 $result = $git->log ($options);
             }
@@ -476,11 +476,11 @@ class GitHubModule extends DataObject {
                     throw $e;
                 }
                 else {
-                    
+
                     return false;
                 }
-            }            
-            
+            }
+
             if ($result) {
                 return (strtotime($result));
             }
@@ -601,13 +601,13 @@ class GitHubModule extends DataObject {
     public function getChangeTypeSinceLastTag()
     {
         $latestTag = trim($this->getLatestTag()['tagstring']);
-        
+
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
-			
+
 			//var_dump ($git);
 			//die();
-            
+
             $options = array (
                 'oneline' => true
             );
@@ -621,21 +621,21 @@ class GitHubModule extends DataObject {
                 // print_r($result);
 				if(!is_array($result)) {
 					$result = explode("\n", $result);
-				}                
-				// print_r ($result);				
-            }       
+				}
+				// print_r ($result);
+            }
             catch (Exception $e) {
                 $errStr = $e->getMessage();
                 GeneralMethods::output_to_screen('Unable to get next tag type (getChangeTypeSinceLastTag)');
                 return false;
             }
-            
-            chdir($cwd);            
+
+            chdir($cwd);
             $returnLine = 'PATCH';
 
-            
-            
-            
+
+
+
             foreach($result as $line) {
                 if(stripos($line, 'MAJOR:') !== false) {
                     $returnLine = 'MAJOR';
@@ -647,7 +647,7 @@ class GitHubModule extends DataObject {
             }
             return $returnLine;
         }
-        
+
     }
 
     public function createTag($tagCommandOptions)
@@ -659,9 +659,9 @@ class GitHubModule extends DataObject {
 
     public function updateGitHubInfo($array) {
         // see https://developer.github.com/v3/repos/#edit
-        
+
         # not working
-        
+
         $defaultValues =array(
             'name' => $this->LongModuleName(),
             'private' => false,
@@ -733,16 +733,16 @@ class GitHubModule extends DataObject {
         die();
         return $curlResult;
     }
-    
-    
+
+
     public static function getRepoList() {
-        
+
 
         $gitUserName = GitHubModule::Config()->get('git_user_name');
         $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
         $array  = array();
         for($page = 0; $page < 10; $page++) {
-        
+
             $data = array(
                 'per_page' => 100,
                 'page'=>$page
@@ -790,18 +790,18 @@ class GitHubModule extends DataObject {
                 UpdateModules::$unsolvedItems["all"] =  ('Could not retrieve list of modules from GitHub');
                 die ('');
             }
-            
+
             $array = array_merge( $array, json_decode($curlResult));
         }
 
-        
+
         $modules = array();
-        
+
         if(count($array) > 0 )
-        
+
          {
                     foreach($array as $repo) {
-                        
+
                         // see http://stackoverflow.com/questions/4345554/convert-php-object-to-associative-array
                         $repo = json_decode(json_encode($repo), true);
 
@@ -815,19 +815,19 @@ class GitHubModule extends DataObject {
                                 $isSSModule =  ( stripos($repo["name"], 'silverstripe-')  !== false );
                                 //check it is silverstripe module
                                 $getNamesWithPrefix = false;
-                                
+
                                 if (!$getNamesWithPrefix) {
-                                    $name = $repo["name"];                                    
+                                    $name = $repo["name"];
                                 }
                                 else {
-                                    $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);                                    
+                                    $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);
                                 }
-                                
+
                                 //if(strlen($name) < strlen($repo["name"])) {
                                 if($isSSModule) {
                                     //is it listed yet?
                                     if(!in_array($name, $modules)) {
-                                        
+
                                         array_push ($modules, $name);
                                     }
                                 }
@@ -880,9 +880,9 @@ class GitHubModule extends DataObject {
         if ( ! $curlResult ){
             GeneralMethods::outputToScreen ("<li> could not add $repoName to Scrutinizer ... </li>");
             //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (curl failure)";
-            
-            UpdateModules::addUnsolvedProblem($repoName, "Could not add $reopName to Scrutiniser (curl failure)");
-            
+
+            UpdateModules::addUnsolvedProblem($repoName, "Could not add $repoName to Scrutiniser (curl failure)");
+
             return false;
         }
 
@@ -895,14 +895,11 @@ class GitHubModule extends DataObject {
         else{
             GeneralMethods::outputToScreen ("<li> could not add $repoName to Scrutinizer ... </li>");
             //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (HttpCode $httpcode)";
-            UpdateModules::addUnsolvedProblem($repoName, "Could not add $reopName to Scrutiniser (HttpCode $httpcode)");
+            UpdateModules::addUnsolvedProblem($repoName, "Could not add $repoName to Scrutiniser (HttpCode $httpcode)");
         }
 
 
 
     }
-
-
-
 
 }
