@@ -42,6 +42,7 @@ for folder in $folders; do
     # Belongs to sunnysideup
     if ( grep --quiet $vendor $folder/.git/config ) || [[ $folder == "." ]]; then
         cd $folder
+        php-cs-fixer fix ./code --using-cache=no --rules=@PSR2
         folderChanges=`git status --porcelain`
 
         if [[ $folderChanges ]];then
