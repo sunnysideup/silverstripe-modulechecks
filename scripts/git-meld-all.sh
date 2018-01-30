@@ -27,6 +27,9 @@ NC='\033[0m' # No Color
 # Vendor to look for
 vendor="sunnysideup"
 
+#fix PHP code ...
+php-cs-fixer fix ./code --using-cache=no --rules=@PSR2
+
 gitCustomStatus (){
     git status --porcelain | while read status file; do
     case $status in
@@ -42,6 +45,7 @@ for folder in $folders; do
     # Belongs to sunnysideup
     if ( grep --quiet $vendor $folder/.git/config ) || [[ $folder == "." ]]; then
         cd $folder
+        #fix PHP code ...
         php-cs-fixer fix ./code --using-cache=no --rules=@PSR2
         folderChanges=`git status --porcelain`
 
