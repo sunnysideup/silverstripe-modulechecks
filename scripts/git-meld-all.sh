@@ -28,7 +28,7 @@ NC='\033[0m' # No Color
 vendor="sunnysideup"
 
 #fix PHP code ...
-php-cs-fixer fix ./code --using-cache=no --rules=@PSR2
+php-cs-fixer fix ./mysite/code --using-cache=no --rules=@PSR2
 
 gitCustomStatus (){
     git status --porcelain | while read status file; do
