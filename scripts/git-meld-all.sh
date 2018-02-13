@@ -37,6 +37,8 @@ gitCustomStatus (){
     esac
     done
 }
+
+
 git commit composer.lock -m "PATCH: composer.lock"
 git commit .gitignore -m "PATCH: .gitignore"
 
@@ -46,7 +48,11 @@ for folder in $folders; do
     if ( grep --quiet $vendor $folder/.git/config ) || [[ $folder == "." ]]; then
         cd $folder
         #fix PHP code ...
-        php-cs-fixer fix ./code --using-cache=no --rules=@PSR2
+        if ( grep --quiet $vendor $folder/.git/config ); then
+            php-cs-fixer fix ./code --using-cache=no --rules=@PSR2
+        fi
+
+        # check changes
         folderChanges=`git status --porcelain`
 
         if [[ $folderChanges ]];then
