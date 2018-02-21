@@ -2,9 +2,7 @@
 
 class AddTestToModule extends AddFileToModule
 {
-	
-	
-	protected $gitReplaceArray = array(
+    protected $gitReplaceArray = array(
         'Module' => 'ShortUCFirstName',
     );
 
@@ -13,8 +11,7 @@ class AddTestToModule extends AddFileToModule
     
     public function __construct($gitObject)
     {
-		$this-> fileLocation = 'tests/' . $gitObject->ShortUCFirstName() . 'Test.php';
-		parent::__construct($gitObject);
-		
-	}
+        $this-> fileLocation = 'tests/' . $gitObject->ShortUCFirstName() . 'Test.php';
+        parent::__construct($gitObject);
+    }
 }

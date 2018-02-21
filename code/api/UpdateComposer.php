@@ -7,7 +7,7 @@ abstract class UpdateComposer extends Object
     public function __construct($composerJsonObj)
     {
         $this->composerJsonObj = $composerJsonObj;
-        if (! isset($this->composerJsonObj->jsonData)) {
+        if (! $this->composerJsonObj->getJsonData()) {
             user_error('No Json data!');
         }
     }
@@ -29,5 +29,4 @@ abstract class UpdateComposer extends Object
     {
         $this->composerJsonObj->setJsonData($array);
     }
-
 }

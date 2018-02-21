@@ -21,18 +21,14 @@ class ComposerJson extends Object
     {
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
         $filename = $folder . '/' . $this->moduleName . '/composer.json';
-
         set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
-        $file = fopen($filename, 'r');
+        $json = file_get_contents($filename);
         restore_error_handler();
-        if ($file) {
-            $json = fread($file, filesize($filename));
-            $array = json_decode($json);
-            $this->jsonData = $array;
-            fclose($file);
+        if ($json) {
+            $this->jsonData = json_decode($json, true);
+        } else {
+            UpdateModules::addUnsolvedProblem($this->moduleName, 'Could not open composer.json file...');
         }
-
-
         return (is_array($this->jsonData));
     }
 
@@ -71,7 +67,9 @@ class ComposerJson extends Object
 
             //get all updates and if they exists then get the ones that we need to do ...
             $limitedComposerUpdates = $this->Config()->get('updates');
-            if ($limitedComposerUpdates && count($limitedComposerUpdates)) {
+            if ($limitedComposerUpdates === 'none') {
+                $composerUpdates = [];
+            } elseif (is_array($limitedComposerUpdates) && count($limitedComposerUpdates)) {
                 $composerUpdates = array_intersect($composerUpdates, $limitedComposerUpdates);
             }
 
@@ -80,8 +78,9 @@ class ComposerJson extends Object
                 $obj = $composerUpdate::create($this);
                 $obj->run();
             }
-
-            if(! $this->writeJsonToFile()) {
+            if ($this->writeJsonToFile()) {
+                GeneralMethods::outputToScreen("<li> Updated JSON </li>");
+            } else {
                 UpdateModules::addUnsolvedProblem($this->moduleName, 'Could not write JSON');
             }
         } else {
@@ -94,28 +93,21 @@ class ComposerJson extends Object
 
     protected function writeJsonToFile()
     {
-        if (! $this->jsonData) { //if not loaded
+        if (! is_array($this->jsonData)) { //if not loaded
             return false;
         }
 
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
         $filename = $folder . '/' . $this->gitHubModuleInstance->ModuleName . '/composer.json';
+        $value = file_put_contents($filename, json_encode($this->jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
-
-
-        $file = fopen($filename, 'w');
-        if ($file) {
-            fwrite($file, json_encode($this->jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-        }
-        fclose($file);
-
-        return true;
+        return  $value ? true : false;
     }
 
     public function getDescription()
     {
-        if (! property_exists ($this, 'jsonData') || ! $this->jsonData) { //if not loaded
-            return false;
+        if (! is_array($this->jsonData)) { //if not loaded
+            return 'no json data';
         }
 
         return isset($this->jsonData['description']) ? $this->jsonData['description'] : 'description tba';
@@ -124,5 +116,6 @@ class ComposerJson extends Object
 
     private function catchFopenWarning()
     {
+        user_error('Can not open composer file ....');
     }
 }

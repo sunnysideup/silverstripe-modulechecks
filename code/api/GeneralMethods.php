@@ -12,10 +12,10 @@ class GeneralMethods extends Object
      *
      * @return boolean
      */
-    protected function check_location($url)
+    public static function check_location($url)
     {
         $handle = curl_init($url);
-        curl_setopt($handle,  CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, true);
         $response = curl_exec($handle);
         $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);

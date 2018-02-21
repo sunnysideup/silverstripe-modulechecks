@@ -10,28 +10,28 @@ abstract class RunCommandLineMethodOnModule extends Object
        *
        * @var string
        */
-      protected $rootDirForModule = '';
+    protected $rootDirForModule = '';
 
-      /**
-       *
-       * @var string
-       */
-      protected $command = '';
+    /**
+     *
+     * @var string
+     */
+    protected $command = '';
 
     public function setRootDirForModule($rootDirForModule)
     {
         $this->$rootDirForModule = $rootDirForModule;
     }
 
-      /**
-       *
-       *
-       * @param string
-       */
-      public function setCommand($command)
-      {
-          $this->command = $command;
-      }
+    /**
+     *
+     *
+     * @param string
+     */
+    public function setCommand($command)
+    {
+        $this->command = $command;
+    }
 
     public function __construct($rootDirForModule = '')
     {
@@ -49,20 +49,20 @@ abstract class RunCommandLineMethodOnModule extends Object
         $this->runCommand();
     }
 
-      /**
-       * runs a command from the root dir or the module
-       */
-      protected function runCommand()
-      {
-          if ($this->command != null) {
-              GeneralMethods::outputToScreen('Running ' . $this->command);
-              return exec(
+    /**
+     * runs a command from the root dir or the module
+     */
+    protected function runCommand()
+    {
+        if ($this->command != null) {
+            GeneralMethods::outputToScreen('Running ' . $this->command);
+            return exec(
               ' cd '.$this->rootDirForModule.';
                 '.$this->command.'
                 '
                 );
-          }
-      }
+        }
+    }
 
     public static function CheckCommandExists($cmd)
     {

@@ -12,7 +12,7 @@ interface ModuleConfigInterface
      *    );
      * @return array
      */
-   public function params();
+    public function params();
 
     /**
      *

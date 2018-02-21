@@ -4,12 +4,12 @@
 
 use Symfony\Component\Yaml\Yaml;
 
-
-Class ConfigYML extends Object {
-
-    public function __construct($gitHubModuleInstance) {
+class ConfigYML extends Object
+{
+    public function __construct($gitHubModuleInstance)
+    {
         if (! $gitHubModuleInstance) {
-            user_error ("ConfigYML needs an instance of GitHubModule");
+            user_error("ConfigYML needs an instance of GitHubModule");
         }
         $this->gitHubModuleInstance = $gitHubModuleInstance;
         $this->moduleName = $gitHubModuleInstance->ModuleName;
@@ -19,37 +19,31 @@ Class ConfigYML extends Object {
         $this->filename = $folder . '/' . $this->moduleName . '/_config/config.yml';
     }
 
-    public function reWrite(){
-        if (! $this->readYMLFromFile())
-        {
+    public function reWrite()
+    {
+        if (! $this->readYMLFromFile()) {
             return false;
         }
-        if (! $this->writeYAMLToFile())
-        {
+        if (! $this->writeYAMLToFile()) {
             return false;
         }
         return true;
     }
 
-    public function readYMLFromFile() {
+    public function readYMLFromFile()
+    {
+        GeneralMethods::output_to_screen("reading config yml ...  ", 'updating');
 
-        GeneralMethods::output_to_screen("reading config yml ...  ",'updating');
+        if (! file_exists($this->filename)) {
+            GeneralMethods::output_to_screen("<li>Unable to load: " . $this->filename, 'updated') ;
+            //UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to load " . $this->filename;
 
-        if (! file_exists ($this->filename))
-        {
-                    GeneralMethods::output_to_screen("<li>Unable to load: " . $this->filename, 'updated') ;
-                    //UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to load " . $this->filename;
-
-                    UpdateModules::addUnsolvedProblem($this->gitHubModuleInstance->ModuleName, "Unable to load " . $this->filename);
-                    return false;
+            UpdateModules::addUnsolvedProblem($this->gitHubModuleInstance->ModuleName, "Unable to load " . $this->filename);
+            return false;
         }
 
         try {
             $this->yaml_data = Yaml::parse(file_get_contents($this->filename));
-
-
-
-
         } catch (Exception $e) {
             GeneralMethods::output_to_screen("<li>Unable to parse the YAML string: " .$e->getMessage(). " <li>", 'updated') ;
 
@@ -66,20 +60,17 @@ Class ConfigYML extends Object {
 
 
         return $this->yaml_data;
-
     }
 
 
-    public function replaceFaultyYML() {
-
+    public function replaceFaultyYML()
+    {
         return false;
 
         /**function broken do not use**/
 
 
-        if (file_exists ($this->filename)) {
-
-
+        if (file_exists($this->filename)) {
             $rawYML = file_get_contents($this->filename);
 
             $lines = explode("\n", $rawYML);
@@ -87,13 +78,12 @@ Class ConfigYML extends Object {
             $replacment = '';
 
             foreach ($lines as $index=>$line) {
-                if (strpos ($line, "After:" ) !==false) {
+                if (strpos($line, "After:") !==false) {
                     $replacment = "After:";
-                    $listitems = explode (',', $line);
+                    $listitems = explode(',', $line);
                     //print_r ($listitems);
-                    foreach ($listitems as $item)
-                    {
-                        if (! trim ($item)) {
+                    foreach ($listitems as $item) {
+                        if (! trim($item)) {
                             continue;
                         }
 
@@ -105,25 +95,20 @@ Class ConfigYML extends Object {
             }
             $newYML = implode('', $lines);
 
-            GeneralMethods::output_to_screen("Updating config.YML to correct syntax ... ",'updating');
+            GeneralMethods::output_to_screen("Updating config.YML to correct syntax ... ", 'updating');
 
             $file = fopen($this->filename, "w");
 
 
 
             file_put_contents($this->filename, $newYML);
-
-
-        }
-        else
-        {
+        } else {
             return false;
         }
-
     }
-    public function writeYAMLToFile() {
-
-        GeneralMethods::output_to_screen("Writing config yml ... ",'updating');
+    public function writeYAMLToFile()
+    {
+        GeneralMethods::output_to_screen("Writing config yml ... ", 'updating');
 
         if (!$this->yaml_data) {
             return false;
@@ -132,12 +117,9 @@ Class ConfigYML extends Object {
         $yaml = Yaml::dump($this->yaml_data);
         file_put_contents($this->filename, $yaml);
         return true;
-
-
     }
 
-    private function catchFopenWarning() {
-
+    private function catchFopenWarning()
+    {
     }
-
 }
