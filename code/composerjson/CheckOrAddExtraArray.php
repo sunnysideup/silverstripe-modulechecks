@@ -1,27 +1,27 @@
 <?php
 /**
- * sets the default installation folder 
+ * sets the default installation folder
  */
 class CheckOrAddExtraArray extends UpdateComposer {
 
 
     public function run() {
-		$json = $this->composerJsonObj->jsonData;
+        $json = $this->getJsonData();
 
+        if (isset($json['extra'])) {
 
-		if (property_exists($json, 'extra')) {
-		
-			GeneralMethods::outputToScreen("<li> already has composer.json </li>");
-			
-			return;
-		}
+            GeneralMethods::outputToScreen("<li> already has composer.json[extra][installer-name] </li>");
 
-		else {
-			GeneralMethods::outputToScreen("<li> Adding 'extra' array to composer.json </li>");
-			
-			$json->extra  = (object)array('installer-name' => str_replace('silverstripe-', '', $this->composerJsonObj->moduleName)); 
-		}
-		
+            return;
+        }
 
+        else {
+            GeneralMethods::outputToScreen("<li> Adding 'extra' array to composer.json </li>");
+            if(! isset($json['extra'])) {
+                $json['extra'] = [];
+            }
+            $json['extra']['installer-name'] = str_replace('silverstripe-', '', $this->composerJsonObj->moduleName));
+        }
+        $this->setJsonData($json);
     }
 }

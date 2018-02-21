@@ -179,7 +179,7 @@ class UpdateModules extends BuildTask
 
             if ($updateComposerJson) {
                 $composerJsonObj = new ComposerJson ($moduleObject);
-                $composerJsonObj->updateJsonData();
+                $composerJsonObj->updateJsonFile();
                 $moduleObject->setDescription($composerJsonObj->getDescription());
             }
 
@@ -325,16 +325,16 @@ class UpdateModules extends BuildTask
             foreach (UpdateModules::$unsolvedItems as $moduleName => $problems) {
 
 
-								if (is_array($problems)) {
-									foreach ($problems as $problem) {
+                                if (is_array($problems)) {
+                                    foreach ($problems as $problem) {
 
-											$html .= '<tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
-									}
+                                            $html .= '<tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
+                                    }
 
-								}
-								else if (is_string($problems)) {
-											$html .= '<tr><td>'.$moduleName.'</td><td>'. $problems.'</td></tr>';
-								}
+                                }
+                                else if (is_string($problems)) {
+                                            $html .= '<tr><td>'.$moduleName.'</td><td>'. $problems.'</td></tr>';
+                                }
             }
             $html .= '</table>';
 
@@ -470,7 +470,7 @@ class UpdateModules extends BuildTask
         $createTag = false;
 
 
-		$newTagString  = '';
+        $newTagString  = '';
 
         if ( ! $tag ) {
             $createTag = true;
@@ -480,9 +480,9 @@ class UpdateModules extends BuildTask
 
 
         else if ($tag && $commitTime > $tag['timestamp'] && $commitTime < $tagDelay) {
-			$changeType = $moduleObject->getChangeTypeSinceLastTag();
+            $changeType = $moduleObject->getChangeTypeSinceLastTag();
 
-			$newTagString = $this->findNextTag($tag, $changeType);
+            $newTagString = $this->findNextTag($tag, $changeType);
         }
 
         if ($newTagString) {
@@ -503,32 +503,32 @@ class UpdateModules extends BuildTask
 
     }
 
-	protected function findNextTag ($tag, $changeType)
-	{
-	
-		switch ($changeType) {
-	
-			case 'MAJOR':
-			$tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
-			$tag['tagparts'][1] = 0;
-			$tag['tagparts'][2] = 0;
-			break;
+    protected function findNextTag ($tag, $changeType)
+    {
 
-			case 'MINOR':
+        switch ($changeType) {
 
-			$tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
-			$tag['tagparts'][2] = 0;
-			break;
-			
-			default:
-			case 'PATCH':
-			$tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
-			break;
-		}
-		
-		$newTagString = trim(implode ('.', $tag['tagparts']));
-		return $newTagString;
-	}
+            case 'MAJOR':
+            $tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
+            $tag['tagparts'][1] = 0;
+            $tag['tagparts'][2] = 0;
+            break;
+
+            case 'MINOR':
+
+            $tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
+            $tag['tagparts'][2] = 0;
+            break;
+
+            default:
+            case 'PATCH':
+            $tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
+            break;
+        }
+
+        $newTagString = trim(implode ('.', $tag['tagparts']));
+        return $newTagString;
+    }
 
     protected function moveOldReadMe($moduleObject) {
         $tempDir = GitHubModule::Config()->get('absolute_temp_folder');
