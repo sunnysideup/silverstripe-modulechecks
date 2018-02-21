@@ -1,11 +1,12 @@
 ModuleChecks:
-  git_user_name: "abc"
+  github_user_name: "abc"
   packagist_user_name: "abc"
   # the variable below is not required, but allows you to check for additional ones that may not be listed on github
   modules: []
 
 GitHubModule:
-  git_user_name: "sunnysideup"
+  github_user_name: "sunnysideup"
+  github_user_email: "bla@foo.com"
   github_account_base_url: "git://github.com"
 
 

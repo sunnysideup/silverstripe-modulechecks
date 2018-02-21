@@ -35,7 +35,7 @@ other Silverstripe Module module.
 You will need to configure the following values in config.yml
 for the UpdateModules task to run:
 
-  git_user_name - your git user name
+  github_user_name - your git user name
   github_account_base_url - the base url
 
   absolute_temp_folder - temporary folder for modules to be cloned into - must be writeable by www-data

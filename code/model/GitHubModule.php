@@ -31,7 +31,7 @@ class GitHubModule extends DataObject {
      *
      * @var GitcommsWrapper
      */
-    private static $git_user_email = '';
+    private static $github_user_email = '';
 
     /**
      * where the git module is temporary
@@ -117,7 +117,7 @@ class GitHubModule extends DataObject {
 
     function LongModuleName()
     {
-        return $this->Config()->get('git_user_name').'/'.$this->ModuleName;
+        return $this->Config()->get('github_user_name').'/'.$this->ModuleName;
     }
 
 
@@ -171,7 +171,7 @@ class GitHubModule extends DataObject {
      * @var string | null
      */
     public function URL () {
-        $username = $this->Config()->get('git_user_name');
+        $username = $this->Config()->get('github_user_name');
         return 'https://github.com/'.$username.'/'.$this->ModuleName;
     }
 
@@ -251,8 +251,8 @@ class GitHubModule extends DataObject {
                 }
             }
             $this->gitRepo->config("push.default", "simple");
-            $this->gitRepo->config("user.name", $this->Config()->get('git_user_name'));
-            $this->gitRepo->config("user.email", $this->Config()->get('git_user_email'));
+            $this->gitRepo->config("user.name", $this->Config()->get('github_user_name'));
+            $this->gitRepo->config("user.email", $this->Config()->get('github_user_email'));
             $this->commsWrapper->git('config -l');
         }
         return $this->gitRepo;
@@ -263,7 +263,7 @@ class GitHubModule extends DataObject {
      */
     function fullGitURL()
     {
-        $username = $this->Config()->get('git_user_name');
+        $username = $this->Config()->get('github_user_name');
         $gitURL = $this->Config()->get('github_account_base_url');
         return 'git@github.com:/'.$username.'/'.$this->ModuleName.'.git';
     }
@@ -413,7 +413,7 @@ class GitHubModule extends DataObject {
 
     public function getRawFileFromGithub($fileName) {
 
-        $gitUserName = $this->Config()->get('git_user_name');
+        $gitUserName = $this->Config()->get('github_user_name');
         $branch = 'master';
 
         $rawURL = 'https://raw.githubusercontent.com/' . $gitUserName . '/' . $this->ModuleName . '/' . $branch . '/' . $fileName;
@@ -689,7 +689,7 @@ class GitHubModule extends DataObject {
     protected function gitApiCall($data, $gitAPIcommand = '', $method = 'GET') {
         $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         GeneralMethods::OutputToScreen('Running Git API command ' .$gitAPIcommand. ' using ' .$method. ' method...');
-        $gitUserName = $this->Config()->get('git_user_name');
+        $gitUserName = $this->Config()->get('github_user_name');
         $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($this->ModuleName);
         if (trim($gitAPIcommand)) {
             $url .= '/' . trim($gitAPIcommand);
@@ -738,7 +738,7 @@ class GitHubModule extends DataObject {
     public static function getRepoList() {
 
 
-        $gitUserName = GitHubModule::Config()->get('git_user_name');
+        $gitUserName = GitHubModule::Config()->get('github_user_name');
         $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
         $array  = array();
         for($page = 0; $page < 10; $page++) {
@@ -757,7 +757,7 @@ class GitHubModule extends DataObject {
             }
 
             $gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
-            $gitUserName = trim(GitHubModule::Config()->get('git_user_name'));
+            $gitUserName = trim(GitHubModule::Config()->get('github_user_name'));
             $gitApiUserPassword = trim(GitHubModule::Config()->get('git_api_login_password'));
 
             $gitApiAccessToken = trim(GitHubModule::Config()->get('git_personal_access_token'));
@@ -859,7 +859,7 @@ class GitHubModule extends DataObject {
         $scrutinizerApiPath = "https://scrutinizer-ci.com/api";
         $endPoint = "repositories/g?access_token=" . trim($this->Config()->get('scrutinizer_api_key'));
         $url = $scrutinizerApiPath . "/" . $endPoint;
-        $username = $this->Config()->get('git_user_name');
+        $username = $this->Config()->get('github_user_name');
         $repoName =  $username.'/'.$this->ModuleName;
 
 

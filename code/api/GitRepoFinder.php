@@ -13,7 +13,7 @@ class GitRepoFinder extends Object
      */
     private static $_modules = array();
 
-    
+
 
     /**
      * takes the preloaded modules and
@@ -30,7 +30,7 @@ class GitRepoFinder extends Object
     public static function get_all_repos_no_oauth($username = '', $getNamesWithPrefix = false)
     {
         if (!$username) {
-            $username = Config::inst()->get('GitHubModule', "git_user_name");
+            $username = Config::inst()->get('GitHubModule', "github_user_name");
             print("<li></li>");
         }
         print "<li>Retrieving List of modules from GitHub for user $username ... </li>";
@@ -41,8 +41,8 @@ class GitRepoFinder extends Object
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, true);
                 curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
-                
-                
+
+
                 $string = curl_exec($ch);
                 // close curl resource to free up system resources
                 curl_close($ch);
@@ -61,7 +61,7 @@ class GitRepoFinder extends Object
                                 } else {
                                     $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);
                                 }
-                                
+
                                 //if(strlen($name) < strlen($repo["name"])) {
                                 if ($isSSModule) {
                                     //is it listed yet?
