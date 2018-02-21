@@ -54,7 +54,7 @@ class UpdateModules extends BuildTask
         }
 
         //Get list of all modules from GitHub
-        $gitUserName = $this->Config()->get('github_user_name');
+        $gitUserName = $this->Config()->get('git_user_name');
 
         $modules = GitHubModule::getRepoList();
 
@@ -128,144 +128,144 @@ class UpdateModules extends BuildTask
 
     protected function processOneModule($module, $count, $files, $commands, $updateComposerJson) {
 
-          if ( stripos($module, 'silverstripe-')  === false ) {
-              $module = "silverstripe-" . $module;
-          }
-          echo "<h2>" . ($count+1) . ". ".$module."</h2>";
+            if ( stripos($module, 'silverstripe-')  === false ) {
+                $module = "silverstripe-" . $module;
+            }
+            echo "<h2>" . ($count+1) . ". ".$module."</h2>";
 
 
-          $moduleObject = GitHubModule::get_or_create_github_module($module);
+            $moduleObject = GitHubModule::get_or_create_github_module($module);
 
-          $this->checkUpdateTag($moduleObject);
+            $this->checkUpdateTag($moduleObject);
 
-          // Check if all necessary files are perfect on GitHub repo already,
-          // if so we can skip that module. But! ... if there are commands to run
-          // over the files in the repo, then we need to clone the repo anyhow,
-          // so skip the check
-          if (count($commands) == 0 && ! $updateComposerJson) {
-              $moduleFilesOK = true;
+            // Check if all necessary files are perfect on GitHub repo already,
+            // if so we can skip that module. But! ... if there are commands to run
+            // over the files in the repo, then we need to clone the repo anyhow,
+            // so skip the check
+            if (count($commands) == 0 && ! $updateComposerJson) {
+                $moduleFilesOK = true;
 
-              foreach($files as $file) {
-                  $fileObj = $file::create($moduleObject);
-                  $checkFileName = $fileObj->getFileLocation();
-                  $GitHubFileText = $moduleObject -> getRawFileFromGithub($checkFileName);
-                  if ($GitHubFileText) {
-                      $fileCheck = $fileObj->compareWithText($GitHubFileText);
-                      if ( ! $fileCheck) {
-                          $moduleFilesOK = false;
-                      }
-                  }
-                  else {
-                      $moduleFilesOK = false;
-                  }
-              }
-
-
-
-              if ($moduleFilesOK) {
-                  GeneralMethods::outputToScreen ("<li> All files in $module OK, skipping to next module ... </li>");
-                  return;
-              }
-          }
-
-          $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
+                foreach($files as $file) {
+                    $fileObj = $file::create($moduleObject);
+                    $checkFileName = $fileObj->getFileLocation();
+                    $GitHubFileText = $moduleObject -> getRawFileFromGithub($checkFileName);
+                    if ($GitHubFileText) {
+                        $fileCheck = $fileObj->compareWithText($GitHubFileText);
+                        if ( ! $fileCheck) {
+                            $moduleFilesOK = false;
+                        }
+                    }
+                    else {
+                        $moduleFilesOK = false;
+                    }
+                }
 
 
-          $this->moveOldReadMe($moduleObject);
+
+                if ($moduleFilesOK) {
+                    GeneralMethods::outputToScreen ("<li> All files in $module OK, skipping to next module ... </li>");
+                    continue;
+                }
+            }
+
+            $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
 
 
-          $checkConfigYML = $this->Config()->get('check_config_yml');
-          if ($checkConfigYML) $this->checkConfigYML($moduleObject);
-
-          if ($updateComposerJson) {
-              $composerJsonObj = new ComposerJson ($moduleObject);
-              $composerJsonObj->updateJsonData();
-              $moduleObject->setDescription($composerJsonObj->getDescription());
-          }
-
-          $excludedWords = $this->Config()->get('excluded_words');
+            $this->moveOldReadMe($moduleObject);
 
 
-          if (count($excludedWords) > 0)
-          {
-              $folder = GitHubModule::Config()->get('absolute_temp_folder') . '/' . $moduleObject->moduleName . '/';
+            $checkConfigYML = $this->Config()->get('check_config_yml');
+            if ($checkConfigYML) $this->checkConfigYML($moduleObject);
 
-              $results = $this->checkDirExcludedWords($folder.'/'.$moduleObject->modulename, $excludedWords);
+            if ($updateComposerJson) {
+                $composerJsonObj = new ComposerJson ($moduleObject);
+                $composerJsonObj->updateJsonFile();
+                $moduleObject->setDescription($composerJsonObj->getDescription());
+            }
 
-
-              if ($results && count ($results > 0))
-              {
-                  $msg = "<h4>The following excluded words were found: </h4><ul>";
-                  foreach ($results as $file => $words) {
-                      foreach ($words as $word) {
-                          $msg .= "<li>$word in $file</li>";
-                      }
-                  }
-                  $msg .= '</ul>';
-
-                  //trigger_error ("excluded words found in files(s)");
-                  GeneralMethods::outputToScreen ($msg);
-                  UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
-              }
-
-          }
+            $excludedWords = $this->Config()->get('excluded_words');
 
 
-          foreach($files as $file) {
-              //run file update
+            if (count($excludedWords) > 0)
+            {
+                $folder = GitHubModule::Config()->get('absolute_temp_folder') . '/' . $moduleObject->moduleName . '/';
 
-              $obj = $file::create($moduleObject);
-              $obj->run();
-          }
-
-          $moduleDir = $moduleObject->Directory();
-
-          foreach($commands as $command) {
-              //run file update
+                $results = $this->checkDirExcludedWords($folder.'/'.$moduleObject->modulename, $excludedWords);
 
 
-              $obj = $command::create($moduleDir);
-              $obj->run();
+                if ($results && count ($results > 0))
+                {
+                    $msg = "<h4>The following excluded words were found: </h4><ul>";
+                    foreach ($results as $file => $words) {
+                        foreach ($words as $word) {
+                            $msg .= "<li>$word in $file</li>";
+                        }
+                    }
+                    $msg .= '</ul>';
+
+                    //trigger_error ("excluded words found in files(s)");
+                    GeneralMethods::outputToScreen ($msg);
+                    UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+                }
+
+            }
 
 
-              //run command
-          }
+            foreach($files as $file) {
+                //run file update
 
-          //Update Repository description
-          //$moduleObject->updateGitHubInfo(array());
+                $obj = $file::create($moduleObject);
+                $obj->run();
+            }
 
-          if( ! $moduleObject->add()) {
+            $moduleDir = $moduleObject->Directory();
 
-              $msg = "Could not add files module to Repo";
-              GeneralMethods::outputToScreen ($msg);
-              UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
-              return;
+            foreach($commands as $command) {
+                //run file update
 
-          }
-          if( ! $moduleObject->commit())     {
-              $msg = "Could not commit files to Repo";
-              GeneralMethods::outputToScreen ($msg);
-              UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
-              return;
-          }
 
-          if( ! $moduleObject->push()) {
-              $msg = "Could not push files to Repo";
-              GeneralMethods::outputToScreen ($msg);
-              UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
-              return;
-          }
-          if( ! $moduleObject->removeClone())
-          {
-              $msg = "Could not remove local copy of repo";
-              GeneralMethods::outputToScreen ($msg);
-              UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
-          }
+                $obj = $command::create($moduleDir);
+                $obj->run();
 
-          $addRepoToScrutinzer = $this->Config()->get('add_to_scrutinizer');
-          if ($addRepoToScrutinzer) {
-              $moduleObject->addRepoToScrutinzer();
-          }
+
+                //run command
+            }
+
+            //Update Repository description
+            //$moduleObject->updateGitHubInfo(array());
+
+            if( ! $moduleObject->add()) {
+
+                $msg = "Could not add files module to Repo";
+                GeneralMethods::outputToScreen ($msg);
+                UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+                continue;
+
+            }
+            if( ! $moduleObject->commit())     {
+                $msg = "Could not commit files to Repo";
+                GeneralMethods::outputToScreen ($msg);
+                UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+                continue;
+            }
+
+            if( ! $moduleObject->push()) {
+                $msg = "Could not push files to Repo";
+                GeneralMethods::outputToScreen ($msg);
+                UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+                continue;
+            }
+            if( ! $moduleObject->removeClone())
+            {
+                $msg = "Could not remove local copy of repo";
+                GeneralMethods::outputToScreen ($msg);
+                UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+            }
+
+            $addRepoToScrutinzer = $this->Config()->get('add_to_scrutinizer');
+            if ($addRepoToScrutinzer) {
+                $moduleObject->addRepoToScrutinzer();
+            }
 
     }
 
@@ -325,16 +325,16 @@ class UpdateModules extends BuildTask
             foreach (UpdateModules::$unsolvedItems as $moduleName => $problems) {
 
 
-								if (is_array($problems)) {
-									foreach ($problems as $problem) {
+                                if (is_array($problems)) {
+                                    foreach ($problems as $problem) {
 
-											$html .= '<tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
-									}
+                                            $html .= '<tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
+                                    }
 
-								}
-								else if (is_string($problems)) {
-											$html .= '<tr><td>'.$moduleName.'</td><td>'. $problems.'</td></tr>';
-								}
+                                }
+                                else if (is_string($problems)) {
+                                            $html .= '<tr><td>'.$moduleName.'</td><td>'. $problems.'</td></tr>';
+                                }
             }
             $html .= '</table>';
 
@@ -470,7 +470,7 @@ class UpdateModules extends BuildTask
         $createTag = false;
 
 
-		$newTagString  = '';
+        $newTagString  = '';
 
         if ( ! $tag ) {
             $createTag = true;
@@ -480,9 +480,9 @@ class UpdateModules extends BuildTask
 
 
         else if ($tag && $commitTime > $tag['timestamp'] && $commitTime < $tagDelay) {
-			$changeType = $moduleObject->getChangeTypeSinceLastTag();
+            $changeType = $moduleObject->getChangeTypeSinceLastTag();
 
-			$newTagString = $this->findNextTag($tag, $changeType);
+            $newTagString = $this->findNextTag($tag, $changeType);
         }
 
         if ($newTagString) {
@@ -503,32 +503,32 @@ class UpdateModules extends BuildTask
 
     }
 
-	protected function findNextTag ($tag, $changeType)
-	{
+    protected function findNextTag ($tag, $changeType)
+    {
 
-		switch ($changeType) {
+        switch ($changeType) {
 
-			case 'MAJOR':
-			$tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
-			$tag['tagparts'][1] = 0;
-			$tag['tagparts'][2] = 0;
-			break;
+            case 'MAJOR':
+            $tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
+            $tag['tagparts'][1] = 0;
+            $tag['tagparts'][2] = 0;
+            break;
 
-			case 'MINOR':
+            case 'MINOR':
 
-			$tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
-			$tag['tagparts'][2] = 0;
-			break;
+            $tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
+            $tag['tagparts'][2] = 0;
+            break;
 
-			default:
-			case 'PATCH':
-			$tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
-			break;
-		}
+            default:
+            case 'PATCH':
+            $tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
+            break;
+        }
 
-		$newTagString = trim(implode ('.', $tag['tagparts']));
-		return $newTagString;
-	}
+        $newTagString = trim(implode ('.', $tag['tagparts']));
+        return $newTagString;
+    }
 
     protected function moveOldReadMe($moduleObject) {
         $tempDir = GitHubModule::Config()->get('absolute_temp_folder');
