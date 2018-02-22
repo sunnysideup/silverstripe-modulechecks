@@ -2,7 +2,7 @@
 
 class AddGitAttributesToModule extends AddFileToModule
 {
-    protected $sourceLocation = 'source/.gitattributes';
+    protected $sourceLocation = 'mysite/template_files/.gitattributes';
 
     protected $fileLocation = '.gitattributes';
 }

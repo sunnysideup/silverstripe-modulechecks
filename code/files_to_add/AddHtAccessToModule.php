@@ -2,7 +2,7 @@
 
 class AddHtAccessToModule extends AddFileToModule
 {
-    protected $sourceLocation = 'source/.htaccess';
+    protected $sourceLocation = 'mysite/template_files/.htaccess';
 
     protected $fileLocation = '.htaccess';
 }

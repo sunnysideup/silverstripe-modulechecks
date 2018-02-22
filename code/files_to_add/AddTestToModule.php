@@ -6,9 +6,9 @@ class AddTestToModule extends AddFileToModule
         'Module' => 'ShortUCFirstName',
     );
 
-    protected $sourceLocation = 'source/ModuleTest.php';
+    protected $sourceLocation = 'mysite/template_files/ModuleTest.php';
 
-    
+
     public function __construct($gitObject)
     {
         $this-> fileLocation = 'tests/' . $gitObject->ShortUCFirstName() . 'Test.php';
