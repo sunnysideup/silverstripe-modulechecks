@@ -2,7 +2,7 @@
 
 class AddLicenceToModule extends AddFileToModule
 {
-    protected $sourceLocation = 'source/LICENSE';
+    protected $sourceLocation = 'mysite/template_files/LICENSE';
 
     protected $fileLocation = 'LICENSE';
 }

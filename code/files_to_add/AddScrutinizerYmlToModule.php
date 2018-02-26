@@ -2,7 +2,7 @@
 
 class AddScrutinizerYmlToModule extends AddFileToModule
 {
-    protected $sourceLocation = 'source/.scrutinizer.yml';
+    protected $sourceLocation = 'mysite/template_files/.scrutinizer.yml';
 
     protected $fileLocation = '.scrutinizer.yml';
 }

@@ -2,7 +2,7 @@
 
 class AddChangeLogToModule extends AddFileToModule
 {
-    protected $sourceLocation = 'source/CHANGELOG.md';
+    protected $sourceLocation = 'mysite/template_files/CHANGELOG.md';
 
     protected $fileLocation = 'CHANGELOG.md';
 }

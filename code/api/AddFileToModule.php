@@ -104,7 +104,7 @@ abstract class AddFileToModule extends Object
         if ($this->useCustomisationFile) {
             $fileContent = $this->customiseStandardFile($fileContent);
         }
-        
+
         $this->saveFile($fileContent);
         if ($fileContent) {
             $this->replaceWordsInFile();
@@ -127,7 +127,7 @@ abstract class AddFileToModule extends Object
         if ($isURL) {
             $fullFileName = $this->sourceLocation;
         } else {
-            $fullFileName = Director::baseFolder().'/modulechecks/'.$this->sourceLocation;
+            $fullFileName = Director::baseFolder().'/'.$this->sourceLocation;
         }
 
         print("<li>$fullFileName</li>");
@@ -171,14 +171,14 @@ abstract class AddFileToModule extends Object
     protected function saveFile($fileContent)
     {
         GeneralMethods::outputToScreen("<li> Adding " . $this->fileLocation . " to module  </li>");
-        
+
         /*
          * If fileLocation  contains folder, name then need to check
          * if folder exists
          */
         if (strpos($this->fileLocation, '/')!==false) {
             $folderPath = substr($this->fileLocation, 0, strrpos($this->fileLocation, '/'));
-            
+
             //print_r ($this->rootDirForModule.'/'.$folderPath);
 
             if (!file_exists($this->rootDirForModule.'/'.$folderPath)) {
@@ -189,7 +189,7 @@ abstract class AddFileToModule extends Object
         if (isset($folderPath)  && !file_exists($this->rootDirForModule.'/'.$folderPath)) {
             user_error('could not find or create directory ' . $this->rootDirForModule.'/'.$folderPath);
         }
-        
+
         $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
         $this->fileLocation;
 
@@ -283,7 +283,7 @@ abstract class AddFileToModule extends Object
         return $this->getReadMeComponent('suggestedmodules');
     }
 
-    
+
 
 
     /**
@@ -298,13 +298,13 @@ abstract class AddFileToModule extends Object
             $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
             GeneralMethods::replaceInFile($fileName, $searchTerm, $this->gitObject->$replaceMethod());
         }
-        
+
         foreach ($this->replaceArray as $searchTerm => $replaceMethod) {
             $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
             GeneralMethods::replaceInFile($fileName, $searchTerm, $this->$replaceMethod());
         }
     }
-        
+
     /**
      *
      * @return string

@@ -2,7 +2,7 @@
 
 class AddContributingToModule extends AddFileToModule
 {
-    protected $sourceLocation = 'source/CONTRIBUTING.md';
+    protected $sourceLocation = 'mysite/template_files/CONTRIBUTING.md';
 
     protected $fileLocation = 'CONTRIBUTING.md';
 }
