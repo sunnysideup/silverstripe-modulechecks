@@ -49,7 +49,7 @@ for folder in $folders; do
         cd $folder
         #fix PHP code ...
         if ( grep --quiet $vendor $folder/.git/config ); then
-            php-cs-fixer fix ./code --using-cache=no --rules=@PSR2
+            php-cs-fixer fix ./ --using-cache=no --rules=@PSR2
         fi
 
         # check changes
