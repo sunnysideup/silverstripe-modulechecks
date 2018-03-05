@@ -59,7 +59,7 @@ class ComposerJson extends Object
 
 
         if (is_array($this->jsonData)) {
-            GeneralMethods::outputToScreen("<li> Updating composer.json </li>");
+            GeneralMethods::output_to_screen("<li> Updating composer.json </li>");
             $composerUpdates = ClassInfo::subclassesFor('UpdateComposer');
 
             //remove base class
@@ -79,7 +79,7 @@ class ComposerJson extends Object
                 $obj->run();
             }
             if ($this->writeJsonToFile()) {
-                GeneralMethods::outputToScreen("<li> Updated JSON </li>");
+                GeneralMethods::output_to_screen("<li> Updated JSON </li>");
             } else {
                 UpdateModules::addUnsolvedProblem($this->moduleName, 'Could not write JSON');
             }

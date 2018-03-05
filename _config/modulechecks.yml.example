@@ -1,0 +1,42 @@
+ModuleChecks:
+  packagist_user_name: "abc"
+  # the variable below is not required, but allows you to check for additional ones that may not be listed on github
+  modules: []
+
+GitHubModule:
+  github_user_name: "sunnysideup"
+  github_user_email: "bla@foo.com"
+  github_account_base_url: "git://github.com"
+
+
+  absolute_temp_folder: "/var/www/temp_modules"
+  path_to_private_key: "/var/www/.ssh/id_rsa"
+
+  tag_create_message: "Auto-created tag."
+
+UpdateModules:
+
+  #modules_to_update: array | null
+  #commands_to_run: none / array | null
+  #files_to_update: none / array | null
+
+
+  modules_to_update:
+    - my_module_name
+
+  files_to_update:
+    - AddMyFileToModule
+
+  commands_to_run:
+    - MyCommandLine
+
+
+  tag_create_message: "Auto-created tag. For more information please contact SunnySideUp"
+
+  update_composer_json: true
+
+  scrutinizer_api_key: api key from scrutinzer-ci.com - used for adding repositories
+
+ComposerJson:
+  updates:
+    - ComposerRemoveHomePage

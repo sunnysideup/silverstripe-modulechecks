@@ -170,7 +170,7 @@ abstract class AddFileToModule extends Object
      */
     protected function saveFile($fileContent)
     {
-        GeneralMethods::outputToScreen("<li> Adding " . $this->fileLocation . " to module  </li>");
+        GeneralMethods::output_to_screen("<li> Adding " . $this->fileLocation . " to module  </li>");
 
         /*
          * If fileLocation  contains folder, name then need to check

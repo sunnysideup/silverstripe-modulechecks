@@ -9,11 +9,11 @@ class CheckOrAddExtraArray extends UpdateComposer
         $json = $this->getJsonData();
 
         if (isset($json['extra'])) {
-            GeneralMethods::outputToScreen("<li> already has composer.json[extra][installer-name] </li>");
+            GeneralMethods::output_to_screen("<li> already has composer.json[extra][installer-name] </li>");
 
             return;
         } else {
-            GeneralMethods::outputToScreen("<li> Adding 'extra' array to composer.json </li>");
+            GeneralMethods::output_to_screen("<li> Adding 'extra' array to composer.json </li>");
             if (! isset($json['extra'])) {
                 $json['extra'] = [];
             }

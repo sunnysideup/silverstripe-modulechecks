@@ -55,7 +55,7 @@ abstract class RunCommandLineMethodOnModule extends Object
     protected function runCommand()
     {
         if ($this->command != null) {
-            GeneralMethods::outputToScreen('Running ' . $this->command);
+            GeneralMethods::output_to_screen('Running ' . $this->command);
             return exec(
               ' cd '.$this->rootDirForModule.';
                 '.$this->command.'

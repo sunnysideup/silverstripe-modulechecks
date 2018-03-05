@@ -159,7 +159,7 @@ class GitRepoFinder extends Object
                     $curlResult = curl_exec($ch);
 
                     if (! $curlResult) {
-                        GeneralMethods::OutputToScreen('Could not retrieve list of modules from GitHub');
+                        GeneralMethods::output_to_screen('Could not retrieve list of modules from GitHub');
 
                         UpdateModules::$unsolvedItems["all"] =  ('Could not retrieve list of modules from GitHub');
                         die('');
@@ -199,10 +199,10 @@ class GitRepoFinder extends Object
                                         array_push($modules, $name);
                                     }
                                 } else {
-                                    GeneralMethods::OutputToScreen("skipping ".$repo["name"]." as it does not appear to me a silverstripe module");
+                                    GeneralMethods::output_to_screen("skipping ".$repo["name"]." as it does not appear to me a silverstripe module");
                                 }
                             } else {
-                                GeneralMethods::OutputToScreen("skipping ".$repo["name"]." as it has a different owner");
+                                GeneralMethods::output_to_screen("skipping ".$repo["name"]." as it has a different owner");
                             }
                         } elseif (isset($repo["name"])) {
                             DB::alteration_message("skipping ".$repo["name"]." as it is a fork");
