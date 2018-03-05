@@ -39,7 +39,7 @@ class GeneralMethods extends Object
      */
     public static function output_to_screen($message, $type = "")
     {
-        if(Director::is_cli()) {
+        if (Director::is_cli()) {
             DB::alteration_message($message, $type);
         } else {
             echo "<br />";
@@ -47,7 +47,6 @@ class GeneralMethods extends Object
             ob_end_flush();
             DB::alteration_message($message, $type);
             ob_start();
-
         }
     }
 
@@ -86,6 +85,4 @@ class GeneralMethods extends Object
             }
         }
     }
-
-
 }
