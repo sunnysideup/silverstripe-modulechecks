@@ -39,11 +39,15 @@ class GeneralMethods extends Object
      */
     public static function output_to_screen($message, $type = "")
     {
-        echo " ";
-        flush();
-        ob_end_flush();
-        DB::alteration_message($message, $type);
-        ob_start();
+        if (Director::is_cli()) {
+            DB::alteration_message($message, $type);
+        } else {
+            echo "<br />";
+            flush();
+            ob_end_flush();
+            DB::alteration_message($message, $type);
+            ob_start();
+        }
     }
 
     /*
@@ -80,20 +84,5 @@ class GeneralMethods extends Object
                 fclose($file);
             }
         }
-    }
-
-    /**
-     *
-     *
-     * @param  string $message
-     * @param  string $type
-     */
-    public static function outputToScreen($message, $type = "")
-    {
-        echo " ";
-        flush();
-        ob_end_flush();
-        DB::alteration_message($message, $type);
-        ob_start();
     }
 }

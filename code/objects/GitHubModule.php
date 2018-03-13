@@ -248,8 +248,8 @@ class GitHubModule extends DataObject
                             user_error($e->getMessage(), E_USER_ERROR);
                         }
 
-                        GeneralMethods::outputToScreen('<li>Failed to clone repository: ' .  $e->getMessage() . '</li>');
-                        GeneralMethods::outputToScreen('<li>Waiting 8 seconds to try again ...: </li>');
+                        GeneralMethods::output_to_screen('<li>Failed to clone repository: ' .  $e->getMessage() . '</li>');
+                        GeneralMethods::output_to_screen('<li>Waiting 8 seconds to try again ...: </li>');
                         $this->removeClone();
                         sleep(8);
                     }
@@ -378,8 +378,8 @@ class GitHubModule extends DataObject
                         print_r($e);
                         throw $e;
                     } else {
-                        GeneralMethods::outputToScreen('<li>Failed to push repository: ' .  $e->getMessage() . '</li>');
-                        GeneralMethods::outputToScreen('<li>Waiting 8 seconds to try again ...: </li>');
+                        GeneralMethods::output_to_screen('<li>Failed to push repository: ' .  $e->getMessage() . '</li>');
+                        GeneralMethods::output_to_screen('<li>Waiting 8 seconds to try again ...: </li>');
                         sleep(8);
                     }
                 }
@@ -422,7 +422,7 @@ class GitHubModule extends DataObject
         restore_error_handler();
 
         if (! $file) {
-            GeneralMethods::outputToScreen('<li>Could not find ' . $rawURL . '</li>');
+            GeneralMethods::output_to_screen('<li>Could not find ' . $rawURL . '</li>');
             return false;
         }
         $content = '';
@@ -670,7 +670,7 @@ class GitHubModule extends DataObject
             }
         }
 
-        GeneralMethods::OutputToScreen('updating Git Repo information ...');
+        GeneralMethods::output_to_screen('updating Git Repo information ...');
 
         $this->gitApiCall($array, '', 'PATCH');
     }
@@ -678,7 +678,7 @@ class GitHubModule extends DataObject
     protected function gitApiCall($data, $gitAPIcommand = '', $method = 'GET')
     {
         $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        GeneralMethods::OutputToScreen('Running Git API command ' .$gitAPIcommand. ' using ' .$method. ' method...');
+        GeneralMethods::output_to_screen('Running Git API command ' .$gitAPIcommand. ' using ' .$method. ' method...');
         $gitUserName = $this->Config()->get('github_user_name');
         $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($this->ModuleName);
         if (trim($gitAPIcommand)) {
@@ -717,7 +717,7 @@ class GitHubModule extends DataObject
         $curlResult = curl_exec($ch);
         if (! $curlResult) {
             $msg = "curl exectution failed";
-            GeneralMethods::outputToScreen($msg);
+            GeneralMethods::output_to_screen($msg);
             UpdateModules::$unsolvedItems["none"] = $msg;
         }
         print_r($url);
@@ -731,7 +731,7 @@ class GitHubModule extends DataObject
     public function addRepoToScrutinzer()
     {
         if (! trim($this->Config()->get('scrutinizer_api_key'))) {
-            GeneralMethods::outputToScreen("<li> not Scrutinizer API key set </li>");
+            GeneralMethods::output_to_screen("<li> not Scrutinizer API key set </li>");
             return false;
         }
 
@@ -758,7 +758,7 @@ class GitHubModule extends DataObject
         $curlResult = curl_exec($ch);
 
         if (! $curlResult) {
-            GeneralMethods::outputToScreen("<li> could not add $repoName to Scrutinizer ... </li>");
+            GeneralMethods::output_to_screen("<li> could not add $repoName to Scrutinizer ... </li>");
             //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (curl failure)";
 
             UpdateModules::addUnsolvedProblem($repoName, "Could not add $repoName to Scrutiniser (curl failure)");
@@ -770,9 +770,9 @@ class GitHubModule extends DataObject
 
 
         if ($httpcode == 201) {
-            GeneralMethods::outputToScreen("<li> Added $repoName to Scrutinizer ... </li>");
+            GeneralMethods::output_to_screen("<li> Added $repoName to Scrutinizer ... </li>");
         } else {
-            GeneralMethods::outputToScreen("<li> could not add $repoName to Scrutinizer ... </li>");
+            GeneralMethods::output_to_screen("<li> could not add $repoName to Scrutinizer ... </li>");
             //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (HttpCode $httpcode)";
             UpdateModules::addUnsolvedProblem($repoName, "Could not add $repoName to Scrutiniser (HttpCode $httpcode)");
         }
