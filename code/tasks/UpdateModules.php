@@ -31,7 +31,7 @@ class UpdateModules extends BuildTask
      *
      * @var array
      */
-    private static $files_to_update = array();
+    private static $files_to_update = [];
     /**
      * e.g.
      * - ClassNameForUpdatingFileA
@@ -66,7 +66,9 @@ class UpdateModules extends BuildTask
         $files = ClassInfo::subclassesFor('AddFileToModule');
         array_shift($files);
         $limitedFileClasses = $this->Config()->get('files_to_update');
-        if ($limitedFileClasses === 'none') {
+        if ($limitedFileClasses === []) {
+            //do nothing
+        elseif ($limitedFileClasses === 'none') {
             $files = [];
         } elseif (is_array($limitedFileClasses) && count($limitedFileClasses)) {
             $files = array_intersect($files, $limitedFileClasses);
@@ -492,7 +494,7 @@ class UpdateModules extends BuildTask
         $copied = false;
         foreach ($oldreadmeDestinationFiles as $file) {
             $filePath = $tempDir . '/' .  $moduleObject->ModuleName . '/' . $file;
-            Folder::makeFolder(dirname($filePath));
+            FileSystem::makeFolder(dirname($filePath));
 
             if (!file_exists($filePath)) {
                 $copied = true;
