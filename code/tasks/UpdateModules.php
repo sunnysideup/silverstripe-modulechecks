@@ -478,23 +478,25 @@ class UpdateModules extends BuildTask
         $tempDir = GitHubModule::Config()->get('absolute_temp_folder');
         $oldReadMe = $tempDir . '/' .  $moduleObject->ModuleName . '/' .'README.md';
 
-        if (!file_exists($oldReadMe)) {
+        if (! file_exists($oldReadMe)) {
             return false;
         }
 
 
         $oldreadmeDestinationFiles = array(
-                'docs/en/INDEX.md',
-                'docs/en/README.old.md',
-            );
+            'docs/en/INDEX.md',
+            'docs/en/README.old.md',
+        );
 
 
         $copied = false;
         foreach ($oldreadmeDestinationFiles as $file) {
             $filePath = $tempDir . '/' .  $moduleObject->ModuleName . '/' . $file;
+            Folder::makeFolder(dirname($filePath));
 
             if (!file_exists($filePath)) {
                 $copied = true;
+                GeneralMethods::output_to_screen('Copying '.$oldReadMe.' to '.$filePath);
                 copy($oldReadMe, $filePath);
             }
         }
