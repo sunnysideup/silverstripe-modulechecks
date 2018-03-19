@@ -68,7 +68,7 @@ class UpdateModules extends BuildTask
         $limitedFileClasses = $this->Config()->get('files_to_update');
         if ($limitedFileClasses === []) {
             //do nothing
-        elseif ($limitedFileClasses === 'none') {
+        } elseif ($limitedFileClasses === 'none') {
             $files = [];
         } elseif (is_array($limitedFileClasses) && count($limitedFileClasses)) {
             $files = array_intersect($files, $limitedFileClasses);
