@@ -49,6 +49,9 @@ class UpdateModules extends BuildTask
 
         //Check temp module folder is empty
         $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
+        if(! file_exists($tempFolder)) {
+            FileSystem::makeFolder($tempFolder);
+        }
         $tempDirFiles = scandir($tempFolder);
         if (count($tempDirFiles) > 2) {
             die('<h2>' . $tempFolder . ' is not empty, please delete or move files </h2>');
