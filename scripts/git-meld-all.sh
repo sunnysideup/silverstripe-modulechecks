@@ -48,7 +48,7 @@ for folder in $folders; do
     if ( grep --quiet $vendor $folder/.git/config ) || [[ $folder == "." ]]; then
         cd $folder
         #fix PHP code ...
-        if ( grep --quiet $vendor $folder/.git/config ); then
+        if ( grep --quiet $vendor ./.git/config ); then
             php-cs-fixer fix ./ --using-cache=no --rules=@PSR2
         fi
 
