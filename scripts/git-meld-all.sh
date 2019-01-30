@@ -93,8 +93,8 @@ for folder in $folders; do
     if [ -f $folder/.git/config ] ; then # is a git working copy
         cd $folder
         git status
-        git pull origin master
-        git push origin master
+        git pull
+        git push
         cd $rootFolder
     fi
 done
