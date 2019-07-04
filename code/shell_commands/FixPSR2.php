@@ -4,10 +4,10 @@ class FixPSR2 extends RunCommandLineMethodOnModule
     public function __construct($rootDirForModule = '')
     {
         parent::__construct($rootDirForModule);
-        $folder = Director::baseFolder(). '/modulechecks/vendor/friendsofphp/php-cs-fixer/';
-        // $this->command = 'php '.$folder.'php-cs-fixer fix .  --level=psr2';
         $this->commands = [
-            'php php-cs-fixer fix ./  --rules=@PSR2'
+            'cp '.Director::baseFolder(). '/modulechecks/ecs.yml ./',
+            'composer require --dev symplify/easy-coding-standard',
+            'vendor/bin/ecs check app/src --fix > errorsToFix.txt',
         ];
     }
 }
