@@ -2,5 +2,7 @@
 
 class RemoveOrig extends RunCommandLineMethodOnModule
 {
-    protected $command = ' find . -type f -name "*.orig" -exec rm  -Rf "{}" \;';
+    protected $commands = [
+        ' find . -type f -name "*.orig" -exec rm  -Rf "{}" \;'
+    ];
 }

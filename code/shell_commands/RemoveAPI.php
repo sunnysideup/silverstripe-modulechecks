@@ -2,5 +2,7 @@
 
 class RemoveAPI extends RunCommandLineMethodOnModule
 {
-    protected $command = 'rm ./docs/api/ -Rf';
+    protected $commands = [
+        'rm ./docs/api/ -Rf'
+    ];
 }

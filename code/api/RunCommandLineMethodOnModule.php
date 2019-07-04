@@ -16,7 +16,7 @@ abstract class RunCommandLineMethodOnModule extends Object
      *
      * @var string
      */
-    protected $command = '';
+    protected $commands = [];
 
     public function setRootDirForModule($rootDirForModule)
     {
@@ -28,9 +28,23 @@ abstract class RunCommandLineMethodOnModule extends Object
      *
      * @param string
      */
-    public function setCommand($command)
+    public function setCommand(array $commands)
     {
-        $this->command = $command;
+        $this->commands = $commands;
+
+        return $this;
+    }
+
+    /**
+     *
+     *
+     * @param string
+     */
+    public function addCommands(string $command)
+    {
+        $this->commands[] = $command;
+
+        return $this;
     }
 
     public function __construct($rootDirForModule = '')
@@ -43,7 +57,7 @@ abstract class RunCommandLineMethodOnModule extends Object
         if (! $this->rootDirForModule) {
             user_error('no root dir for module has been set');
         }
-        if (! $this->command) {
+        if (! count($this->commands)) {
             user_error('command not set');
         }
         $this->runCommand();
@@ -54,13 +68,13 @@ abstract class RunCommandLineMethodOnModule extends Object
      */
     protected function runCommand()
     {
-        if ($this->command != null) {
-            GeneralMethods::output_to_screen('Running ' . $this->command);
+        foreach($this->commands as $command) {
+            GeneralMethods::output_to_screen('Running ' . $command);
             return exec(
               ' cd '.$this->rootDirForModule.';
-                '.$this->command.'
+                '.$command.'
                 '
-                );
+            );
         }
     }
 

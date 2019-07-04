@@ -2,5 +2,7 @@
 
 class FixConfigBasics extends RunCommandLineMethodOnModule
 {
-    protected $command = 'mv ./config ./_config';
+    protected $commands = [
+        'mv ./config ./_config'
+    ];
 }

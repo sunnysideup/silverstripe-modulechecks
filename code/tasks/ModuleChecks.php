@@ -58,8 +58,10 @@ class ModuleChecks extends BuildTask
             if ($failures == 0) {
                 DB::alteration_message("OK", "created");
             }
-            ob_flush();
-            flush();
+            echo '
+            ';
+            @ob_flush();
+            @flush();
         }
         echo "----------------------------- THE END --------------------------";
     }
