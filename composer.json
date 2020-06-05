@@ -25,7 +25,6 @@
     "require": {
         "symplify/easy-coding-standard": "*",
         "symfony/yaml": "^3.1",
-        "silverstripe/framework": "~3.6",
         "silverstripe/cms": "~3.6"
     },
     "extra": {
