@@ -1,9 +1,9 @@
-ModuleChecks:
+Sunnysideup\ModuleChecks\Tasks\ModuleChecks:
   packagist_user_name: "abc"
   # the variable below is not required, but allows you to check for additional ones that may not be listed on github
   modules: []
 
-GitHubModule:
+Sunnysideup\ModuleChecks\Objects\GitHubModule:
   github_user_name: "sunnysideup"
   github_user_email: "bla@foo.com"
   github_account_base_url: "git://github.com"
@@ -14,7 +14,7 @@ GitHubModule:
 
   tag_create_message: "Auto-created tag."
 
-UpdateModules:
+Sunnysideup\ModuleChecks\Tasks\UpdateModules:
 
   #modules_to_update: array | null
   #commands_to_run: none / array | null
@@ -37,6 +37,6 @@ UpdateModules:
 
   scrutinizer_api_key: api key from scrutinzer-ci.com - used for adding repositories
 
-ComposerJson:
+Sunnysideup\ModuleChecks\Objects\ComposerJson:
   updates:
     - ComposerRemoveHomePage
