@@ -22,3 +22,4 @@ class CheckOrAddExtraArray extends UpdateComposer
         $this->setJsonData($json);
     }
 }
+

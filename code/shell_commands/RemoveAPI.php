@@ -6,3 +6,4 @@ class RemoveAPI extends RunCommandLineMethodOnModule
         'rm ./docs/api/ -Rf'
     ];
 }
+

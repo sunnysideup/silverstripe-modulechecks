@@ -6,3 +6,4 @@ class AddHtAccessToModule extends AddFileToModule
 
     protected $fileLocation = '.htaccess';
 }
+

@@ -6,3 +6,4 @@ class AddSourceReadmeToModule extends AddFileToModule
 
     protected $fileLocation = 'README.md';
 }
+

@@ -11,3 +11,4 @@ class FixPSR2 extends RunCommandLineMethodOnModule
         ];
     }
 }
+

@@ -6,3 +6,4 @@ class AddLicenceToModule extends AddFileToModule
 
     protected $fileLocation = 'LICENSE';
 }
+

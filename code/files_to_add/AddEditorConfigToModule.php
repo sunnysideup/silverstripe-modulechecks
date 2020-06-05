@@ -7,3 +7,4 @@ class AddEditorConfigToModule extends AddFileToModule
 
     protected $fileLocation = '.editorconfig';
 }
+

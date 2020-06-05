@@ -6,3 +6,4 @@ class AddScrutinizerYmlToModule extends AddFileToModule
 
     protected $fileLocation = '.scrutinizer.yml';
 }
+

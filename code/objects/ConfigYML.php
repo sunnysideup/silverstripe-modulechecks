@@ -1,9 +1,5 @@
 <?php
 
-//require ('../modulechecks/vendor/autoload.php');
-
-use Symfony\Component\Yaml\Yaml;
-
 class ConfigYML extends Object
 {
     public function __construct($gitHubModuleInstance)

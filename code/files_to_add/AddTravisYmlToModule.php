@@ -6,3 +6,4 @@ class AddTravisYmlToModule extends AddFileToModule
 
     protected $fileLocation = '.travis.yml';
 }
+

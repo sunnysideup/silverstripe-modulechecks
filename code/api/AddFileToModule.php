@@ -338,3 +338,4 @@ abstract class AddFileToModule extends Object
         return (trim($text) == trim($compareText));
     }
 }
+

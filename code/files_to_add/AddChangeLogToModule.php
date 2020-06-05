@@ -6,3 +6,4 @@ class AddChangeLogToModule extends AddFileToModule
 
     protected $fileLocation = 'CHANGELOG.md';
 }
+

@@ -6,3 +6,4 @@ class RemoveSVN extends RunCommandLineMethodOnModule
         ' find ./ -type d -name ".svn" -exec rm  -Rf "{}" \;'
     ];
 }
+

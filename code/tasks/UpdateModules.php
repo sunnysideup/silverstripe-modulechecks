@@ -510,3 +510,4 @@ class UpdateModules extends BuildTask
         }
     }
 }
+

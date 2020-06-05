@@ -6,3 +6,4 @@ class AddUserguideMdToModule extends AddFileToModule
 
     protected $fileLocation = 'docs/en/userguide.md';
 }
+

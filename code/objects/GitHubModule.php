@@ -1,16 +1,5 @@
 <?php
 
-/**
- * does everything with one module
- *
- * see https://github.com/cpliakas/git-commsWrapper for info on the git commsWrapper module
- */
-
-
-use GitWrapper\GitWrapper;
-
-require_once '../vendor/autoload.php';
-
 class GitHubModule extends DataObject
 {
 

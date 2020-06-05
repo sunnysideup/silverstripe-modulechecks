@@ -6,3 +6,4 @@ class AddManifestExcludeToModule extends AddFileToModule
 
     protected $fileLocation = '_module_data/_manifest_exclude';
 }
+

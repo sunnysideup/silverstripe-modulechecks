@@ -83,3 +83,4 @@ abstract class RunCommandLineMethodOnModule extends Object
         return !empty(shell_exec("which $cmd"));
     }
 }
+

@@ -6,3 +6,4 @@ class RemoveOrig extends RunCommandLineMethodOnModule
         'find . -type f -name "*.orig" -exec rm  -Rf "{}" \;'
     ];
 }
+

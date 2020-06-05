@@ -30,3 +30,4 @@ abstract class UpdateComposer extends Object
         $this->composerJsonObj->setJsonData($array);
     }
 }
+

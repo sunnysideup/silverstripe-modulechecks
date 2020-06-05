@@ -6,3 +6,4 @@ class FixConfigBasics extends RunCommandLineMethodOnModule
         'mv ./config ./_config'
     ];
 }
+

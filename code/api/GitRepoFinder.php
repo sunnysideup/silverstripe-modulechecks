@@ -215,3 +215,4 @@ class GitRepoFinder extends Object
         return self::$_modules;
     }
 }
+

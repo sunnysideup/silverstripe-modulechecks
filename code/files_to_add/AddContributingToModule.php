@@ -6,3 +6,4 @@ class AddContributingToModule extends AddFileToModule
 
     protected $fileLocation = 'CONTRIBUTING.md';
 }
+

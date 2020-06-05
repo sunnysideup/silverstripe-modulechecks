@@ -15,3 +15,4 @@ class AddTestToModule extends AddFileToModule
         parent::__construct($gitObject);
     }
 }
+

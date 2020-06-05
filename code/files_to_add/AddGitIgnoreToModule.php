@@ -6,3 +6,4 @@ class AddGitIgnoreToModule extends AddFileToModule
 
     protected $fileLocation = '.gitignore';
 }
+

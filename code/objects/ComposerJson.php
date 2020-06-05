@@ -119,3 +119,4 @@ class ComposerJson extends Object
         user_error('Can not open composer file ....');
     }
 }
+

@@ -14,3 +14,4 @@ class UpdateLicense extends UpdateComposer
         $this->setJsonData($json);
     }
 }
+

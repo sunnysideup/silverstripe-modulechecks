@@ -7,3 +7,4 @@ class SetPermissions extends RunCommandLineMethodOnModule
         'find . -type d -exec chmod 755 {} \;',
     ];
 }
+
