@@ -23,9 +23,8 @@
         }
     ],
     "require": {
-        "symplify/easy-coding-standard": "*",
         "symfony/yaml": "^3.1",
-        "silverstripe/recipe-cms": "^4.4"
+        "silverstripe/framework": "^4.5"
     },
     "extra": [],
     "autoload": {
