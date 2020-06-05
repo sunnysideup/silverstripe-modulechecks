@@ -1,5 +1,10 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\FilesToAdd;
+
+use AddFileToModule;
+
+
 class AddTestToModule extends AddFileToModule
 {
     protected $gitReplaceArray = array(

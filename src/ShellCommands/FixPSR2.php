@@ -1,4 +1,10 @@
 <?php
+
+namespace Sunnysideup\ModuleChecks\ShellCommands;
+
+use RunCommandLineMethodOnModule;
+use Director;
+
 class FixPSR2 extends RunCommandLineMethodOnModule
 {
     public function __construct($rootDirForModule = '')

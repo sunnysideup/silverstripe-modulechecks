@@ -1,4 +1,13 @@
 <?php
+
+namespace Sunnysideup\ModuleChecks\Api;
+
+use ViewableData;
+use Director;
+use Filesystem;
+use Injector;
+use GitHubModule;
+
 /**
  * adds or replaces a file
  * in a git hub module

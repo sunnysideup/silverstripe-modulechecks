@@ -1,5 +1,10 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\Interface;
+
+
+
+
 
 interface ModuleConfigInterface
 {

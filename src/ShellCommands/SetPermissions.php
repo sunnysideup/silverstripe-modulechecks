@@ -1,5 +1,10 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\ShellCommands;
+
+use RunCommandLineMethodOnModule;
+
+
 class SetPermissions extends RunCommandLineMethodOnModule
 {
     protected $commands = [

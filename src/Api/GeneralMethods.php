@@ -1,5 +1,13 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\Api;
+
+use ViewableData;
+use Director;
+use DB;
+use FileSystem;
+
+
 
 
 /**

@@ -1,4 +1,9 @@
 <?php
+
+namespace Sunnysideup\ModuleChecks\Composerjson;
+
+use UpdateComposer;
+
 /**
  * sets the default installation folder
  */

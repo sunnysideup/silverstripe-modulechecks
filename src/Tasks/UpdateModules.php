@@ -1,5 +1,19 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\Tasks;
+
+use BuildTask;
+use GitHubModule;
+use FileSystem;
+use GitRepoFinder;
+use ClassInfo;
+use Exception;
+use GeneralMethods;
+use int;
+use ComposerJson;
+use ConfigYML;
+
+
 /**
  * main class running all the updates
  *

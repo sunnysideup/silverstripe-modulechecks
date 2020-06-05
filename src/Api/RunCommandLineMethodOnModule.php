@@ -1,5 +1,10 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\Api;
+
+use ViewableData;
+
+
 
 /**
   * ### @@@@ START REPLACEMENT @@@@ ###

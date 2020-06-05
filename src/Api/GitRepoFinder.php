@@ -1,5 +1,14 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\Api;
+
+use ViewableData;
+use Config;
+use DB;
+use GitHubModule;
+use UpdateModules;
+
+
 
 
 

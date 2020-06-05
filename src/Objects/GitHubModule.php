@@ -1,5 +1,16 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\Objects;
+
+use DataObject;
+use GitWrapper;
+use Director;
+use GeneralMethods;
+use UpdateModules;
+use Exception;
+use FileSystem;
+
+
 class GitHubModule extends DataObject
 {
 

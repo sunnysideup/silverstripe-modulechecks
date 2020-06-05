@@ -1,5 +1,14 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\Tasks;
+
+use BuildTask;
+use GitRepoFinder;
+use Config;
+use DB;
+use GeneralMethods;
+
+
 /**
  * check if everything is in plcae for a module
  * some quick and dirty methods ....

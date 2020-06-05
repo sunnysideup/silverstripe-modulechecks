@@ -1,5 +1,14 @@
 <?php
 
+namespace Sunnysideup\ModuleChecks\Objects;
+
+use ViewableData;
+use GeneralMethods;
+use UpdateModules;
+use Yaml;
+use Exception;
+
+
 
 /**
   * ### @@@@ START REPLACEMENT @@@@ ###
