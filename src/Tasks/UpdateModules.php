@@ -2,26 +2,21 @@
 
 namespace Sunnysideup\ModuleChecks\Tasks;
 
-
-
-
-
 use Exception;
 use FileSystem;
 
 
 
 
-use Sunnysideup\ModuleChecks\Objects\GitHubModule;
-use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
-use Sunnysideup\ModuleChecks\Api\AddFileToModule;
 use SilverStripe\Core\ClassInfo;
-use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
+use SilverStripe\Dev\BuildTask;
+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
 use Sunnysideup\ModuleChecks\Objects\ComposerJson;
 use Sunnysideup\ModuleChecks\Objects\ConfigYML;
-use SilverStripe\Dev\BuildTask;
-
+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
 
 /**
  * main class running all the updates

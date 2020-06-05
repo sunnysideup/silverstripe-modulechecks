@@ -6,11 +6,10 @@ use Exception;
 
 
 
-use Yaml;
+use SilverStripe\View\ViewableData;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-use SilverStripe\View\ViewableData;
-
+use Yaml;
 
 /**
  * ### @@@@ START REPLACEMENT @@@@ ###

@@ -2,12 +2,8 @@
 
 namespace Sunnysideup\ModuleChecks\Composerjson;
 
-
-
 use SilverStripe\Core\Config\Config;
-use Sunnysideup\ModuleChecks\Composerjson\UpdateLicense;
 use Sunnysideup\ModuleChecks\Api\UpdateComposer;
-
 
 /**
  * sets the default installation folder

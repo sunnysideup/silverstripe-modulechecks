@@ -2,18 +2,12 @@
 
 namespace Sunnysideup\ModuleChecks\Tasks;
 
-
-
-
-
-
-use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
 use SilverStripe\Core\Config\Config;
-use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use SilverStripe\Dev\BuildTask;
-
+use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
 
 /**
  * check if everything is in plcae for a module

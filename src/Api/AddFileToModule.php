@@ -2,18 +2,12 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-
-
-
-
-
-use SilverStripe\View\Requirements;
-use SilverStripe\Control\Director;
 use SilverStripe\Assets\Filesystem;
+use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
-use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use SilverStripe\View\Requirements;
 use SilverStripe\View\ViewableData;
-
+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
 
 /**
  * adds or replaces a file

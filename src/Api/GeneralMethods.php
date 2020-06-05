@@ -2,14 +2,11 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-
-
 use FileSystem;
 
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DB;
 use SilverStripe\View\ViewableData;
-
 
 /**
  * ### @@@@ START REPLACEMENT @@@@ ###

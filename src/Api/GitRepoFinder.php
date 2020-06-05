@@ -2,17 +2,11 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-
-
-
-
-
 use SilverStripe\Core\Config\Config;
-use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-use Sunnysideup\ModuleChecks\Objects\GitHubModule;
 use SilverStripe\ORM\DB;
 use SilverStripe\View\ViewableData;
-
+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
 /**
  * ### @@@@ START REPLACEMENT @@@@ ###

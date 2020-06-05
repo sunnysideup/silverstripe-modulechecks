@@ -2,9 +2,7 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-
 use SilverStripe\View\ViewableData;
-
 
 /**
  * ### @@@@ START REPLACEMENT @@@@ ###

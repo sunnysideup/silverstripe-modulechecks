@@ -2,16 +2,11 @@
 
 namespace Sunnysideup\ModuleChecks\Objects;
 
-
-
-
-
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\View\ViewableData;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Api\UpdateComposer;
-use SilverStripe\Core\ClassInfo;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-use SilverStripe\View\ViewableData;
-
 
 /**
  * ### @@@@ START REPLACEMENT @@@@ ###
