@@ -10,11 +10,11 @@ such as whether it is listed on packagist.
 
 You can either run it for all the modules for a github account
 or you can specify specific modules in your `yml` configurations
-(`mysite/_config/modulecheck.yml`).
+(`app/_config/modulecheck.yml`).
 
 You can either run it for all files fon a github account or one specific file. Again,
 you can specify specific files in your `yml` configurations
-(`mysite/_config/modulecheck.yml`).
+(`app/_config/modulecheck.yml`).
 
 Thirdly, you can set exceptions / custom configs in a file within each module. You can place any custom configs in the following file:
 

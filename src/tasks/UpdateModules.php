@@ -22,7 +22,7 @@ class UpdateModules extends BuildTask
      *
      * @var array
      */
-    private static $modules_to_update = array();
+    private static $modules_to_update = [];
 
     /**
      * e.g.
@@ -39,9 +39,9 @@ class UpdateModules extends BuildTask
      *
      * @var array
      */
-    private static $commands_to_run = array();
+    private static $commands_to_run = [];
 
-    public static $unsolvedItems = array();
+    public static $unsolvedItems = [];
 
     public function run($request)
     {
@@ -273,7 +273,7 @@ class UpdateModules extends BuildTask
     public static function addUnsolvedProblem($moduleName, $problemString)
     {
         if (!isset(UpdateModules::$unsolvedItems[$moduleName])) {
-            UpdateModules::$unsolvedItems[$moduleName] = array();
+            UpdateModules::$unsolvedItems[$moduleName] = [];
         }
         array_push(UpdateModules::$unsolvedItems[$moduleName], $problemString);
     }
@@ -342,7 +342,7 @@ class UpdateModules extends BuildTask
     {
         $filesAndFolders = scandir($directory);
 
-        $problem_files = array();
+        $problem_files = [];
         foreach ($filesAndFolders as $fileOrFolder) {
             if ($fileOrFolder == '.' || $fileOrFolder == '..' || $fileOrFolder == '.git') {
                 continue;
@@ -368,7 +368,7 @@ class UpdateModules extends BuildTask
 
     private function checkFileExcludedWords($fileName, $wordArray)
     {
-        $matchedWords = array();
+        $matchedWords = [];
 
         $fileName = str_replace('////', '/', $fileName);
         if (filesize($fileName) == 0) {
@@ -376,6 +376,15 @@ class UpdateModules extends BuildTask
         }
 
 
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: file_get_contents (case sensitive)
+  * NEW: file_get_contents (COMPLEX)
+  * EXP: Use new asset abstraction (https://docs.silverstripe.org/en/4/changelogs/4.0.0#asset-storage
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $fileContent = file_get_contents($fileName);
         if (!$fileContent) {
             $msg = "Could not open $fileName to check for excluded words";
@@ -385,7 +394,7 @@ class UpdateModules extends BuildTask
         }
 
         foreach ($wordArray as $word) {
-            $matches = array();
+            $matches = [];
             $matchCount = preg_match_all('/' . $word . '/i', $fileContent);
 
 

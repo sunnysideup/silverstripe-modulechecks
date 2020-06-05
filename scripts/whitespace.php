@@ -39,6 +39,15 @@ function m_walk_dir($root, $callback, $recursive = true)
 function check($path)
 {
     if (!is_dir($path)) {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: file_get_contents (case sensitive)
+  * NEW: file_get_contents (COMPLEX)
+  * EXP: Use new asset abstraction (https://docs.silverstripe.org/en/4/changelogs/4.0.0#asset-storage
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
         $fh = file_get_contents($path);
         if (preg_match(PRE, $fh)) {
             echo $path. " — contains leading spaces \n";

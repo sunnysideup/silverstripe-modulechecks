@@ -1,6 +1,15 @@
 <?php
 
-class ConfigYML extends Object
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD:  extends Object (ignore case)
+  * NEW:  extends ViewableData (COMPLEX)
+  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+class ConfigYML extends ViewableData
 {
     public function __construct($gitHubModuleInstance)
     {
@@ -39,6 +48,15 @@ class ConfigYML extends Object
         }
 
         try {
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: file_get_contents (case sensitive)
+  * NEW: file_get_contents (COMPLEX)
+  * EXP: Use new asset abstraction (https://docs.silverstripe.org/en/4/changelogs/4.0.0#asset-storage
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
             $this->yaml_data = Yaml::parse(file_get_contents($this->filename));
         } catch (Exception $e) {
             GeneralMethods::output_to_screen("<li>Unable to parse the YAML string: " .$e->getMessage(). " <li>", 'updated') ;

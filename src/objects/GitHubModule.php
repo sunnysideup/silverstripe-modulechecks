@@ -70,6 +70,15 @@ class GitHubModule extends DataObject
     
     private static $table_name = 'GitHubModule';
 
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD: private static $db = (case sensitive)
+  * NEW: private static $db = (COMPLEX)
+  * EXP: Make sure to add a private static $table_name!
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
     private static $db = array(
         'ModuleName' => 'VarChar(100)',
         'Description' => 'VarChar(300)'
@@ -547,7 +556,7 @@ class GitHubModule extends DataObject
 
                         //extract tag numbers from $tagStr
 
-                        $matches = array();
+                        $matches = [];
                         // print_r ("original!!! " .  $tagStr);
                         $result = preg_match_all('/tag: \d{1,3}.\d{1,3}.\d{1,3}/', $tagStr, $matches);
                         if ($result === false) {

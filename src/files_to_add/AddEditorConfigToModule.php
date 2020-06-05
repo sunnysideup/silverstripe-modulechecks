@@ -3,7 +3,7 @@
 
 class AddEditorConfigToModule extends AddFileToModule
 {
-    protected $sourceLocation = 'mysite/template_files/.editorconfig';
+    protected $sourceLocation = 'app/template_files/.editorconfig';
 
     protected $fileLocation = '.editorconfig';
 }

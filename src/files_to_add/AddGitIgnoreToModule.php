@@ -2,7 +2,7 @@
 
 class AddGitIgnoreToModule extends AddFileToModule
 {
-    protected $sourceLocation = 'mysite/template_files/.gitignore';
+    protected $sourceLocation = 'app/template_files/.gitignore';
 
     protected $fileLocation = '.gitignore';
 }

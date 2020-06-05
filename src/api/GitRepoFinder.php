@@ -2,7 +2,16 @@
 
 
 
-class GitRepoFinder extends Object
+
+/**
+  * ### @@@@ START REPLACEMENT @@@@ ###
+  * WHY: automated upgrade
+  * OLD:  extends Object (ignore case)
+  * NEW:  extends ViewableData (COMPLEX)
+  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
+  * ### @@@@ STOP REPLACEMENT @@@@ ###
+  */
+class GitRepoFinder extends ViewableData
 {
 
     /**
@@ -11,7 +20,7 @@ class GitRepoFinder extends Object
      *
      * @var string
      */
-    private static $_modules = array();
+    private static $_modules = [];
 
 
 
@@ -112,7 +121,7 @@ class GitRepoFinder extends Object
             print "<li>Retrieving List of modules from GitHub for user $username ... </li>";
             if (! count(self::$_modules)) {
                 $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
-                $array  = array();
+                $array  = [];
                 for ($page = 0; $page < 10; $page++) {
                     $data = array(
                         'per_page' => 100,
@@ -169,7 +178,7 @@ class GitRepoFinder extends Object
                 }
 
 
-                $modules = array();
+                $modules = [];
 
                 if (count($array) > 0) {
                     foreach ($array as $repo) {
