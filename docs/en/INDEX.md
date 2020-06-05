@@ -58,18 +58,16 @@ then browse to /dev/tasks/ModuleChecks to run ...
 
 To install PHPDOX (check for latest version!)
 
-wget https://github.com/theseer/phpdox/releases/download/0.9.0/phpdox-0.9.0.phar
-chmod +x phpdox-0.9.0.phar
-sudo mv phpdox-0.9.0.phar /usr/bin/phpdox
+```
+    wget https://github.com/theseer/phpdox/releases/download/0.9.0/phpdox-0.9.0.phar
+    chmod +x phpdox-0.9.0.phar
+    sudo mv phpdox-0.9.0.phar /usr/bin/phpdox
+```
 
 For PHPDOX, you may also need to install/enable XSL module:
 
-sudo apt-get install php7-xsl
-sudo php7enmod xsl
-sudo service apache2 restart
-
-
-
-## Developers ##
-
-Nicolaas Francken [at] sunnysideup.co.nz
+```
+    sudo apt-get install php7-xsl
+    sudo php7enmod xsl
+    sudo service apache2 restart
+```

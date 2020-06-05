@@ -8,14 +8,6 @@ use SilverStripe\View\ViewableData;
 use Sunnysideup\ModuleChecks\Objects\GitHubModule;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
-/**
- * ### @@@@ START REPLACEMENT @@@@ ###
- * WHY: automated upgrade
- * OLD:  extends Object (ignore case)
- * NEW:  extends ViewableData (COMPLEX)
- * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
- * ### @@@@ STOP REPLACEMENT @@@@ ###
- */
 class GitRepoFinder extends ViewableData
 {
     /**
@@ -47,7 +39,7 @@ class GitRepoFinder extends ViewableData
         if (! $username) {
             $username = Config::inst()->get(GitHubModule::class, 'github_user_name');
         }
-        print "<li>Retrieving List of modules from GitHub for user ${username} ... </li>";
+        print "<li>Retrieving List of modules from GitHub for user ${username} without AUTH... </li>";
         if (! count(self::$_modules)) {
             for ($page = 0; $page < 10; $page++) {
                 $ch = curl_init();
@@ -115,7 +107,7 @@ class GitRepoFinder extends ViewableData
             } else {
                 $gitUserName = Config::inst()->get(GitHubModule::class, 'github_user_name');
             }
-            print "<li>Retrieving List of modules from GitHub for user ${username} ... </li>";
+            print "<li>Retrieving List of modules from GitHub for user ${username} with AUTH ... </li>";
             if (! count(self::$_modules)) {
                 $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
                 $array = [];
@@ -167,7 +159,8 @@ class GitRepoFinder extends ViewableData
                         UpdateModules::$unsolvedItems['all'] = 'Could not retrieve list of modules from GitHub';
                         die('');
                     }
-
+                    print_r($curlResult);
+                    die('asdf');
                     $array = array_merge($array, json_decode($curlResult));
                 }
 

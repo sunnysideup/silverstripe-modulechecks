@@ -428,14 +428,6 @@ class UpdateModules extends BuildTask
             return $matchedWords;
         }
 
-        /**
-         * ### @@@@ START REPLACEMENT @@@@ ###
-         * WHY: automated upgrade
-         * OLD: file_get_contents (case sensitive)
-         * NEW: file_get_contents (COMPLEX)
-         * EXP: Use new asset abstraction (https://docs.silverstripe.org/en/4/changelogs/4.0.0#asset-storage
-         * ### @@@@ STOP REPLACEMENT @@@@ ###
-         */
         $fileContent = file_get_contents($fileName);
         if (! $fileContent) {
             $msg = "Could not open ${fileName} to check for excluded words";

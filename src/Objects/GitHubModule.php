@@ -44,13 +44,10 @@ class GitHubModule extends DataObject
     private static $github_user_email = '';
 
     /**
-     * where the git module is temporary
-     * cloned and fixed up
-     * should be an absolute_path
      *
      * @var string
      */
-    private static $path_to_private_key = '';
+    private static $path_to_private_key = '~/.ssh/id_rsa';
 
     /**
      * where the git module is temporary
@@ -61,27 +58,11 @@ class GitHubModule extends DataObject
      */
     private static $absolute_temp_folder = '';
 
-    /**
-     * ### @@@@ START REPLACEMENT @@@@ ###
-     * OLD: private static $db (case sensitive)
-     * NEW:
-    private static $db (COMPLEX)
-     * EXP: Check that is class indeed extends DataObject and that it is not a data-extension!
-     * ### @@@@ STOP REPLACEMENT @@@@ ###
-     */
     private static $table_name = 'GitHubModule';
 
-    /**
-     * ### @@@@ START REPLACEMENT @@@@ ###
-     * WHY: automated upgrade
-     * OLD: private static $db = (case sensitive)
-     * NEW: private static $db = (COMPLEX)
-     * EXP: Make sure to add a private static $table_name!
-     * ### @@@@ STOP REPLACEMENT @@@@ ###
-     */
     private static $db = [
-        'ModuleName' => 'VarChar(100)',
-        'Description' => 'VarChar(300)',
+        'ModuleName' => 'Varchar(100)',
+        'Description' => 'Varchar(300)',
     ];
 
     private static $indexes = [
