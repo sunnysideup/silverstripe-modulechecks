@@ -10,11 +10,11 @@ such as whether it is listed on packagist.
 
 You can either run it for all the modules for a github account
 or you can specify specific modules in your `yml` configurations
-(`mysite/_config/modulecheck.yml`).
+(`app/_config/modulecheck.yml`).
 
 You can either run it for all files fon a github account or one specific file. Again,
 you can specify specific files in your `yml` configurations
-(`mysite/_config/modulecheck.yml`).
+(`app/_config/modulecheck.yml`).
 
 Thirdly, you can set exceptions / custom configs in a file within each module. You can place any custom configs in the following file:
 
@@ -58,18 +58,16 @@ then browse to /dev/tasks/ModuleChecks to run ...
 
 To install PHPDOX (check for latest version!)
 
-wget https://github.com/theseer/phpdox/releases/download/0.9.0/phpdox-0.9.0.phar
-chmod +x phpdox-0.9.0.phar
-sudo mv phpdox-0.9.0.phar /usr/bin/phpdox
+```
+    wget https://github.com/theseer/phpdox/releases/download/0.9.0/phpdox-0.9.0.phar
+    chmod +x phpdox-0.9.0.phar
+    sudo mv phpdox-0.9.0.phar /usr/bin/phpdox
+```
 
 For PHPDOX, you may also need to install/enable XSL module:
 
-sudo apt-get install php7-xsl
-sudo php7enmod xsl
-sudo service apache2 restart
-
-
-
-## Developers ##
-
-Nicolaas Francken [at] sunnysideup.co.nz
+```
+    sudo apt-get install php7-xsl
+    sudo php7enmod xsl
+    sudo service apache2 restart
+```
