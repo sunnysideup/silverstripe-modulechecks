@@ -25,7 +25,7 @@
     "require": {
         "symplify/easy-coding-standard": "*",
         "symfony/yaml": "^3.1",
-        "silverstripe/cms": "~3.6"
+        "silverstripe/recipe-cms": "^4.4"
     },
     "extra": {
         "installer-name": "modulechecks"
