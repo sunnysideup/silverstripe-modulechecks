@@ -2,8 +2,11 @@
 
 namespace Sunnysideup\ModuleChecks\ShellCommands;
 
-use Director;
-use RunCommandLineMethodOnModule;
+
+
+use SilverStripe\Control\Director;
+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
+
 
 class FixPSR2 extends RunCommandLineMethodOnModule
 {

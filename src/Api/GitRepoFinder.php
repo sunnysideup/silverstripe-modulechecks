@@ -2,11 +2,17 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-use Config;
-use DB;
-use GitHubModule;
-use UpdateModules;
-use ViewableData;
+
+
+
+
+
+use SilverStripe\Core\Config\Config;
+use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use SilverStripe\ORM\DB;
+use SilverStripe\View\ViewableData;
+
 
 /**
  * ### @@@@ START REPLACEMENT @@@@ ###
@@ -40,12 +46,12 @@ class GitRepoFinder extends ViewableData
 
     public static function get_all_repos_no_oauth($username = '', $getNamesWithPrefix = false)
     {
-        $preSelected = Config::inst()->get('UpdateModules', 'modules_to_update');
+        $preSelected = Config::inst()->get(UpdateModules::class, 'modules_to_update');
         if (is_array($preSelected) && count($preSelected)) {
             return $preSelected;
         }
         if (! $username) {
-            $username = Config::inst()->get('GitHubModule', 'github_user_name');
+            $username = Config::inst()->get(GitHubModule::class, 'github_user_name');
         }
         print "<li>Retrieving List of modules from GitHub for user ${username} ... </li>";
         if (! count(self::$_modules)) {
@@ -106,14 +112,14 @@ class GitRepoFinder extends ViewableData
 
     public static function get_repos_with_auth($username = '', $getNamesWithPrefix = false)
     {
-        $preSelected = Config::inst()->get('UpdateModules', 'modules_to_update');
+        $preSelected = Config::inst()->get(UpdateModules::class, 'modules_to_update');
         if (is_array($preSelected) && count($preSelected)) {
             self::$_modules = $preSelected;
         } else {
             if ($username) {
                 $gitUserName = $username;
             } else {
-                $gitUserName = Config::inst()->get('GitHubModule', 'github_user_name');
+                $gitUserName = Config::inst()->get(GitHubModule::class, 'github_user_name');
             }
             print "<li>Retrieving List of modules from GitHub for user ${username} ... </li>";
             if (! count(self::$_modules)) {

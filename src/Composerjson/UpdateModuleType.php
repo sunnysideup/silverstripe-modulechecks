@@ -2,7 +2,9 @@
 
 namespace Sunnysideup\ModuleChecks\Composerjson;
 
-use UpdateComposer;
+
+use Sunnysideup\ModuleChecks\Api\UpdateComposer;
+
 
 /**
  * sets the default installation folder

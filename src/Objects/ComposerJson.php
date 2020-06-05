@@ -2,10 +2,16 @@
 
 namespace Sunnysideup\ModuleChecks\Objects;
 
-use ClassInfo;
-use GeneralMethods;
-use UpdateModules;
-use ViewableData;
+
+
+
+
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Api\UpdateComposer;
+use SilverStripe\Core\ClassInfo;
+use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use SilverStripe\View\ViewableData;
+
 
 /**
  * ### @@@@ START REPLACEMENT @@@@ ###
@@ -55,7 +61,7 @@ class ComposerJson extends ViewableData
 
         if (is_array($this->jsonData)) {
             GeneralMethods::output_to_screen('<li> Updating composer.json </li>');
-            $composerUpdates = ClassInfo::subclassesFor('UpdateComposer');
+            $composerUpdates = ClassInfo::subclassesFor(UpdateComposer::class);
 
             //remove base class
             array_shift($composerUpdates);

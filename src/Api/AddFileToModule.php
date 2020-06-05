@@ -2,11 +2,18 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-use Director;
-use Filesystem;
-use GitHubModule;
-use Injector;
-use ViewableData;
+
+
+
+
+
+use SilverStripe\View\Requirements;
+use SilverStripe\Control\Director;
+use SilverStripe\Assets\Filesystem;
+use SilverStripe\Core\Injector\Injector;
+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use SilverStripe\View\ViewableData;
+
 
 /**
  * adds or replaces a file
@@ -36,7 +43,7 @@ abstract class AddFileToModule extends ViewableData
     protected $replaceArray = [
         '+++README_DOCUMENTATION+++' => 'Documentation',
         '+++README_SUGGESTED_MODULES+++' => 'SuggestedModules',
-        '+++README_REQUIREMENTS+++' => 'Requirements',
+        '+++README_REQUIREMENTS+++' => Requirements::class,
         '+++README_INSTALLATION+++' => 'Installation',
         '+++README_AUTHOR+++' => 'Author',
         '+++README_ASSISTANCE+++' => 'Assistance',

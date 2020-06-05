@@ -3,10 +3,14 @@
 namespace Sunnysideup\ModuleChecks\Objects;
 
 use Exception;
-use GeneralMethods;
-use UpdateModules;
-use ViewableData;
+
+
+
 use Yaml;
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use SilverStripe\View\ViewableData;
+
 
 /**
  * ### @@@@ START REPLACEMENT @@@@ ###

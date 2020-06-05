@@ -2,13 +2,18 @@
 
 namespace Sunnysideup\ModuleChecks\Objects;
 
-use DataObject;
-use Director;
+
+
 use Exception;
 use FileSystem;
-use GeneralMethods;
+
 use GitWrapper;
-use UpdateModules;
+
+use SilverStripe\Control\Director;
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use SilverStripe\ORM\DataObject;
+
 
 class GitHubModule extends DataObject
 {

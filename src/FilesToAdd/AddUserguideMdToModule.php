@@ -2,7 +2,9 @@
 
 namespace Sunnysideup\ModuleChecks\FilesToAdd;
 
-use AddFileToModule;
+
+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
+
 
 class AddUserguideMdToModule extends AddFileToModule
 {

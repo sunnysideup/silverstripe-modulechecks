@@ -2,11 +2,18 @@
 
 namespace Sunnysideup\ModuleChecks\Tasks;
 
-use BuildTask;
-use Config;
-use DB;
-use GeneralMethods;
-use GitRepoFinder;
+
+
+
+
+
+use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
+use SilverStripe\Core\Config\Config;
+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use SilverStripe\ORM\DB;
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use SilverStripe\Dev\BuildTask;
+
 
 /**
  * check if everything is in plcae for a module
@@ -39,7 +46,7 @@ class ModuleChecks extends BuildTask
 
         $modules = GitRepoFinder::get_all_repos();
 
-        $gitUser = Config::inst()->get('GitHubModule', 'github_user_name');
+        $gitUser = Config::inst()->get(GitHubModule::class, 'github_user_name');
         $packagistUser = $this->Config()->get('packagist_user_name');
 
         if ($gitUser && $packagistUser) {
@@ -89,7 +96,7 @@ class ModuleChecks extends BuildTask
      */
     protected function hasLicense($name)
     {
-        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get('GitHubModule', 'github_user_name') . '/silverstripe-' . $name . '/master/LICENSE');
+        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(GitHubModule::class, 'github_user_name') . '/silverstripe-' . $name . '/master/LICENSE');
     }
 
     /**
@@ -99,7 +106,7 @@ class ModuleChecks extends BuildTask
      */
     protected function hasComposerFile($name)
     {
-        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get('GitHubModule', 'github_user_name') . '/silverstripe-' . $name . '/master/composer.json');
+        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(GitHubModule::class, 'github_user_name') . '/silverstripe-' . $name . '/master/composer.json');
     }
 
     /**
@@ -109,7 +116,7 @@ class ModuleChecks extends BuildTask
      */
     protected function hasReadMeFile($name)
     {
-        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get('GitHubModule', 'github_user_name') . '/silverstripe-' . $name . '/master/README.md');
+        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(GitHubModule::class, 'github_user_name') . '/silverstripe-' . $name . '/master/README.md');
     }
 
     protected function existsOnAddOns($name)

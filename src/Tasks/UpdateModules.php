@@ -2,16 +2,26 @@
 
 namespace Sunnysideup\ModuleChecks\Tasks;
 
-use BuildTask;
-use ClassInfo;
-use ComposerJson;
-use ConfigYML;
+
+
+
+
 use Exception;
 use FileSystem;
-use GeneralMethods;
 
-use GitHubModule;
-use GitRepoFinder;
+
+
+
+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
+use SilverStripe\Core\ClassInfo;
+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Objects\ComposerJson;
+use Sunnysideup\ModuleChecks\Objects\ConfigYML;
+use SilverStripe\Dev\BuildTask;
+
 
 /**
  * main class running all the updates
@@ -76,7 +86,7 @@ class UpdateModules extends BuildTask
         /*
          * Get files to add to modules
          * */
-        $files = ClassInfo::subclassesFor('AddFileToModule');
+        $files = ClassInfo::subclassesFor(AddFileToModule::class);
         array_shift($files);
         $limitedFileClasses = $this->Config()->get('files_to_update');
         if ($limitedFileClasses === []) {
@@ -91,7 +101,7 @@ class UpdateModules extends BuildTask
          * Get commands to run on modules
          * */
 
-        $commands = ClassInfo::subclassesFor('RunCommandLineMethodOnModule');
+        $commands = ClassInfo::subclassesFor(RunCommandLineMethodOnModule::class);
         array_shift($commands);
         $limitedCommands = $this->Config()->get('commands_to_run');
         if ($limitedCommands === 'none') {

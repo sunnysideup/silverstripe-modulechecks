@@ -2,8 +2,12 @@
 
 namespace Sunnysideup\ModuleChecks\Composerjson;
 
-use Config;
-use UpdateComposer;
+
+
+use SilverStripe\Core\Config\Config;
+use Sunnysideup\ModuleChecks\Composerjson\UpdateLicense;
+use Sunnysideup\ModuleChecks\Api\UpdateComposer;
+
 
 /**
  * sets the default installation folder
@@ -15,7 +19,7 @@ class UpdateLicense extends UpdateComposer
     public function run()
     {
         $json = $this->getJsonData();
-        $json['license'] = Config::inst()->get('UpdateLicense', 'license_type');
+        $json['license'] = Config::inst()->get(UpdateLicense::class, 'license_type');
 
         $this->setJsonData($json);
     }
