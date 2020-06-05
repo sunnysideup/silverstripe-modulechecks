@@ -1,0 +1,35 @@
+SilverStripe\ORM\DatabaseAdmin:
+  classname_value_remapping:
+    UpdateComposer: Sunnysideup\ModuleChecks\Api\UpdateComposer
+    RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule
+    AddFileToModule: Sunnysideup\ModuleChecks\Api\AddFileToModule
+    GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
+    GitRepoFinder: Sunnysideup\ModuleChecks\Api\GitRepoFinder
+    AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
+    AddGitIgnoreToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitIgnoreToModule
+    AddHtAccessToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddHtAccessToModule
+    AddTravisYmlToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddTravisYmlToModule
+    AddEditorConfigToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddEditorConfigToModule
+    AddContributingToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddContributingToModule
+    AddUserguideMdToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddUserguideMdToModule
+    AddSourceReadmeToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddSourceReadmeToModule
+    AddLicenceToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddLicenceToModule
+    AddScrutinizerYmlToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddScrutinizerYmlToModule
+    AddChangeLogToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddChangeLogToModule
+    AddTestToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddTestToModule
+    AddManifestExcludeToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddManifestExcludeToModule
+    UpdateLicense: Sunnysideup\ModuleChecks\Composerjson\UpdateLicense
+    UpdataModuleType: Sunnysideup\ModuleChecks\Composerjson\UpdataModuleType
+    CheckOrAddExtraArray: Sunnysideup\ModuleChecks\Composerjson\CheckOrAddExtraArray
+    ModuleConfigInterface: Sunnysideup\ModuleChecks\Interface\ModuleConfigInterface
+    FixPSR2: Sunnysideup\ModuleChecks\ShellCommands\FixPSR2
+    SetPermissions: Sunnysideup\ModuleChecks\ShellCommands\SetPermissions
+    RemoveOrig: Sunnysideup\ModuleChecks\ShellCommands\RemoveOrig
+    RemoveSVN: Sunnysideup\ModuleChecks\ShellCommands\RemoveSVN
+    RemoveAPI: Sunnysideup\ModuleChecks\ShellCommands\RemoveAPI
+    FixConfigBasics: Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics
+    ConfigYML: Sunnysideup\ModuleChecks\Objects\ConfigYML
+    ComposerJson: Sunnysideup\ModuleChecks\Objects\ComposerJson
+    GitHubModule: Sunnysideup\ModuleChecks\Objects\GitHubModule
+    ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
+    UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules
