@@ -2,41 +2,38 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-use ViewableData;
 use Director;
 use Filesystem;
-use Injector;
 use GitHubModule;
+use Injector;
+use ViewableData;
 
 /**
  * adds or replaces a file
  * in a git hub module
  * in a module...
- *
- *
  */
 
 
 /**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD:  extends Object (ignore case)
-  * NEW:  extends ViewableData (COMPLEX)
-  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+ * ### @@@@ START REPLACEMENT @@@@ ###
+ * WHY: automated upgrade
+ * OLD:  extends Object (ignore case)
+ * NEW:  extends ViewableData (COMPLEX)
+ * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
+ * ### @@@@ STOP REPLACEMENT @@@@ ###
+ */
 abstract class AddFileToModule extends ViewableData
 {
-    protected $gitReplaceArray = array(
+    protected $gitReplaceArray = [
         '+++long-module-name-goes-here+++' => 'LongModuleName',
         '+++medium-module-name-goes-here+++' => 'MediumModuleName',
         '+++short-module-name-goes-here+++' => 'ShortModuleName',
         '+++module-name-goes-here+++' => 'ShortModuleName',
-        '+++short-module-name-first-letter-capital+++' => 'ModuleNameFirstLetterCapital'
-    );
+        '+++short-module-name-first-letter-capital+++' => 'ModuleNameFirstLetterCapital',
+    ];
 
-
-    protected $replaceArray = array(
+    protected $replaceArray = [
         '+++README_DOCUMENTATION+++' => 'Documentation',
         '+++README_SUGGESTED_MODULES+++' => 'SuggestedModules',
         '+++README_REQUIREMENTS+++' => 'Requirements',
@@ -44,8 +41,8 @@ abstract class AddFileToModule extends ViewableData
         '+++README_AUTHOR+++' => 'Author',
         '+++README_ASSISTANCE+++' => 'Assistance',
         '+++README_CONTRIBUTING+++' => 'Contributing',
-        '+++README_CONFIGURATION+++' => 'Configuration'
-    );
+        '+++README_CONFIGURATION+++' => 'Configuration',
+    ];
 
     /**
      * root dir for module
@@ -56,14 +53,12 @@ abstract class AddFileToModule extends ViewableData
      */
     protected $rootDirForModule = '';
 
-
     /**
      * root dir for module
      * e.g.
      *  - README.md
      *  OR
      *  - docs/index.php
-     *
      *
      * @var string
      */
@@ -83,7 +78,7 @@ abstract class AddFileToModule extends ViewableData
 
     protected $useCustomisationFile = false;
 
-    protected $gitObject=null;
+    protected $gitObject = null;
 
     public function __construct($gitObject)
     {
@@ -95,7 +90,7 @@ abstract class AddFileToModule extends ViewableData
 
     public function setRootDirForModule($rootDirForModule)
     {
-        $this->$rootDirForModule = $rootDirForModule;
+        $this->{$rootDirForModule} = $rootDirForModule;
     }
 
     public function setSourceLocation($sourceLocation)
@@ -107,7 +102,6 @@ abstract class AddFileToModule extends ViewableData
     {
         $this->fileLocation = $relativeDirAndFileName;
     }
-
 
     public function run()
     {
@@ -130,6 +124,57 @@ abstract class AddFileToModule extends ViewableData
     }
 
     /**
+     * @param string $file
+     * @param GitHubModule $gitObject
+     *
+     * @return string
+     */
+    public function replaceWordsInFile()
+    {
+        foreach ($this->gitReplaceArray as $searchTerm => $replaceMethod) {
+            $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
+            GeneralMethods::replaceInFile($fileName, $searchTerm, $this->gitObject->{$replaceMethod}());
+        }
+
+        foreach ($this->replaceArray as $searchTerm => $replaceMethod) {
+            $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
+            GeneralMethods::replaceInFile($fileName, $searchTerm, $this->{$replaceMethod}());
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileLocation()
+    {
+        return $this->fileLocation;
+    }
+
+    /**
+     * @param string $text
+     * @return string
+     */
+    public function replaceWordsInText($text)
+    {
+        $originalText = $text;
+        foreach ($this->gitReplaceArray as $searchTerm => $replaceMethod) {
+            $text = str_replace($searchTerm, $this->gitObject->{$replaceMethod}(), $text);
+        }
+
+        foreach ($this->replaceArray as $searchTerm => $replaceMethod) {
+            $text = str_replace($searchTerm, $this->{$replaceMethod}(), $text);
+        }
+        return $text;
+    }
+
+    public function compareWithText($compareText)
+    {
+        $fileText = $this->getStandardFile();
+        $text = $this->replaceWordsInText($fileText);
+        return trim($text) === trim($compareText);
+    }
+
+    /**
      * you can either return the string from the
      * `$sourceLocation` or you can just have a string here
      * that returns the data directly....
@@ -145,26 +190,25 @@ abstract class AddFileToModule extends ViewableData
         if ($isURL) {
             $fullFileName = $this->sourceLocation;
         } else {
-            $fullFileName = Director::baseFolder().'/'.$this->sourceLocation;
+            $fullFileName = Director::baseFolder() . '/' . $this->sourceLocation;
         }
 
-        print("<li>$fullFileName</li>");
+        print "<li>${fullFileName}</li>";
 
-        $file = fopen($fullFileName, "r");
+        $file = fopen($fullFileName, 'r');
         if ($file) {
             $fileSize = filesize($fullFileName);
 
             if ($fileSize > 0) {
                 $fileContents = fread($file, filesize($fullFileName));
             } else {
-                $fileContents = "";
+                $fileContents = '';
             }
             fclose($file);
 
             return $fileContents;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -188,30 +232,30 @@ abstract class AddFileToModule extends ViewableData
      */
     protected function saveFile($fileContent)
     {
-        GeneralMethods::output_to_screen("<li> Adding " . $this->fileLocation . " to module  </li>");
+        GeneralMethods::output_to_screen('<li> Adding ' . $this->fileLocation . ' to module  </li>');
 
         /*
          * If fileLocation  contains folder, name then need to check
          * if folder exists
          */
-        if (strpos($this->fileLocation, '/')!==false) {
+        if (strpos($this->fileLocation, '/') !== false) {
             $folderPath = substr($this->fileLocation, 0, strrpos($this->fileLocation, '/'));
 
             //print_r ($this->rootDirForModule.'/'.$folderPath);
 
-            if (!file_exists($this->rootDirForModule.'/'.$folderPath)) {
-                $folder = Filesystem::makeFolder($this->rootDirForModule.'/'.$folderPath);
+            if (! file_exists($this->rootDirForModule . '/' . $folderPath)) {
+                $folder = Filesystem::makeFolder($this->rootDirForModule . '/' . $folderPath);
             }
         }
 
-        if (isset($folderPath)  && !file_exists($this->rootDirForModule.'/'.$folderPath)) {
-            user_error('could not find or create directory ' . $this->rootDirForModule.'/'.$folderPath);
+        if (isset($folderPath) && ! file_exists($this->rootDirForModule . '/' . $folderPath)) {
+            user_error('could not find or create directory ' . $this->rootDirForModule . '/' . $folderPath);
         }
 
-        $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
+        $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
         $this->fileLocation;
 
-        $file = fopen($fileName, "w");
+        $file = fopen($fileName, 'w');
 
         if ($file) {
             $result = fwrite($file, $fileContent);
@@ -220,9 +264,8 @@ abstract class AddFileToModule extends ViewableData
             return false;
         }
     }
+
     /**
-     *
-     *
      * @return ModuleConfig (instance of ModuleConfigInterface)
      */
     protected function getCustomisationFile()
@@ -233,7 +276,6 @@ abstract class AddFileToModule extends ViewableData
         return Injector::inst()->get('ModuleConfig');
     }
 
-
     protected function getReadMeComponent($componentName)
     {
         $temp_dir = GitHubModule::Config()->get('absolute_temp_folder');
@@ -241,25 +283,16 @@ abstract class AddFileToModule extends ViewableData
 
         $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . strtoupper($componentName) . '.md';
 
-        set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
+        set_error_handler([$this, 'catchFopenWarning'], E_WARNING);
         $file = fopen($fileName, 'r');
         restore_error_handler();
 
         if ($file) {
             $content = fread($file, filesize($filename));
         } else {
-            $content = "";
+            $content = '';
         }
     }
-
-    /*
-     *
-     * */
-    private function catchFopenWarning($errno, $errstr)
-    {
-        //
-    }
-
 
     protected function Configuration()
     {
@@ -301,59 +334,7 @@ abstract class AddFileToModule extends ViewableData
         return $this->getReadMeComponent('suggestedmodules');
     }
 
-
-
-
-    /**
-     * @param string $file
-     * @param GitHubModule $gitObject
-     *
-     * @return string
-     */
-    public function replaceWordsInFile()
+    private function catchFopenWarning($errno, $errstr)
     {
-        foreach ($this->gitReplaceArray as $searchTerm => $replaceMethod) {
-            $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
-            GeneralMethods::replaceInFile($fileName, $searchTerm, $this->gitObject->$replaceMethod());
-        }
-
-        foreach ($this->replaceArray as $searchTerm => $replaceMethod) {
-            $fileName = $this->rootDirForModule.'/'.$this->fileLocation;
-            GeneralMethods::replaceInFile($fileName, $searchTerm, $this->$replaceMethod());
-        }
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getFileLocation()
-    {
-        return $this->fileLocation;
-    }
-
-    /**
-     * @param string $text
-     * @return string
-     */
-    public function replaceWordsInText($text)
-    {
-        $originalText = $text;
-        foreach ($this->gitReplaceArray as $searchTerm => $replaceMethod) {
-            $text = str_replace($searchTerm, $this->gitObject->$replaceMethod(), $text);
-        }
-
-        foreach ($this->replaceArray as $searchTerm => $replaceMethod) {
-            $text = str_replace($searchTerm, $this->$replaceMethod(), $text);
-        }
-        return $text;
-    }
-
-    public function compareWithText($compareText)
-    {
-        $fileText = $this->getStandardFile();
-        $text = $this->replaceWordsInText($fileText);
-        return (trim($text) == trim($compareText));
     }
 }
-

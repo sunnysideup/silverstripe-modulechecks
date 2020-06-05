@@ -19,4 +19,3 @@ class UpdataModuleType extends UpdateComposer
         // $this->setJsonData($json);
     }
 }
-

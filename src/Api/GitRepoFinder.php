@@ -2,42 +2,31 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-use ViewableData;
 use Config;
 use DB;
 use GitHubModule;
 use UpdateModules;
-
-
-
-
+use ViewableData;
 
 /**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD:  extends Object (ignore case)
-  * NEW:  extends ViewableData (COMPLEX)
-  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+ * ### @@@@ START REPLACEMENT @@@@ ###
+ * WHY: automated upgrade
+ * OLD:  extends Object (ignore case)
+ * NEW:  extends ViewableData (COMPLEX)
+ * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
+ * ### @@@@ STOP REPLACEMENT @@@@ ###
+ */
 class GitRepoFinder extends ViewableData
 {
-
     /**
-     *
-     *
-     *
      * @var string
      */
     private static $_modules = [];
-
-
 
     /**
      * takes the preloaded modules and
      * adds any other ones you have listed on github
      */
-
     public static function get_all_repos($username = '', $getNamesWithPrefix = false)
     {
         # $oauth_token = GitRepoFinder::Config()->get('github_oauth_token');
@@ -54,65 +43,64 @@ class GitRepoFinder extends ViewableData
         $preSelected = Config::inst()->get('UpdateModules', 'modules_to_update');
         if (is_array($preSelected) && count($preSelected)) {
             return $preSelected;
-        } else {
-            if (!$username) {
-                $username = Config::inst()->get('GitHubModule', "github_user_name");
-            }
-            print "<li>Retrieving List of modules from GitHub for user $username ... </li>";
-            if (! count(self::$_modules)) {
-                for ($page = 0; $page < 10; $page++) {
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, "https://api.github.com/users/".$username."/repos?per_page=100&page=$page");
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, true);
-                    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+        }
+        if (! $username) {
+            $username = Config::inst()->get('GitHubModule', 'github_user_name');
+        }
+        print "<li>Retrieving List of modules from GitHub for user ${username} ... </li>";
+        if (! count(self::$_modules)) {
+            for ($page = 0; $page < 10; $page++) {
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.github.com/users/' . $username . "/repos?per_page=100&page=${page}");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, true);
+                curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
 
+                $string = curl_exec($ch);
+                // close curl resource to free up system resources
+                curl_close($ch);
+                $array = json_decode($string, true);
+                $count = count($array);
+                if ($count > 0) {
+                    foreach ($array as $repo) {
+                        //dont bother about forks
+                        if (isset($repo['fork']) && ! $repo['fork']) {
+                            //make sure we are the owners
+                            if ($repo['owner']['login'] === $username) {
+                                $isSSModule = (stripos($repo['name'], 'silverstripe-') !== false);
+                                //check it is silverstripe module
+                                if (! $getNamesWithPrefix) {
+                                    $name = $repo['name'];
+                                } else {
+                                    $name = preg_replace('/silverstripe/', '', $repo['name'], $limit = 1);
+                                }
 
-                    $string = curl_exec($ch);
-                    // close curl resource to free up system resources
-                    curl_close($ch);
-                    $array = json_decode($string, true);
-                    $count = count($array);
-                    if ($count > 0) {
-                        foreach ($array as $repo) {
-                            //dont bother about forks
-                            if (isset($repo["fork"]) && !$repo["fork"]) {
-                                //make sure we are the owners
-                                if ($repo["owner"]["login"] == $username) {
-                                    $isSSModule =  (stripos($repo["name"], 'silverstripe-')  !== false);
-                                    //check it is silverstripe module
-                                    if (!$getNamesWithPrefix) {
-                                        $name = $repo["name"];
-                                    } else {
-                                        $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);
-                                    }
-
-                                    //if(strlen($name) < strlen($repo["name"])) {
-                                    if ($isSSModule) {
-                                        //is it listed yet?
-                                        if (!in_array($name, self::$_modules)) {
-                                            self::$_modules[] = $name;
-                                        }
-                                    } else {
-                                        DB::alteration_message("skipping ".$repo["name"]." as it does not appear to me a silverstripe module, you can add it manually to this task, using the configs ... ");
+                                //if(strlen($name) < strlen($repo["name"])) {
+                                if ($isSSModule) {
+                                    //is it listed yet?
+                                    if (! in_array($name, self::$_modules, true)) {
+                                        self::$_modules[] = $name;
                                     }
                                 } else {
-                                    DB::alteration_message("skipping ".$repo["name"]." as it has a different owner");
+                                    DB::alteration_message('skipping ' . $repo['name'] . ' as it does not appear to me a silverstripe module, you can add it manually to this task, using the configs ... ');
                                 }
-                            } elseif (isset($repo["name"])) {
-                                DB::alteration_message("skipping ".$repo["name"]." as it is a fork");
+                            } else {
+                                DB::alteration_message('skipping ' . $repo['name'] . ' as it has a different owner');
                             }
+                        } elseif (isset($repo['name'])) {
+                            DB::alteration_message('skipping ' . $repo['name'] . ' as it is a fork');
                         }
-                    } else {
-                        $page = 11;
                     }
+                } else {
+                    $page = 11;
                 }
             }
-            print "<li>Found ".count(self::$_modules)." modules on GitHub ... </li>";
-            if (count(self::$_modules)==0) {
-                user_error("No modules found on GitHub. This is possibly because the limit of 60 requests an hour has been exceeded.");
-            }
         }
+        print '<li>Found ' . count(self::$_modules) . ' modules on GitHub ... </li>';
+        if (count(self::$_modules) === 0) {
+            user_error('No modules found on GitHub. This is possibly because the limit of 60 requests an hour has been exceeded.');
+        }
+
         return self::$_modules;
     }
 
@@ -125,24 +113,24 @@ class GitRepoFinder extends ViewableData
             if ($username) {
                 $gitUserName = $username;
             } else {
-                $gitUserName = Config::inst()->get('GitHubModule', "github_user_name");
+                $gitUserName = Config::inst()->get('GitHubModule', 'github_user_name');
             }
-            print "<li>Retrieving List of modules from GitHub for user $username ... </li>";
+            print "<li>Retrieving List of modules from GitHub for user ${username} ... </li>";
             if (! count(self::$_modules)) {
                 $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
-                $array  = [];
+                $array = [];
                 for ($page = 0; $page < 10; $page++) {
-                    $data = array(
+                    $data = [
                         'per_page' => 100,
-                        'page'=>$page
-                    );
+                        'page' => $page,
+                    ];
 
                     $method = 'GET';
                     $ch = curl_init($url);
-                    $header = "Content-Type: application/json";
+                    $header = 'Content-Type: application/json';
 
-                    if ($method == 'GET') {
-                        $url .= '?'.http_build_query($data);
+                    if ($method === 'GET') {
+                        $url .= '?' . http_build_query($data);
                     }
 
                     $gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
@@ -154,12 +142,11 @@ class GitRepoFinder extends ViewableData
                         $gitApiUserPassword = $gitApiAccessToken;
                     }
 
-
                     curl_setopt($ch, CURLOPT_VERBOSE, 1);
                     curl_setopt($ch, CURLOPT_URL, $url);
                     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, [$header]);
                     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                     curl_setopt(
                         $ch,
@@ -167,63 +154,58 @@ class GitRepoFinder extends ViewableData
                         'sunnysideupdevs'
                     );
 
-
                     if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
                         curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
                         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
                     }
-
 
                     $curlResult = curl_exec($ch);
 
                     if (! $curlResult) {
                         GeneralMethods::output_to_screen('Could not retrieve list of modules from GitHub');
 
-                        UpdateModules::$unsolvedItems["all"] =  ('Could not retrieve list of modules from GitHub');
+                        UpdateModules::$unsolvedItems['all'] = 'Could not retrieve list of modules from GitHub';
                         die('');
                     }
 
                     $array = array_merge($array, json_decode($curlResult));
                 }
 
-
                 $modules = [];
 
                 if (count($array) > 0) {
                     foreach ($array as $repo) {
-
                         // see http://stackoverflow.com/questions/4345554/convert-php-object-to-associative-array
                         $repo = json_decode(json_encode($repo), true);
 
-
                         //dont bother about forks
-                        if (isset($repo["fork"]) && !$repo["fork"]) {
+                        if (isset($repo['fork']) && ! $repo['fork']) {
                             //make sure we are the owners
 
-                            if ($repo["owner"]["login"] == $gitUserName) {
-                                $isSSModule =  (stripos($repo["name"], 'silverstripe-')  !== false);
+                            if ($repo['owner']['login'] === $gitUserName) {
+                                $isSSModule = (stripos($repo['name'], 'silverstripe-') !== false);
                                 //check it is silverstripe module
 
-                                if (!$getNamesWithPrefix) {
-                                    $name = $repo["name"];
+                                if (! $getNamesWithPrefix) {
+                                    $name = $repo['name'];
                                 } else {
-                                    $name = preg_replace('/silverstripe/', "", $repo["name"], $limit = 1);
+                                    $name = preg_replace('/silverstripe/', '', $repo['name'], $limit = 1);
                                 }
 
                                 //if(strlen($name) < strlen($repo["name"])) {
                                 if ($isSSModule) {
                                     //is it listed yet?
-                                    if (!in_array($name, $modules)) {
+                                    if (! in_array($name, $modules, true)) {
                                         array_push($modules, $name);
                                     }
                                 } else {
-                                    GeneralMethods::output_to_screen("skipping ".$repo["name"]." as it does not appear to me a silverstripe module");
+                                    GeneralMethods::output_to_screen('skipping ' . $repo['name'] . ' as it does not appear to me a silverstripe module');
                                 }
                             } else {
-                                GeneralMethods::output_to_screen("skipping ".$repo["name"]." as it has a different owner");
+                                GeneralMethods::output_to_screen('skipping ' . $repo['name'] . ' as it has a different owner');
                             }
-                        } elseif (isset($repo["name"])) {
-                            DB::alteration_message("skipping ".$repo["name"]." as it is a fork");
+                        } elseif (isset($repo['name'])) {
+                            DB::alteration_message('skipping ' . $repo['name'] . ' as it is a fork');
                         }
                     }
                 }
@@ -233,4 +215,3 @@ class GitRepoFinder extends ViewableData
         return self::$_modules;
     }
 }
-

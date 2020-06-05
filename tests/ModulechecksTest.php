@@ -10,6 +10,6 @@ class ModulechecksTest extends SapphireTest
     {
         $exitStatus = shell_exec('php vendor/bin/sake dev/build flush=all  > dev/null; echo $?');
         $exitStatus = intval(trim($exitStatus));
-        $this->assertEquals(0, $exitStatus);
+        $this->assertSame(0, $exitStatus);
     }
 }

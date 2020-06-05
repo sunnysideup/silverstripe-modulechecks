@@ -2,8 +2,8 @@
 
 namespace Sunnysideup\ModuleChecks\ShellCommands;
 
-use RunCommandLineMethodOnModule;
 use Director;
+use RunCommandLineMethodOnModule;
 
 class FixPSR2 extends RunCommandLineMethodOnModule
 {
@@ -11,10 +11,9 @@ class FixPSR2 extends RunCommandLineMethodOnModule
     {
         parent::__construct($rootDirForModule);
         $this->commands = [
-            'cp '.Director::baseFolder(). '/modulechecks/ecs.yml ./',
+            'cp ' . Director::baseFolder() . '/modulechecks/ecs.yml ./',
             'composer require --dev symplify/easy-coding-standard',
             'vendor/bin/ecs check app/src --fix > errorsToFix.txt',
         ];
     }
 }
-

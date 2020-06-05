@@ -3,36 +3,34 @@
 namespace Sunnysideup\ModuleChecks\Tasks;
 
 use BuildTask;
-use GitHubModule;
-use FileSystem;
-use GitRepoFinder;
 use ClassInfo;
-use Exception;
-use GeneralMethods;
-
 use ComposerJson;
 use ConfigYML;
+use Exception;
+use FileSystem;
+use GeneralMethods;
 
+use GitHubModule;
+use GitRepoFinder;
 
 /**
  * main class running all the updates
- *
- *
  */
 class UpdateModules extends BuildTask
 {
+    public static $unsolvedItems = [];
+
     protected $enabled = true;
 
-    protected $title = "Update Modules";
+    protected $title = 'Update Modules';
 
-    protected $description = "Adds files necessary for publishing a module to GitHub. The list of modules is specified in standard config or else it retrieves a list of modules from GitHub.";
+    protected $description = 'Adds files necessary for publishing a module to GitHub. The list of modules is specified in standard config or else it retrieves a list of modules from GitHub.';
 
     /**
      * e.g.
      * - moduleA
      * - moduleB
      * - moduleC
-     *
      *
      * @var array
      */
@@ -46,6 +44,7 @@ class UpdateModules extends BuildTask
      * @var array
      */
     private static $files_to_update = [];
+
     /**
      * e.g.
      * - ClassNameForUpdatingFileA
@@ -55,15 +54,13 @@ class UpdateModules extends BuildTask
      */
     private static $commands_to_run = [];
 
-    public static $unsolvedItems = [];
-
     public function run($request)
     {
         increase_time_limit_to(3600);
 
         //Check temp module folder is empty
         $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
-        if(! file_exists($tempFolder)) {
+        if (! file_exists($tempFolder)) {
             FileSystem::makeFolder($tempFolder);
         }
         $tempDirFiles = scandir($tempFolder);
@@ -75,7 +72,6 @@ class UpdateModules extends BuildTask
         $gitUserName = $this->Config()->get('github_user_name');
 
         $modules = GitRepoFinder::get_all_repos();
-
 
         /*
          * Get files to add to modules
@@ -104,14 +100,13 @@ class UpdateModules extends BuildTask
             $commands = array_intersect($commands, $limitedCommands);
         }
 
-
         set_error_handler('errorHandler', E_ALL);
         foreach ($modules as $count => $module) {
             $this->currentModule = $module;
             try {
                 $this->processOneModule($module, $count, $files, $commands);
             } catch (Exception $e) {
-                GeneralMethods::output_to_screen("<li> Could not complete processing $module: " .  $e->getMessage() . " </li>");
+                GeneralMethods::output_to_screen("<li> Could not complete processing ${module}: " . $e->getMessage() . ' </li>');
             }
         }
 
@@ -121,22 +116,29 @@ class UpdateModules extends BuildTask
         //to do ..
     }
 
+    public static function addUnsolvedProblem($moduleName, $problemString)
+    {
+        if (! isset(UpdateModules::$unsolvedItems[$moduleName])) {
+            UpdateModules::$unsolvedItems[$moduleName] = [];
+        }
+        array_push(UpdateModules::$unsolvedItems[$moduleName], $problemString);
+    }
+
     protected function errorHandler(int $errno, string $errstr)
     {
-        GeneralMethods::output_to_screen("<li> Could not complete processing module: " .  $errstr . " </li>");
+        GeneralMethods::output_to_screen('<li> Could not complete processing module: ' . $errstr . ' </li>');
 
-        UpdateModules::addUnsolvedProblem($this->currentModule, "Could not complete processing module: " . $errstr);
+        UpdateModules::addUnsolvedProblem($this->currentModule, 'Could not complete processing module: ' . $errstr);
 
         return true;
     }
 
     protected function processOneModule($module, $count, $files, $commands)
     {
-        if (stripos($module, 'silverstripe-')  === false) {
-            $module = "silverstripe-" . $module;
+        if (stripos($module, 'silverstripe-') === false) {
+            $module = 'silverstripe-' . $module;
         }
-        echo "<h2>" . ($count+1) . ". ".$module."</h2>";
-
+        echo '<h2>' . ($count + 1) . '. ' . $module . '</h2>';
 
         $moduleObject = GitHubModule::get_or_create_github_module($module);
 
@@ -148,7 +150,7 @@ class UpdateModules extends BuildTask
         // if so we can skip that module. But! ... if there are commands to run
         // over the files in the repo, then we need to clone the repo anyhow,
         // so skip the check
-        if (count($commands) == 0 && ! $updateComposerJson) {
+        if (count($commands) === 0 && ! $updateComposerJson) {
             $moduleFilesOK = true;
 
             foreach ($files as $file) {
@@ -168,9 +170,7 @@ class UpdateModules extends BuildTask
 
         $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
 
-
         $this->moveOldReadMe($moduleObject);
-
 
         $checkConfigYML = $this->Config()->get('check_config_yml');
         if ($checkConfigYML) {
@@ -185,18 +185,16 @@ class UpdateModules extends BuildTask
 
         $excludedWords = $this->Config()->get('excluded_words');
 
-
         if (count($excludedWords) > 0) {
             $folder = GitHubModule::Config()->get('absolute_temp_folder') . '/' . $moduleObject->moduleName . '/';
 
-            $results = $this->checkDirExcludedWords($folder.'/'.$moduleObject->modulename, $excludedWords);
-
+            $results = $this->checkDirExcludedWords($folder . '/' . $moduleObject->modulename, $excludedWords);
 
             if ($results && count($results > 0)) {
-                $msg = "<h4>The following excluded words were found: </h4><ul>";
+                $msg = '<h4>The following excluded words were found: </h4><ul>';
                 foreach ($results as $file => $words) {
                     foreach ($words as $word) {
-                        $msg .= "<li>$word in $file</li>";
+                        $msg .= "<li>${word} in ${file}</li>";
                     }
                 }
                 $msg .= '</ul>';
@@ -206,7 +204,6 @@ class UpdateModules extends BuildTask
                 UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
             }
         }
-
 
         foreach ($files as $file) {
             //run file update
@@ -220,10 +217,8 @@ class UpdateModules extends BuildTask
         foreach ($commands as $command) {
             //run file update
 
-
             $obj = $command::create($moduleDir);
             $obj->run();
-
 
             //run command
         }
@@ -232,26 +227,26 @@ class UpdateModules extends BuildTask
         //$moduleObject->updateGitHubInfo(array());
 
         if (! $moduleObject->add()) {
-            $msg = "Could not add files module to Repo";
+            $msg = 'Could not add files module to Repo';
             GeneralMethods::output_to_screen($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
             return;
         }
         if (! $moduleObject->commit()) {
-            $msg = "Could not commit files to Repo";
+            $msg = 'Could not commit files to Repo';
             GeneralMethods::output_to_screen($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
             return;
         }
 
         if (! $moduleObject->push()) {
-            $msg = "Could not push files to Repo";
+            $msg = 'Could not push files to Repo';
             GeneralMethods::output_to_screen($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
             return;
         }
         if (! $moduleObject->removeClone()) {
-            $msg = "Could not remove local copy of repo";
+            $msg = 'Could not remove local copy of repo';
             GeneralMethods::output_to_screen($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
         }
@@ -262,45 +257,33 @@ class UpdateModules extends BuildTask
         }
     }
 
-
-
     protected function renameTest($moduleObject)
     {
-        $oldName = $moduleObject->Directory() . "/tests/ModuleTest.php";
+        $oldName = $moduleObject->Directory() . '/tests/ModuleTest.php';
 
         if (! file_exists($oldName)) {
             print_r($oldName);
             return false;
         }
 
+        $newName = $moduleObject->Directory() . 'tests/' . $moduleObject->ModuleName . 'Test.php';
 
-
-        $newName = $moduleObject->Directory() . "tests/" . $moduleObject->ModuleName . "Test.php";
-
-        GeneralMethods::output_to_screen("Renaming $oldName to $newName");
+        GeneralMethods::output_to_screen("Renaming ${oldName} to ${newName}");
 
         unlink($newName);
 
         rename($oldName, $newName);
     }
 
-    public static function addUnsolvedProblem($moduleName, $problemString)
-    {
-        if (!isset(UpdateModules::$unsolvedItems[$moduleName])) {
-            UpdateModules::$unsolvedItems[$moduleName] = [];
-        }
-        array_push(UpdateModules::$unsolvedItems[$moduleName], $problemString);
-    }
-
     protected function writeLog()
     {
-        $debug = $this->Config()->get('debug');
+        // $debug = $this->Config()->get('debug');
 
-        $dateStr =  date("Y/m/d H:i:s");
+        $dateStr = date('Y/m/d H:i:s');
 
-        $html = '<h1> Modules checker report at ' .$dateStr . '</h1>';
+        $html = '<h1> Modules checker report at ' . $dateStr . '</h1>';
 
-        if (count(UpdateModules::$unsolvedItems) == 0) {
+        if (count(UpdateModules::$unsolvedItems) === 0) {
             $html .= ' <h2> No unresolved problems in modules</h2>';
         } else {
             $html .= '
@@ -312,27 +295,25 @@ class UpdateModules extends BuildTask
             foreach (UpdateModules::$unsolvedItems as $moduleName => $problems) {
                 if (is_array($problems)) {
                     foreach ($problems as $problem) {
-                        $html .= '<tr><td>'.$moduleName.'</td><td>'. $problem .'</td></tr>';
+                        $html .= '<tr><td>' . $moduleName . '</td><td>' . $problem . '</td></tr>';
                     }
                 } elseif (is_string($problems)) {
-                    $html .= '<tr><td>'.$moduleName.'</td><td>'. $problems.'</td></tr>';
+                    $html .= '<tr><td>' . $moduleName . '</td><td>' . $problems . '</td></tr>';
                 }
             }
             $html .= '</table>';
         }
 
-
-
         $logFolder = $this->Config()->get('logfolder');
 
         $filename = $logFolder . date('U') . '.html';
 
-        GeneralMethods::output_to_screen("Writing to $filename");
+        GeneralMethods::output_to_screen("Writing to ${filename}");
 
         $result = file_put_contents($filename, $html);
 
         if (! $result) {
-            GeneralMethods::output_to_screen("Could not write log file");
+            GeneralMethods::output_to_screen('Could not write log file');
         }
     }
 
@@ -341,15 +322,68 @@ class UpdateModules extends BuildTask
         $configYml = ConfigYML::create($module)->reWrite();
     }
 
+    protected function findNextTag($tag, $changeType)
+    {
+        switch ($changeType) {
+            case 'MAJOR':
+            $tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
+            $tag['tagparts'][1] = 0;
+            $tag['tagparts'][2] = 0;
+                break;
+
+            case 'MINOR':
+            $tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
+            $tag['tagparts'][2] = 0;
+                break;
+
+            default:
+            case 'PATCH':
+            $tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
+                break;
+        }
+
+        return trim(implode('.', $tag['tagparts']));
+    }
+
+    protected function moveOldReadMe($moduleObject)
+    {
+        $tempDir = GitHubModule::Config()->get('absolute_temp_folder');
+        $oldReadMe = $tempDir . '/' . $moduleObject->ModuleName . '/' . 'README.md';
+
+        if (! file_exists($oldReadMe)) {
+            return false;
+        }
+
+        $oldreadmeDestinationFiles = [
+            'docs/en/INDEX.md',
+            'docs/en/README.old.md',
+        ];
+
+        $copied = false;
+        foreach ($oldreadmeDestinationFiles as $file) {
+            $filePath = $tempDir . '/' . $moduleObject->ModuleName . '/' . $file;
+            FileSystem::makeFolder(dirname($filePath));
+
+            if (! file_exists($filePath)) {
+                $copied = true;
+                GeneralMethods::output_to_screen('Copying ' . $oldReadMe . ' to ' . $filePath);
+                copy($oldReadMe, $filePath);
+            }
+        }
+        if ($copied) {
+            unlink($oldReadMe);
+        }
+    }
+
     private function checkFile($module, $filename)
     {
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
-        return file_exists($folder.'/'.$module.'/'.$filename);
+        return file_exists($folder . '/' . $module . '/' . $filename);
     }
 
     private function checkReadMe($module)
     {
-        return $this->checkFile($module, "README.MD");
+        return $this->checkFile($module, 'README.MD');
     }
 
     private function checkDirExcludedWords($directory, $wordArray)
@@ -358,7 +392,7 @@ class UpdateModules extends BuildTask
 
         $problem_files = [];
         foreach ($filesAndFolders as $fileOrFolder) {
-            if ($fileOrFolder == '.' || $fileOrFolder == '..' || $fileOrFolder == '.git') {
+            if ($fileOrFolder === '.' || $fileOrFolder === '..' || $fileOrFolder === '.git') {
                 continue;
             }
 
@@ -385,35 +419,28 @@ class UpdateModules extends BuildTask
         $matchedWords = [];
 
         $fileName = str_replace('////', '/', $fileName);
-        if (filesize($fileName) == 0) {
+        if (filesize($fileName) === 0) {
             return $matchedWords;
         }
 
-
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: file_get_contents (case sensitive)
-  * NEW: file_get_contents (COMPLEX)
-  * EXP: Use new asset abstraction (https://docs.silverstripe.org/en/4/changelogs/4.0.0#asset-storage
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+        /**
+         * ### @@@@ START REPLACEMENT @@@@ ###
+         * WHY: automated upgrade
+         * OLD: file_get_contents (case sensitive)
+         * NEW: file_get_contents (COMPLEX)
+         * EXP: Use new asset abstraction (https://docs.silverstripe.org/en/4/changelogs/4.0.0#asset-storage
+         * ### @@@@ STOP REPLACEMENT @@@@ ###
+         */
         $fileContent = file_get_contents($fileName);
-        if (!$fileContent) {
-            $msg = "Could not open $fileName to check for excluded words";
+        if (! $fileContent) {
+            $msg = "Could not open ${fileName} to check for excluded words";
 
             GeneralMethods::output_to_screen($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
         }
 
         foreach ($wordArray as $word) {
-            $matches = [];
             $matchCount = preg_match_all('/' . $word . '/i', $fileContent);
-
-
-
-
 
             if ($matchCount > 0) {
                 array_push($matchedWords, $word);
@@ -426,16 +453,13 @@ class UpdateModules extends BuildTask
     private function checkUpdateTag($moduleObject)
     {
         $tagDelayString = $this->Config()->get('tag_delay');
-        $nextTag = null;
-
-        if (!$tagDelayString) {
-            $tagDelayString = "-3 weeks";
+        if (! $tagDelayString) {
+            $tagDelayString = '-3 weeks';
         }
 
-
         $tagDelay = strtotime($tagDelayString);
-        if (!$tagDelay) {
-            $tagDelay = strtotime("-3 weeks");
+        if (! $tagDelay) {
+            $tagDelay = strtotime('-3 weeks');
         }
 
         $tag = $moduleObject->getLatestTag();
@@ -446,13 +470,9 @@ class UpdateModules extends BuildTask
             return false;
         }
 
-        $createTag = false;
-
-
-        $newTagString  = '';
+        $newTagString = '';
 
         if (! $tag) {
-            $createTag = true;
             $newTagString = '1.0.0';
         } elseif ($tag && $commitTime > $tag['timestamp'] && $commitTime < $tagDelay) {
             $changeType = $moduleObject->getChangeTypeSinceLastTag();
@@ -461,76 +481,17 @@ class UpdateModules extends BuildTask
         }
 
         if ($newTagString) {
-            GeneralMethods::output_to_screen('<li> Creating new tag  '.$newTagString.' ... </li>');
+            GeneralMethods::output_to_screen('<li> Creating new tag  ' . $newTagString . ' ... </li>');
 
             //git tag -a 0.0.1 -m "testing tag"
-            $options = array(
+            $options = [
                 'a' => $newTagString,
-                'm' => $this->Config()->get('tag_create_message')
-            );
+                'm' => $this->Config()->get('tag_create_message'),
+            ];
 
             $moduleObject->createTag($options);
         }
 
         return true;
     }
-
-    protected function findNextTag($tag, $changeType)
-    {
-        switch ($changeType) {
-
-            case 'MAJOR':
-            $tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
-            $tag['tagparts'][1] = 0;
-            $tag['tagparts'][2] = 0;
-            break;
-
-            case 'MINOR':
-
-            $tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
-            $tag['tagparts'][2] = 0;
-            break;
-
-            default:
-            case 'PATCH':
-            $tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
-            break;
-        }
-
-        $newTagString = trim(implode('.', $tag['tagparts']));
-        return $newTagString;
-    }
-
-    protected function moveOldReadMe($moduleObject)
-    {
-        $tempDir = GitHubModule::Config()->get('absolute_temp_folder');
-        $oldReadMe = $tempDir . '/' .  $moduleObject->ModuleName . '/' .'README.md';
-
-        if (! file_exists($oldReadMe)) {
-            return false;
-        }
-
-
-        $oldreadmeDestinationFiles = array(
-            'docs/en/INDEX.md',
-            'docs/en/README.old.md',
-        );
-
-
-        $copied = false;
-        foreach ($oldreadmeDestinationFiles as $file) {
-            $filePath = $tempDir . '/' .  $moduleObject->ModuleName . '/' . $file;
-            FileSystem::makeFolder(dirname($filePath));
-
-            if (!file_exists($filePath)) {
-                $copied = true;
-                GeneralMethods::output_to_screen('Copying '.$oldReadMe.' to '.$filePath);
-                copy($oldReadMe, $filePath);
-            }
-        }
-        if ($copied) {
-            unlink($oldReadMe);
-        }
-    }
 }
-

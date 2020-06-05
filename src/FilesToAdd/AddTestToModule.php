@@ -4,15 +4,13 @@ namespace Sunnysideup\ModuleChecks\FilesToAdd;
 
 use AddFileToModule;
 
-
 class AddTestToModule extends AddFileToModule
 {
-    protected $gitReplaceArray = array(
+    protected $gitReplaceArray = [
         'Module' => 'ShortUCFirstName',
-    );
+    ];
 
     protected $sourceLocation = 'app/template_files/ModuleTest.php';
-
 
     public function __construct($gitObject)
     {
@@ -20,4 +18,3 @@ class AddTestToModule extends AddFileToModule
         parent::__construct($gitObject);
     }
 }
-

@@ -3,18 +3,26 @@
 namespace Sunnysideup\ModuleChecks\Objects;
 
 use DataObject;
-use GitWrapper;
 use Director;
-use GeneralMethods;
-use UpdateModules;
 use Exception;
 use FileSystem;
-
+use GeneralMethods;
+use GitWrapper;
+use UpdateModules;
 
 class GitHubModule extends DataObject
 {
+    /**
+     * wrapper also relates to one git hub repo only!!!!
+     *
+     * @var GitcommsWrapper
+     */
+    protected $commsWrapper = null;
 
-
+    /**
+     * @var git module
+     */
+    protected $gitRepo = null;
 
     /**
      * e.g.
@@ -29,8 +37,6 @@ class GitHubModule extends DataObject
     private static $github_user_name = '';
 
     /**
-     *
-     *
      * @var GitcommsWrapper
      */
     private static $github_user_email = '';
@@ -54,57 +60,38 @@ class GitHubModule extends DataObject
     private static $absolute_temp_folder = '';
 
     /**
-     * wrapper also relates to one git hub repo only!!!!
-     *
-     * @var GitcommsWrapper
-     */
-    protected $commsWrapper = null;
-
-    /**
-     *
-     *
-     * @var git module
-     */
-    protected $gitRepo = null;
-
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * OLD: private static $db (case sensitive)
-  * NEW: 
-    private static $table_name = '[SEARCH_REPLACE_CLASS_NAME_GOES_HERE]';
-
+     * ### @@@@ START REPLACEMENT @@@@ ###
+     * OLD: private static $db (case sensitive)
+     * NEW:
     private static $db (COMPLEX)
-  * EXP: Check that is class indeed extends DataObject and that it is not a data-extension!
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-    
+     * EXP: Check that is class indeed extends DataObject and that it is not a data-extension!
+     * ### @@@@ STOP REPLACEMENT @@@@ ###
+     */
     private static $table_name = 'GitHubModule';
 
-
-/**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD: private static $db = (case sensitive)
-  * NEW: private static $db = (COMPLEX)
-  * EXP: Make sure to add a private static $table_name!
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
-    private static $db = array(
+    /**
+     * ### @@@@ START REPLACEMENT @@@@ ###
+     * WHY: automated upgrade
+     * OLD: private static $db = (case sensitive)
+     * NEW: private static $db = (COMPLEX)
+     * EXP: Make sure to add a private static $table_name!
+     * ### @@@@ STOP REPLACEMENT @@@@ ###
+     */
+    private static $db = [
         'ModuleName' => 'VarChar(100)',
-        'Description' => 'VarChar(300)'
-    );
+        'Description' => 'VarChar(300)',
+    ];
 
-
-    private static $indexes = array(
+    private static $indexes = [
         'ModuleName' => true,
-    );
+    ];
 
-
-    private static $casting = array(
+    private static $casting = [
         'Directory' => 'Varchar(255)',
         'URL' => 'Varchar(255)',
-    );
+    ];
+
+    private $_latest_tag = null;
 
     public function getDirectory()
     {
@@ -115,6 +102,7 @@ class GitHubModule extends DataObject
     {
         return $this->Description();
     }
+
     /**
      * absolute path
      * @return string | null
@@ -123,7 +111,7 @@ class GitHubModule extends DataObject
     {
         $tempFolder = $this->Config()->get('absolute_temp_folder');
         if ($this->ModuleName) {
-            $folder = $tempFolder.'/'.$this->ModuleName;
+            $folder = $tempFolder . '/' . $this->ModuleName;
             if (file_exists($folder)) {
                 if (file_exists($folder)) {
                     return $folder;
@@ -142,12 +130,10 @@ class GitHubModule extends DataObject
         return $this->URL();
     }
 
-
     public function LongModuleName()
     {
-        return $this->Config()->get('github_user_name').'/'.$this->ModuleName;
+        return $this->Config()->get('github_user_name') . '/' . $this->ModuleName;
     }
-
 
     public function MediumModuleName()
     {
@@ -176,14 +162,12 @@ class GitHubModule extends DataObject
         return $name;
     }
 
-
     public function ModuleNameFirstLetterCapital()
     {
         $shortName = $this->ShortModuleName();
 
         $firstLetterCapitalName = str_replace('_', ' ', $shortName);
         $firstLetterCapitalName = str_replace('-', ' ', $firstLetterCapitalName);
-
 
         return strtolower($firstLetterCapitalName);
     }
@@ -200,17 +184,10 @@ class GitHubModule extends DataObject
     public function URL()
     {
         $username = $this->Config()->get('github_user_name');
-        return 'https://github.com/'.$username.'/'.$this->ModuleName;
+        return 'https://github.com/' . $username . '/' . $this->ModuleName;
     }
-
-    protected function IsDirGitRepo($directory)
-    {
-        return file_exists($directory."/.git");
-    }
-
 
     /**
-     *
      * @param bool (optional) $forceNew - create a new repo and ditch all changes
      * @return Git Repo Object
      */
@@ -218,9 +195,8 @@ class GitHubModule extends DataObject
     {
         //check if one has been created already...
         if (! $this->gitRepo) {
-
             //basic check
-            if ($this->ModuleName == '') {
+            if ($this->ModuleName === '') {
                 user_error('ModuleName element must be set before using git repository commands');
             }
 
@@ -232,9 +208,8 @@ class GitHubModule extends DataObject
                 $this->commsWrapper->streamOutput();
             }
 
-
             if (! $this->Config()->get('path_to_private_key')) {
-                user_error("We recommend you set private key");
+                user_error('We recommend you set private key');
             }
             // Optionally specify a private key other than one of the defaults.
             $this->commsWrapper->setPrivateKey($this->Config()->get('path_to_private_key'));
@@ -248,14 +223,14 @@ class GitHubModule extends DataObject
                 }
                 $this->gitRepo = $this->commsWrapper->workingCopy($this->Directory());
             } else {
-                GeneralMethods::output_to_screen("cloning ... ".$this->fullGitURL(), 'created');
+                GeneralMethods::output_to_screen('cloning ... ' . $this->fullGitURL(), 'created');
 
                 $this->gitRepo = null;
                 $cloneAttempts = 0;
                 while (! $this->gitRepo) {
                     $cloneAttempts ++;
-                    if ($cloneAttempts == 4) {
-                        user_error('Failed to clone module ' . $this->LongModuleName() . ' after ' . ($cloneAttempts  - 1). ' attemps.', E_USER_ERROR);
+                    if ($cloneAttempts === 4) {
+                        user_error('Failed to clone module ' . $this->LongModuleName() . ' after ' . ($cloneAttempts - 1) . ' attemps.', E_USER_ERROR);
                         //UpdateModules::$unsolvedItems[$this->ModuleName()] = 'Failed to clone modules';
                         UpdateModules::addUnsolvedProblem($this->ModuleName(), 'Failed to clone modules');
                     }
@@ -271,16 +246,16 @@ class GitHubModule extends DataObject
                             user_error($e->getMessage(), E_USER_ERROR);
                         }
 
-                        GeneralMethods::output_to_screen('<li>Failed to clone repository: ' .  $e->getMessage() . '</li>');
+                        GeneralMethods::output_to_screen('<li>Failed to clone repository: ' . $e->getMessage() . '</li>');
                         GeneralMethods::output_to_screen('<li>Waiting 8 seconds to try again ...: </li>');
                         $this->removeClone();
                         sleep(8);
                     }
                 }
             }
-            $this->gitRepo->config("push.default", "simple");
-            $this->gitRepo->config("user.name", $this->Config()->get('github_user_name'));
-            $this->gitRepo->config("user.email", $this->Config()->get('github_user_email'));
+            $this->gitRepo->config('push.default', 'simple');
+            $this->gitRepo->config('user.name', $this->Config()->get('github_user_name'));
+            $this->gitRepo->config('user.email', $this->Config()->get('github_user_email'));
             $this->commsWrapper->git('config -l');
         }
         return $this->gitRepo;
@@ -293,7 +268,7 @@ class GitHubModule extends DataObject
     {
         $username = $this->Config()->get('github_user_name');
         $gitURL = $this->Config()->get('github_account_base_url');
-        return 'git@github.com:/'.$username.'/'.$this->ModuleName.'.git';
+        return 'git@github.com:/' . $username . '/' . $this->ModuleName . '.git';
     }
 
     /**
@@ -311,7 +286,6 @@ class GitHubModule extends DataObject
                 print_r($e);
                 throw $e;
             }
-
 
             //GeneralMethods::output_to_screen($git->getOutput());
             return $this;
@@ -337,9 +311,8 @@ class GitHubModule extends DataObject
                 if (stripos($errStr, 'nothing to commit') === false) {
                     print_r($e);
                     throw $e;
-                } else {
-                    GeneralMethods::output_to_screen('No changes to commit');
                 }
+                GeneralMethods::output_to_screen('No changes to commit');
             }
             //GeneralMethods::output_to_screen($git->getOutput());
 
@@ -354,20 +327,19 @@ class GitHubModule extends DataObject
      */
     public function add()
     {
-        GeneralMethods::output_to_screen('Adding new files to '.$this->ModuleName.' ...  ', "created");
+        GeneralMethods::output_to_screen('Adding new files to ' . $this->ModuleName . ' ...  ', 'created');
 
         $git = $this->checkOrSetGitcommsWrapper();
         if ($git) {
             try {
-                $git->add(".");
+                $git->add('.');
             } catch (GitWrapper\GitException $e) {
                 $errStr = $e->getMessage();
                 if (stripos($errStr, 'did not match any files') === false) {
                     print_r($e);
                     throw $e;
-                } else {
-                    GeneralMethods::output_to_screen('No new files to add to $module. ');
                 }
+                GeneralMethods::output_to_screen('No new files to add to $module. ');
             }
 
             //GeneralMethods::output_to_screen($git->getOutput());
@@ -384,7 +356,7 @@ class GitHubModule extends DataObject
      */
     public function push()
     {
-        GeneralMethods::output_to_screen('Pushing files to '.$this->ModuleName.' ...  ', "created");
+        GeneralMethods::output_to_screen('Pushing files to ' . $this->ModuleName . ' ...  ', 'created');
 
         $git = $this->checkOrSetGitcommsWrapper();
         if ($git) {
@@ -396,15 +368,14 @@ class GitHubModule extends DataObject
                     $git->push();
                     $pushed = true;
                 } catch (Exception $e) {
-                    if ($pushAttempts == 3) {
+                    if ($pushAttempts === 3) {
                         $git->getOutput();
                         print_r($e);
                         throw $e;
-                    } else {
-                        GeneralMethods::output_to_screen('<li>Failed to push repository: ' .  $e->getMessage() . '</li>');
-                        GeneralMethods::output_to_screen('<li>Waiting 8 seconds to try again ...: </li>');
-                        sleep(8);
                     }
+                    GeneralMethods::output_to_screen('<li>Failed to push repository: ' . $e->getMessage() . '</li>');
+                    GeneralMethods::output_to_screen('<li>Waiting 8 seconds to try again ...: </li>');
+                    sleep(8);
                 }
             }
             return $this;
@@ -414,13 +385,11 @@ class GitHubModule extends DataObject
 
     /**
      * removes a cloned repo
-     *
-     *
      */
     public function removeClone()
     {
         $dir = $this->Directory();
-        GeneralMethods::output_to_screen('Removing '.$dir.' and all its contents ...  ', "created");
+        GeneralMethods::output_to_screen('Removing ' . $dir . ' and all its contents ...  ', 'created');
         $this->gitRepo = null;
         FileSystem::removeFolder($dir); // removes contents but not the actual folder
         //rmdir ($dir);
@@ -432,7 +401,6 @@ class GitHubModule extends DataObject
      *
      * @return string | bool
      */
-
     public function getRawFileFromGithub($fileName)
     {
         $gitUserName = $this->Config()->get('github_user_name');
@@ -440,7 +408,7 @@ class GitHubModule extends DataObject
 
         $rawURL = 'https://raw.githubusercontent.com/' . $gitUserName . '/' . $this->ModuleName . '/' . $branch . '/' . $fileName;
 
-        set_error_handler(array($this, 'catchFopenWarning'), E_WARNING);
+        set_error_handler([$this, 'catchFopenWarning'], E_WARNING);
         $file = fopen($rawURL, 'r');
         restore_error_handler();
 
@@ -456,19 +424,10 @@ class GitHubModule extends DataObject
         return $content;
     }
 
-    /*
-     * This function is just used to suppression of warnings
-     * */
-    private function catchFopenWarning($errno, $errstr)
-    {
-        //
-    }
-
-
     public static function get_or_create_github_module($moduleName)
     {
         $moduleName = trim($moduleName);
-        $filter = array('ModuleName' => $moduleName);
+        $filter = ['ModuleName' => $moduleName];
         $gitHubModule = GitHubModule::get()->filter($filter)->first();
         if (! $gitHubModule) {
             $gitHubModule = GitHubModule::create($filter);
@@ -478,17 +437,16 @@ class GitHubModule extends DataObject
         return $gitHubModule;
     }
 
-
     public function getLatestCommitTime()
     {
         // equivalent to git log -1 --format=%cd .
 
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
-            $options = array(
-                'format' => "%cd",
-                '1' => true
-            );
+            $options = [
+                'format' => '%cd',
+                '1' => true,
+            ];
 
             try {
                 $result = $git->log($options);
@@ -497,33 +455,28 @@ class GitHubModule extends DataObject
                 if (stripos($errStr, 'does not have any commits') === false) {
                     print_r($e);
                     throw $e;
-                } else {
-                    return false;
                 }
+                return false;
             }
 
             if ($result) {
-                return (strtotime($result));
-            } else {
-                return false;
+                return strtotime($result);
             }
-        } else {
             return false;
         }
+        return false;
     }
-
-    private $_latest_tag = null;
 
     public function getLatestTag()
     {
         if ($this->_latest_tag === null) {
             $git = $this->checkOrSetGitCommsWrapper();
             if ($git) {
-                $options = array(
+                $options = [
                     'tags' => true,
                     'simplify-by-decoration' => true,
-                    'pretty' => 'format:%ai %d'
-                );
+                    'pretty' => 'format:%ai %d',
+                ];
 
                 $cwd = getcwd();
                 chdir($this->Directory);
@@ -535,24 +488,21 @@ class GitHubModule extends DataObject
                     if (stripos($errStr, 'does not have any commits') === false) {
                         print_r($e);
                         throw $e;
-                    } else {
-                        GeneralMethods::output_to_screen('Unable to get tag because there are no commits to the repository');
-                        return false;
                     }
+                    GeneralMethods::output_to_screen('Unable to get tag because there are no commits to the repository');
+                    return false;
                 }
-
 
                 chdir($cwd);
 
-                $resultLines  =  explode("\n", $result->getOutput());
+                $resultLines = explode("\n", $result->getOutput());
 
                 // 2016-10-14 12:29:08 +1300 (HEAD -> master, tag: 2.3.0, tag: 2.2.0, tag: 2.1.0, origin/master, origin/HEAD)\
                 // or
                 // 2016-08-29 17:18:22 +1200 (tag: 2.0.0)
                 //print_r($resultLines);
 
-
-                if (count($resultLines) == 0) {
+                if (count($resultLines) === 0) {
                     return false;
                 }
 
@@ -563,7 +513,6 @@ class GitHubModule extends DataObject
                     if ($isTagInLine) {
                         $tagStr = trim(substr($line, 25));
                         $dateStr = trim(substr($line, 0, 26));
-
 
                         //extract tag numbers from $tagStr
 
@@ -577,8 +526,8 @@ class GitHubModule extends DataObject
                         }
                         //print_r ($matches);
 
-                        $tagStr  = str_replace('(', '', $tagStr);
-                        $tagStr  = str_replace(')', '', $tagStr);
+                        $tagStr = str_replace('(', '', $tagStr);
+                        $tagStr = str_replace(')', '', $tagStr);
                         $timeStamp = strtotime($dateStr);
 
                         if ($latestTimeStamp < $timeStamp) {
@@ -588,18 +537,17 @@ class GitHubModule extends DataObject
                     }
                 }
                 if (isset($latestTag) && $latestTag) {
-                    $latestTag = str_replace('tag:', '', $latestTag) ;
-
+                    $latestTag = str_replace('tag:', '', $latestTag);
 
                     $tagParts = explode('.', $latestTag);
 
-                    if (count($tagParts) != 3) {
+                    if (count($tagParts) !== 3) {
                         return false;
                     }
-                    $this->_latest_tag = array(
+                    $this->_latest_tag = [
                         'tagstring' => $latestTag,
                         'tagparts' => $tagParts,
-                        'timestamp' => $latestTimeStamp);
+                        'timestamp' => $latestTimeStamp, ];
                 } else {
                     $this->_latest_tag = false;
                 }
@@ -618,22 +566,21 @@ class GitHubModule extends DataObject
 
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
-
             //var_dump ($git);
             //die();
 
-            $options = array(
-                'oneline' => true
-            );
+            $options = [
+                'oneline' => true,
+            ];
 
             $cwd = getcwd();
             chdir($this->Directory);
 
             try {
-                $result = $git->log($latestTag.'..HEAD', $options);
+                $result = $git->log($latestTag . '..HEAD', $options);
                 // print_r($latestTag);
                 // print_r($result);
-                if (!is_array($result)) {
+                if (! is_array($result)) {
                     $result = explode("\n", $result);
                 }
                 // print_r ($result);
@@ -645,9 +592,6 @@ class GitHubModule extends DataObject
 
             chdir($cwd);
             $returnLine = 'PATCH';
-
-
-
 
             foreach ($result as $line) {
                 if (stripos($line, 'MAJOR:') !== false) {
@@ -665,7 +609,7 @@ class GitHubModule extends DataObject
     public function createTag($tagCommandOptions)
     {
         $this->gitRepo->tag($tagCommandOptions);
-        $this->gitRepo->push(array('tags' => true));
+        $this->gitRepo->push(['tags' => true]);
     }
 
     public function updateGitHubInfo($array)
@@ -674,22 +618,22 @@ class GitHubModule extends DataObject
 
         # not working
 
-        $defaultValues =array(
+        $defaultValues = [
             'name' => $this->LongModuleName(),
             'private' => false,
             'has_wiki' => false,
             'has_issues' => true,
             'has_downloads' => true,
-            'homepage' => 'http://ssmods.com/'
-            );
+            'homepage' => 'http://ssmods.com/',
+        ];
 
         if ($this->Description) {
             $array['description'] = $this->Description;
         }
 
-        foreach ($defaultValues as $key=>$value) {
+        foreach ($defaultValues as $key => $value) {
             if (! isset($array[$key])) {
-                $array[$key]  = $value;
+                $array[$key] = $value;
             }
         }
 
@@ -698,10 +642,62 @@ class GitHubModule extends DataObject
         $this->gitApiCall($array, '', 'PATCH');
     }
 
+    public function addRepoToScrutinzer()
+    {
+        if (! trim($this->Config()->get('scrutinizer_api_key'))) {
+            GeneralMethods::output_to_screen('<li> not Scrutinizer API key set </li>');
+            return false;
+        }
+
+        //see https://scrutinizer-ci.com/docs/api/#repositories
+        $scrutinizerApiPath = 'https://scrutinizer-ci.com/api';
+        $endPoint = 'repositories/g?access_token=' . trim($this->Config()->get('scrutinizer_api_key'));
+        $url = $scrutinizerApiPath . '/' . $endPoint;
+        $username = $this->Config()->get('github_user_name');
+        $repoName = $username . '/' . $this->ModuleName;
+
+        $postFields = [
+            'name' => $repoName,
+        ];
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postFields));
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, count($postFields));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $curlResult = curl_exec($ch);
+
+        if (! $curlResult) {
+            GeneralMethods::output_to_screen("<li> could not add ${repoName} to Scrutinizer ... </li>");
+            //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (curl failure)";
+
+            UpdateModules::addUnsolvedProblem($repoName, "Could not add ${repoName} to Scrutiniser (curl failure)");
+
+            return false;
+        }
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if ($httpcode === 201) {
+            GeneralMethods::output_to_screen("<li> Added ${repoName} to Scrutinizer ... </li>");
+        } else {
+            GeneralMethods::output_to_screen("<li> could not add ${repoName} to Scrutinizer ... </li>");
+            //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (HttpCode $httpcode)";
+            UpdateModules::addUnsolvedProblem($repoName, "Could not add ${repoName} to Scrutiniser (HttpCode ${httpcode})");
+        }
+    }
+
+    protected function IsDirGitRepo($directory)
+    {
+        return file_exists($directory . '/.git');
+    }
+
     protected function gitApiCall($data, $gitAPIcommand = '', $method = 'GET')
     {
         $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        GeneralMethods::output_to_screen('Running Git API command ' .$gitAPIcommand. ' using ' .$method. ' method...');
+        GeneralMethods::output_to_screen('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
         $gitUserName = $this->Config()->get('github_user_name');
         $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($this->ModuleName);
         if (trim($gitAPIcommand)) {
@@ -709,9 +705,9 @@ class GitHubModule extends DataObject
         }
         $method = trim(strtoupper($method));
         $ch = curl_init($url);
-        $header = "Content-Type: application/json";
-        if ($method == 'GET') {
-            $url .= '?'.http_build_query($data);
+        $header = 'Content-Type: application/json';
+        if ($method === 'GET') {
+            $url .= '?' . http_build_query($data);
         }
         $gitApiUserName = trim($this->Config()->get('git_api_login_username'));
         $gitApiUserPassword = trim($this->Config()->get('git_api_login_password'));
@@ -723,7 +719,7 @@ class GitHubModule extends DataObject
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array($header));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [$header]);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt(
             $ch,
@@ -734,14 +730,14 @@ class GitHubModule extends DataObject
             curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         }
-        if ($method == 'POST') {
+        if ($method === 'POST') {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
         }
         $curlResult = curl_exec($ch);
         if (! $curlResult) {
-            $msg = "curl exectution failed";
+            $msg = 'curl exectution failed';
             GeneralMethods::output_to_screen($msg);
-            UpdateModules::$unsolvedItems["none"] = $msg;
+            UpdateModules::$unsolvedItems['none'] = $msg;
         }
         print_r($url);
         print_r('<br/>');
@@ -750,54 +746,10 @@ class GitHubModule extends DataObject
         return $curlResult;
     }
 
-
-    public function addRepoToScrutinzer()
+    /*
+     * This function is just used to suppression of warnings
+     * */
+    private function catchFopenWarning($errno, $errstr)
     {
-        if (! trim($this->Config()->get('scrutinizer_api_key'))) {
-            GeneralMethods::output_to_screen("<li> not Scrutinizer API key set </li>");
-            return false;
-        }
-
-        //see https://scrutinizer-ci.com/docs/api/#repositories
-        $scrutinizerApiPath = "https://scrutinizer-ci.com/api";
-        $endPoint = "repositories/g?access_token=" . trim($this->Config()->get('scrutinizer_api_key'));
-        $url = $scrutinizerApiPath . "/" . $endPoint;
-        $username = $this->Config()->get('github_user_name');
-        $repoName =  $username.'/'.$this->ModuleName;
-
-
-        $postFields = array(
-            'name' => $repoName,
-            );
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postFields));
-
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, count($postFields));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-
-        $curlResult = curl_exec($ch);
-
-        if (! $curlResult) {
-            GeneralMethods::output_to_screen("<li> could not add $repoName to Scrutinizer ... </li>");
-            //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (curl failure)";
-
-            UpdateModules::addUnsolvedProblem($repoName, "Could not add $repoName to Scrutiniser (curl failure)");
-
-            return false;
-        }
-
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-
-        if ($httpcode == 201) {
-            GeneralMethods::output_to_screen("<li> Added $repoName to Scrutinizer ... </li>");
-        } else {
-            GeneralMethods::output_to_screen("<li> could not add $repoName to Scrutinizer ... </li>");
-            //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (HttpCode $httpcode)";
-            UpdateModules::addUnsolvedProblem($repoName, "Could not add $repoName to Scrutiniser (HttpCode $httpcode)");
-        }
     }
 }

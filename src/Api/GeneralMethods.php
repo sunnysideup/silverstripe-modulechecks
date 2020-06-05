@@ -2,26 +2,21 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-use ViewableData;
-use Director;
 use DB;
+use Director;
 use FileSystem;
-
-
-
+use ViewableData;
 
 /**
-  * ### @@@@ START REPLACEMENT @@@@ ###
-  * WHY: automated upgrade
-  * OLD:  extends Object (ignore case)
-  * NEW:  extends ViewableData (COMPLEX)
-  * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
-  * ### @@@@ STOP REPLACEMENT @@@@ ###
-  */
+ * ### @@@@ START REPLACEMENT @@@@ ###
+ * WHY: automated upgrade
+ * OLD:  extends Object (ignore case)
+ * NEW:  extends ViewableData (COMPLEX)
+ * EXP: This used to extend Object, but object does not exist anymore. You can also manually add use Extensible, use Injectable, and use Configurable
+ * ### @@@@ STOP REPLACEMENT @@@@ ###
+ */
 class GeneralMethods extends ViewableData
 {
-
-
     /**
      * opens a location with curl to see if it exists.
      *
@@ -36,15 +31,12 @@ class GeneralMethods extends ViewableData
         curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, true);
         $response = curl_exec($handle);
         $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        $outcome = $httpCode == 200;
+        $outcome = $httpCode === 200;
         curl_close($handle);
         return $outcome;
     }
 
-
-
     /**
-     *
      * @use
      * ```
      *    GeneralMethods::output_to_screen('asdf', 'created')
@@ -54,12 +46,12 @@ class GeneralMethods extends ViewableData
      * @param  string $message
      * @param  string $type
      */
-    public static function output_to_screen($message, $type = "")
+    public static function output_to_screen($message, $type = '')
     {
         if (Director::is_cli()) {
             DB::alteration_message($message, $type);
         } else {
-            echo "<br />";
+            echo '<br />';
             flush();
             ob_end_flush();
             DB::alteration_message($message, $type);
@@ -94,7 +86,6 @@ class GeneralMethods extends ViewableData
             $newContent = str_replace($search, $replacement, $content);
             fclose($file);
 
-
             $file = fopen($fileName, 'w');
             if ($file) {
                 fwrite($file, $newContent);
@@ -103,4 +94,3 @@ class GeneralMethods extends ViewableData
         }
     }
 }
-

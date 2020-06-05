@@ -2,8 +2,8 @@
 
 namespace Sunnysideup\ModuleChecks\Composerjson;
 
-use UpdateComposer;
 use Config;
+use UpdateComposer;
 
 /**
  * sets the default installation folder
@@ -20,4 +20,3 @@ class UpdateLicense extends UpdateComposer
         $this->setJsonData($json);
     }
 }
-

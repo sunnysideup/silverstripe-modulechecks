@@ -4,7 +4,6 @@ namespace Sunnysideup\ModuleChecks\ShellCommands;
 
 use RunCommandLineMethodOnModule;
 
-
 class SetPermissions extends RunCommandLineMethodOnModule
 {
     protected $commands = [
@@ -12,4 +11,3 @@ class SetPermissions extends RunCommandLineMethodOnModule
         'find . -type d -exec chmod 755 {} \;',
     ];
 }
-

@@ -7,7 +7,7 @@ use UpdateComposer;
 /**
  * sets the default installation folder
  */
-class UpdataModuleType extends UpdateComposer
+class UpdateModuleType extends UpdateComposer
 {
     public function run()
     {
