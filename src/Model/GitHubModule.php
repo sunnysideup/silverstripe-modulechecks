@@ -5,10 +5,14 @@ namespace Sunnysideup\ModuleChecks\Model;
 use Exception;
 use FileSystem;
 
+use GitWrapper\GitWrapper;
+use GitWrapper\GitWorkingCopy;
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DataObject;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+
+require_once Director::baseFolder().'/vendor/autoload.php';
 
 class GitHubModule extends DataObject
 {
@@ -172,7 +176,7 @@ class GitHubModule extends DataObject
      * @param bool (optional) $forceNew - create a new repo and ditch all changes
      * @return Git Repo Object
      */
-    public function checkOrSetGitCommsWrapper($forceNew = false)
+    public function checkOrSetGitCommsWrapper($forceNew = false): GitWorkingCopy
     {
         //check if one has been created already...
         if (! $this->gitRepo) {
