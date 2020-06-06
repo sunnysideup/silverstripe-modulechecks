@@ -5,10 +5,15 @@ namespace Sunnysideup\ModuleChecks\Model;
 use Exception;
 use FileSystem;
 
+use GitWrapper\GitWrapper;
+use GitWrapper\GitWorkingCopy;
+use GitWrapper\Exception\GitException;
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DataObject;
+use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+
 
 class GitHubModule extends DataObject
 {
@@ -172,7 +177,7 @@ class GitHubModule extends DataObject
      * @param bool (optional) $forceNew - create a new repo and ditch all changes
      * @return Git Repo Object
      */
-    public function checkOrSetGitCommsWrapper($forceNew = false)
+    public function checkOrSetGitCommsWrapper($forceNew = false): GitWorkingCopy
     {
         //check if one has been created already...
         if (! $this->gitRepo) {
@@ -255,7 +260,7 @@ class GitHubModule extends DataObject
     /**
      * pulls a git repo
      *
-     * @return bool | this
+     * @return bool
      */
     public function pull()
     {
@@ -263,13 +268,14 @@ class GitHubModule extends DataObject
         if ($git) {
             try {
                 $git->pull();
-            } catch (GitWrapper\GitException $e) {
+            } catch (GitException $e) {
                 print_r($e);
                 throw $e;
+                return false;
             }
+            return true;
 
             //GeneralMethods::output_to_screen($git->getOutput());
-            return $this;
         }
         return false;
     }
@@ -279,9 +285,9 @@ class GitHubModule extends DataObject
      *
      * @param string $message
      *
-     * @return bool | this
+     * @return bool
      */
-    public function commit($message = 'PATCH: module clean-up')
+    public function commit($message = 'PATCH: module clean-up') : bool
     {
         $git = $this->checkOrSetGitCommsWrapper();
         if ($git) {
@@ -294,19 +300,20 @@ class GitHubModule extends DataObject
                     throw $e;
                 }
                 GeneralMethods::output_to_screen('No changes to commit');
+                return false;
             }
             //GeneralMethods::output_to_screen($git->getOutput());
 
-            return $this;
+            return true;
         }
         return false;
     }
 
     /**
      * adds all files to a git repo
-     * @return bool | this
+     * @return bool
      */
-    public function add()
+    public function add() : bool
     {
         GeneralMethods::output_to_screen('Adding new files to ' . $this->ModuleName . ' ...  ', 'created');
 
@@ -314,18 +321,19 @@ class GitHubModule extends DataObject
         if ($git) {
             try {
                 $git->add('.');
-            } catch (GitWrapper\GitException $e) {
+            } catch (GitException $e) {
                 $errStr = $e->getMessage();
                 if (stripos($errStr, 'did not match any files') === false) {
                     print_r($e);
                     throw $e;
                 }
                 GeneralMethods::output_to_screen('No new files to add to $module. ');
+                return false;
             }
 
             //GeneralMethods::output_to_screen($git->getOutput());
 
-            return $this;
+            return true;
         }
         return false;
     }
@@ -333,9 +341,9 @@ class GitHubModule extends DataObject
     /**
      * adds all files to a git repo
      *
-     * @return bool | this
+     * @return bool
      */
-    public function push()
+    public function push() : bool
     {
         GeneralMethods::output_to_screen('Pushing files to ' . $this->ModuleName . ' ...  ', 'created');
 
@@ -357,9 +365,10 @@ class GitHubModule extends DataObject
                     GeneralMethods::output_to_screen('<li>Failed to push repository: ' . $e->getMessage() . '</li>');
                     GeneralMethods::output_to_screen('<li>Waiting 8 seconds to try again ...: </li>');
                     sleep(8);
+                    return false;
                 }
             }
-            return $this;
+            return true;
         }
         return false;
     }
@@ -517,7 +526,7 @@ class GitHubModule extends DataObject
                         }
                     }
                 }
-                if (isset($latestTag) && $latestTag) {
+                if ($latestTag) {
                     $latestTag = str_replace('tag:', '', $latestTag);
 
                     $tagParts = explode('.', $latestTag);

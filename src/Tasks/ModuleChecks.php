@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Tasks;
 
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Environment;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
@@ -36,7 +37,7 @@ class ModuleChecks extends BuildTask
 
     public function run($request)
     {
-        increase_time_limit_to(3600);
+        Environment::increaseTimeLimitTo(3600);
 
         $modules = GitRepoFinder::get_all_repos();
 

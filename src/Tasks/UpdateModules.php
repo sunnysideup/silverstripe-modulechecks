@@ -9,6 +9,7 @@ use FileSystem;
 
 
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Environment;
 use SilverStripe\Dev\BuildTask;
 use Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
 use Sunnysideup\ModuleChecks\Api\ConfigYML;
@@ -61,7 +62,7 @@ class UpdateModules extends BuildTask
 
     public function run($request)
     {
-        increase_time_limit_to(3600);
+        Environment::increaseTimeLimitTo(3600);
 
         //Check temp module folder is empty
         $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
