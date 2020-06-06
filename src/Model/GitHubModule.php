@@ -12,7 +12,6 @@ use SilverStripe\ORM\DataObject;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
-require_once Director::baseFolder().'/vendor/autoload.php';
 
 class GitHubModule extends DataObject
 {
