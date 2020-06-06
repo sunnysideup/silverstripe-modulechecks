@@ -4,7 +4,6 @@ namespace Sunnysideup\ModuleChecks\Api;
 
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DB;
-use SilverStripe\View\ViewableData;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
@@ -118,40 +117,8 @@ class GitRepoFinder
                     ];
 
                     $method = 'GET';
-                    $ch = curl_init($url);
-                    $header = 'Content-Type: application/json';
+                    $curlResult = self::runCurlResult($url, $method, $data);
 
-                    if ($method === 'GET') {
-                        $url .= '?' . http_build_query($data);
-                    }
-
-                    $gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
-                    $gitUserName = trim(GitHubModule::Config()->get('github_user_name'));
-                    $gitApiUserPassword = trim(GitHubModule::Config()->get('git_api_login_password'));
-
-                    $gitApiAccessToken = trim(GitHubModule::Config()->get('git_personal_access_token'));
-                    if (trim($gitApiAccessToken)) {
-                        $gitApiUserPassword = $gitApiAccessToken;
-                    }
-
-                    curl_setopt($ch, CURLOPT_VERBOSE, 1);
-                    curl_setopt($ch, CURLOPT_URL, $url);
-                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, [$header]);
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                    curl_setopt(
-                        $ch,
-                        CURLOPT_USERAGENT,
-                        'sunnysideupdevs'
-                    );
-
-                    if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
-                        curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
-                        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-                    }
-
-                    $curlResult = curl_exec($ch);
 
                     if (! $curlResult) {
                         GeneralMethods::output_to_screen('Could not retrieve list of modules from GitHub');
@@ -208,27 +175,42 @@ class GitRepoFinder
         return self::$_modules;
     }
 
-
-    protected function gitApiCall($data, $gitAPIcommand = '', $method = 'GET')
+    protected function gitApiCall(string $moduleName, array $data, ?string $gitAPIcommand = '', ?string $method = 'GET')
     {
         $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         GeneralMethods::output_to_screen('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
         $gitUserName = Config::inst()->get(GitHubModule::class, 'github_user_name');
-        $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($this->ModuleName);
+        $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($moduleName);
         if (trim($gitAPIcommand)) {
             $url .= '/' . trim($gitAPIcommand);
         }
+
+        $curlResult = self::runCurlResult($url, $method, $jsonData);
+
+        print_r($url);
+        print_r('<br/>');
+        print_r($curlResult);
+        die();
+        return $curlResult;
+    }
+
+    protected static function runCurlResult( string $url, string $method, string $jsonData)
+    {
         $method = trim(strtoupper($method));
-        $ch = curl_init($url);
-        $header = 'Content-Type: application/json';
-        if ($method === 'GET') {
-            $url .= '?' . http_build_query($data);
-        }
-        $gitApiUserName = trim(Config::inst()->get(GitHubModule::class, 'git_api_login_username'));
-        $gitApiUserPassword = trim(Config::inst()->get(GitHubModule::class, 'git_api_login_password'));
-        $gitApiAccessToken = trim(Config::inst()->get(GitHubModule::class, 'git_personal_access_token'));
+
+        $gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
+        $gitUserName = trim(GitHubModule::Config()->get('github_user_name'));
+        $gitApiUserPassword = trim(GitHubModule::Config()->get('git_api_login_password'));
+
+        $gitApiAccessToken = trim(GitHubModule::Config()->get('git_personal_access_token'));
         if (trim($gitApiAccessToken)) {
             $gitApiUserPassword = $gitApiAccessToken;
+        }
+
+        $header = 'Content-Type: application/json';
+        $ch = curl_init($url);
+        if ($method === 'GET') {
+            $url .= '?' . http_build_query($jsonData);
         }
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -239,9 +221,10 @@ class GitRepoFinder
         curl_setopt(
             $ch,
             CURLOPT_USERAGENT,
-            'Silverstripe-update-module-module'
+            'sunnysideupdevs'
         );
-        if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
+
+        if ($gitApiUserName && $gitApiUserPassword) {
             curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
             curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         }
@@ -254,10 +237,7 @@ class GitRepoFinder
             GeneralMethods::output_to_screen($msg);
             UpdateModules::$unsolvedItems['none'] = $msg;
         }
-        print_r($url);
-        print_r('<br/>');
-        print_r($curlResult);
-        die();
-        return $curlResult;
+        return curl_exec($ch);
     }
+
 }

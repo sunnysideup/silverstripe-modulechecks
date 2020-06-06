@@ -6,7 +6,6 @@ use FileSystem;
 
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DB;
-use SilverStripe\View\ViewableData;
 
 class GeneralMethods
 {
@@ -17,15 +16,17 @@ class GeneralMethods
      *
      * @return boolean
      */
-    public static function check_location(string $url)
+    public static function check_location(string $url): bool
     {
         $handle = curl_init($url);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, true);
-        $response = curl_exec($handle);
+        curl_exec($handle);
+
         $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        $outcome = $httpCode === 200;
+        $outcome = $httpCode === intval(200) ? true : false;
         curl_close($handle);
+
         return $outcome;
     }
 

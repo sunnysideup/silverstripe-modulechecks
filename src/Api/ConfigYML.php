@@ -1,12 +1,11 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\Api\ConfigYML;
+namespace Sunnysideup\ModuleChecks\Api;
 
 use Exception;
 
 
 
-use SilverStripe\View\ViewableData;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 use Yaml;
@@ -101,7 +100,7 @@ class ConfigYML
 
             GeneralMethods::output_to_screen('Updating config.YML to correct syntax ... ', 'updating');
 
-            $file = fopen($this->filename, 'w');
+            // $file = fopen($this->filename, 'w');
 
             file_put_contents($this->filename, $newYML);
         } else {

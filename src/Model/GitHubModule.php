@@ -1,11 +1,9 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\Objects;
+namespace Sunnysideup\ModuleChecks\Model;
 
 use Exception;
 use FileSystem;
-
-use GitWrapper;
 
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DataObject;
@@ -39,12 +37,11 @@ class GitHubModule extends DataObject
     private static $github_user_name = '';
 
     /**
-     * @var GitcommsWrapper
+     * @var string
      */
     private static $github_user_email = '';
 
     /**
-     *
      * @var string
      */
     private static $path_to_private_key = '~/.ssh/id_rsa';
@@ -164,7 +161,7 @@ class GitHubModule extends DataObject
      * check if URL exists and returns it
      * @var string | null
      */
-    public function URL() : string
+    public function URL(): string
     {
         $username = $this->Config()->get('github_user_name');
 
@@ -251,7 +248,7 @@ class GitHubModule extends DataObject
     public function fullGitURL()
     {
         $username = $this->Config()->get('github_user_name');
-        $gitURL = $this->Config()->get('github_account_base_url');
+        // $gitURL = $this->Config()->get('github_account_base_url');
         return 'git@github.com:/' . $username . '/' . $this->ModuleName . '.git';
     }
 
@@ -570,7 +567,7 @@ class GitHubModule extends DataObject
                 // print_r ($result);
             } catch (Exception $e) {
                 $errStr = $e->getMessage();
-                GeneralMethods::output_to_screen('Unable to get next tag type (getChangeTypeSinceLastTag)');
+                GeneralMethods::output_to_screen('Unable to get next tag type (getChangeTypeSinceLastTag): ' . $errStr);
                 return false;
             }
 
@@ -643,7 +640,7 @@ class GitHubModule extends DataObject
     protected function gitApiCall($data, $gitAPIcommand = '', $method = 'GET')
     {
         $obj = new GitRepoFinder();
-        $obj->gitApiCall($data, $gitAPIcommand, $method);
+        $obj->gitApiCall($this->moduleName, $data, $gitAPIcommand, $method);
     }
 
     /*

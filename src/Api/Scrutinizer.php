@@ -1,12 +1,8 @@
 <?php
+
 namespace Sunnysideup\ModuleChecks\Api;
 
-use SilverStripe\Core\Config\Config;
-use SilverStripe\ORM\DB;
-use SilverStripe\View\ViewableData;
-use Sunnysideup\ModuleChecks\Model\GitHubModule;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 
 class Scrutinizer
 {

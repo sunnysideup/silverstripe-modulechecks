@@ -1,8 +1,6 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\Api;
-
-use SilverStripe\View\ViewableData;
+namespace Sunnysideup\ModuleChecks\BaseCommands;
 
 abstract class UpdateComposer
 {

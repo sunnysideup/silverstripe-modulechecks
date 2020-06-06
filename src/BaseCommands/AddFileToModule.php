@@ -1,14 +1,12 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
+namespace Sunnysideup\ModuleChecks\BaseCommands;
 
 use SilverStripe\Assets\Filesystem;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\View\Requirements;
-use SilverStripe\View\ViewableData;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
-
 
 abstract class AddFileToModule
 {
@@ -69,7 +67,6 @@ abstract class AddFileToModule
 
     public function __construct($gitObject)
     {
-        parent::__construct();
         $this->gitObject = $gitObject;
         $rootDirForModule = $gitObject->Directory();
         $this->rootDirForModule = $rootDirForModule;
@@ -143,7 +140,6 @@ abstract class AddFileToModule
      */
     public function replaceWordsInText($text)
     {
-        $originalText = $text;
         foreach ($this->gitReplaceArray as $searchTerm => $replaceMethod) {
             $text = str_replace($searchTerm, $this->gitObject->{$replaceMethod}(), $text);
         }
@@ -207,7 +203,9 @@ abstract class AddFileToModule
     protected function customiseStandardFile($fileContent)
     {
         $obj = $this->getCustomisationFile();
-        $fileContent = $obj->customiseFile($this->fileLocation, $fileContent);
+        if($obj) {
+            $fileContent = $obj->customiseFile($this->fileLocation, $fileContent);
+        }
     }
 
     /**
@@ -231,7 +229,7 @@ abstract class AddFileToModule
             //print_r ($this->rootDirForModule.'/'.$folderPath);
 
             if (! file_exists($this->rootDirForModule . '/' . $folderPath)) {
-                $folder = Filesystem::makeFolder($this->rootDirForModule . '/' . $folderPath);
+                Filesystem::makeFolder($this->rootDirForModule . '/' . $folderPath);
             }
         }
 
@@ -246,24 +244,27 @@ abstract class AddFileToModule
 
         if ($file) {
             $result = fwrite($file, $fileContent);
-            $a = file_exists($fileName);
+            $exists = file_exists($fileName);
         } else {
             return false;
         }
+
+        return $result && $exists;
     }
 
     /**
-     * @return ModuleConfig (instance of ModuleConfigInterface)
+     * @return Mixed
      */
     protected function getCustomisationFile()
     {
-        require_once(
-            $this->rootDirForModule . '/ssmoduleconfigs/ModuleConfig.php'
-        );
-        return Injector::inst()->get('ModuleConfig');
+        $fileLocation = $this->rootDirForModule . '/ssmoduleconfigs/ModuleConfig.php';
+        if(file_exists($fileLocation)) {
+            require_once($fileLocation);
+            return Injector::inst()->get('ModuleConfig');
+        }
     }
 
-    protected function getReadMeComponent($componentName)
+    protected function getReadMeComponent($componentName): string
     {
         $temp_dir = GitHubModule::Config()->get('absolute_temp_folder');
         $moduleName = $this->gitObject->ModuleName;
@@ -275,10 +276,12 @@ abstract class AddFileToModule
         restore_error_handler();
 
         if ($file) {
-            $content = fread($file, filesize($filename));
+            $content = fread($file, filesize($fileName));
         } else {
             $content = '';
         }
+
+        return $content;
     }
 
     protected function Configuration()

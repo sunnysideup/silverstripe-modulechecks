@@ -10,12 +10,12 @@ use FileSystem;
 
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Dev\BuildTask;
-use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
-use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 use Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
 use Sunnysideup\ModuleChecks\Api\ConfigYML;
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
 /**
@@ -74,7 +74,6 @@ class UpdateModules extends BuildTask
         }
 
         //Get list of all modules from GitHub
-        $gitUserName = $this->Config()->get('github_user_name');
 
         $modules = GitRepoFinder::get_all_repos();
 
@@ -156,7 +155,7 @@ class UpdateModules extends BuildTask
         // over the files in the repo, then we need to clone the repo anyhow,
         // so skip the check
         if (count($commands) === 0 && ! $updateComposerJson) {
-            $moduleFilesOK = true;
+            // $moduleFilesOK = true;
 
             foreach ($files as $file) {
                 $fileObj = $file::create($moduleObject);
@@ -165,15 +164,14 @@ class UpdateModules extends BuildTask
                 if ($GitHubFileText) {
                     $fileCheck = $fileObj->compareWithText($GitHubFileText);
                     if (! $fileCheck) {
-                        $moduleFilesOK = false;
+                        // $moduleFilesOK = false;
                     }
-                } else {
-                    $moduleFilesOK = false;
                 }
+                // $moduleFilesOK = false;
             }
         }
 
-        $repository = $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
+        $moduleObject->checkOrSetGitCommsWrapper($forceNew = true);
 
         $this->moveOldReadMe($moduleObject);
 
@@ -324,7 +322,7 @@ class UpdateModules extends BuildTask
 
     protected function checkConfigYML($module)
     {
-        $configYml = ConfigYML::create($module)->reWrite();
+        return ConfigYML::create($module)->reWrite();
     }
 
     protected function findNextTag($tag, $changeType)

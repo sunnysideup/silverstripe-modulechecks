@@ -1,8 +1,6 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
-
-use SilverStripe\View\ViewableData;
+namespace Sunnysideup\ModuleChecks\BaseCommands;
 
 abstract class RunCommandLineMethodOnModule
 {

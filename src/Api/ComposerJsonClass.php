@@ -1,13 +1,11 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
+namespace Sunnysideup\ModuleChecks\Api;
 
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\View\ViewableData;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-
 
 class ComposerJsonClass
 {
@@ -28,7 +26,7 @@ class ComposerJsonClass
     /**
      * @return array
      */
-    public function getJsonData() : array
+    public function getJsonData(): array
     {
         return $this->jsonData;
     }
@@ -82,7 +80,7 @@ class ComposerJsonClass
         return $this;
     }
 
-    public function getDescription() : string
+    public function getDescription(): string
     {
         if (! is_array($this->jsonData)) { //if not loaded
             return 'no json data';
@@ -91,7 +89,7 @@ class ComposerJsonClass
         return isset($this->jsonData['description']) ? $this->jsonData['description'] : 'description tba';
     }
 
-    protected function writeJsonToFile() : bool
+    protected function writeJsonToFile(): bool
     {
         if (! is_array($this->jsonData)) { //if not loaded
             return false;
@@ -104,7 +102,7 @@ class ComposerJsonClass
         return $value ? true : false;
     }
 
-    private function readJsonFromFile() : bool
+    private function readJsonFromFile(): bool
     {
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
         $filename = $folder . '/' . $this->moduleName . '/composer.json';
