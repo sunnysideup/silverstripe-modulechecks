@@ -15,8 +15,8 @@ use Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
 use Sunnysideup\ModuleChecks\Api\ConfigYML;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
-use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
-use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
+use Sunnysideup\ModuleChecks\Commands\AddFileToModule;
+use Sunnysideup\ModuleChecks\Commands\RunCommandLineMethodOnModule;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
 /**

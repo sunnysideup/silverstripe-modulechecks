@@ -4,7 +4,7 @@ namespace Sunnysideup\ModuleChecks\Api;
 
 use SilverStripe\Core\ClassInfo;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposer;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
 class ComposerJsonClass
