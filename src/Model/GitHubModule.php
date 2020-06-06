@@ -83,11 +83,6 @@ class GitHubModule extends DataObject
         return $this->Directory();
     }
 
-    public function getDescription()
-    {
-        return $this->Description();
-    }
-
     /**
      * absolute path
      * @return string | null
