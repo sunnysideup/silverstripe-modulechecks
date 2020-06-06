@@ -1,6 +1,6 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\ShellCommands;
+namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
 use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\FilesToAdd;
+namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 

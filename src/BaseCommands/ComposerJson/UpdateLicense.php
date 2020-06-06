@@ -1,6 +1,6 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\ComposerJson;
+namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
 
 use SilverStripe\Core\Config\Config;
 use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;

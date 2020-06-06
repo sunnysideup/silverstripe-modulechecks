@@ -53,7 +53,7 @@ class ModuleChecks extends BuildTask
         $count = 0;
         echo '<h1>Testing ' . count($modules) . " modules (git user: ${gitUser} and packagist user: ${packagistUser}) ...</h1>";
         $methodsToCheck = $this->Config()->get('methods_to_check');
-        foreach ($modules as $module) {
+        foreach ($modules as $module => $moduleDetails) {
             $count++;
             $failures = 0;
             echo '<h3><a href="https://github.com/' . $gitUser . '/silverstripe-' . $module . "\"></a>${count}. checking ${module}</h3>";

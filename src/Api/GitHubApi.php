@@ -39,6 +39,7 @@ class GitHubApi
             $username = Config::inst()->get(GitHubModule::class, 'github_user_name');
         }
         print "<li>Retrieving List of modules from GitHub for user ${username} without AUTH... </li>";
+        die('asdfs');
         if (! count(self::$_modules)) {
             for ($page = 0; $page < 10; $page++) {
                 $ch = curl_init();
@@ -54,33 +55,7 @@ class GitHubApi
                 $count = count($array);
                 if ($count > 0) {
                     foreach ($array as $repo) {
-                        //dont bother about forks
-                        if (isset($repo['fork']) && ! $repo['fork']) {
-                            //make sure we are the owners
-                            if ($repo['owner']['login'] === $username) {
-                                $isSSModule = (stripos($repo['name'], 'silverstripe-') !== false);
-                                //check it is silverstripe module
-                                if (! $getNamesWithPrefix) {
-                                    $name = $repo['name'];
-                                } else {
-                                    $name = preg_replace('/silverstripe/', '', $repo['name'], $limit = 1);
-                                }
-
-                                //if(strlen($name) < strlen($repo["name"])) {
-                                if ($isSSModule) {
-                                    //is it listed yet?
-                                    if (! in_array($name, self::$_modules, true)) {
-                                        self::$_modules[] = $name;
-                                    }
-                                } else {
-                                    DB::alteration_message('skipping ' . $repo['name'] . ' as it does not appear to me a silverstripe module, you can add it manually to this task, using the configs ... ');
-                                }
-                            } else {
-                                DB::alteration_message('skipping ' . $repo['name'] . ' as it has a different owner');
-                            }
-                        } elseif (isset($repo['name'])) {
-                            DB::alteration_message('skipping ' . $repo['name'] . ' as it is a fork');
-                        }
+                        self::retrieve_repos($repo, $getNamesWithPrefix);
                     }
                 } else {
                     $page = 11;
@@ -124,52 +99,14 @@ class GitHubApi
                         GeneralMethods::output_to_screen('Could not retrieve list of modules from GitHub');
 
                         UpdateModules::$unsolvedItems['all'] = 'Could not retrieve list of modules from GitHub';
-                        die('');
                     }
-                    print_r($curlResult);
-                    die('asdf');
-                    $array = array_merge($array, json_decode($curlResult));
-                }
-
-                $modules = [];
-
-                if (count($array) > 0) {
-                    foreach ($array as $repo) {
-                        // see http://stackoverflow.com/questions/4345554/convert-php-object-to-associative-array
-                        $repo = json_decode(json_encode($repo), true);
-
-                        //dont bother about forks
-                        if (isset($repo['fork']) && ! $repo['fork']) {
-                            //make sure we are the owners
-
-                            if ($repo['owner']['login'] === $gitUserName) {
-                                $isSSModule = (stripos($repo['name'], 'silverstripe-') !== false);
-                                //check it is silverstripe module
-
-                                if (! $getNamesWithPrefix) {
-                                    $name = $repo['name'];
-                                } else {
-                                    $name = preg_replace('/silverstripe/', '', $repo['name'], $limit = 1);
-                                }
-
-                                //if(strlen($name) < strlen($repo["name"])) {
-                                if ($isSSModule) {
-                                    //is it listed yet?
-                                    if (! in_array($name, $modules, true)) {
-                                        array_push($modules, $name);
-                                    }
-                                } else {
-                                    GeneralMethods::output_to_screen('skipping ' . $repo['name'] . ' as it does not appear to me a silverstripe module');
-                                }
-                            } else {
-                                GeneralMethods::output_to_screen('skipping ' . $repo['name'] . ' as it has a different owner');
-                            }
-                        } elseif (isset($repo['name'])) {
-                            DB::alteration_message('skipping ' . $repo['name'] . ' as it is a fork');
+                    $array = json_decode($curlResult, true);
+                    if (count($array) > 0) {
+                        foreach ($array as $repo) {
+                            self::retrieve_repos($repo, $getNamesWithPrefix);
                         }
                     }
                 }
-                self::$_modules = $modules;
             }
         }
         return self::$_modules;
@@ -190,7 +127,6 @@ class GitHubApi
         print_r($url);
         print_r('<br/>');
         print_r($curlResult);
-        die();
         return $curlResult;
     }
 
@@ -238,6 +174,50 @@ class GitHubApi
             UpdateModules::$unsolvedItems['none'] = $msg;
         }
         return curl_exec($ch);
+    }
+
+    protected static function retrieve_repos($repo, $getNamesWithPrefix)
+    {
+        //dont bother about forks
+        if (isset($repo['fork']) && ! $repo['fork']) {
+            //make sure we are the owners
+            if ($repo['owner']['login'] === $username) {
+                $isSSModule = (stripos($repo['name'], 'silverstripe-') !== false);
+                //check it is silverstripe module
+                if ($getNamesWithPrefix) {
+                    $prefix = 'silverstripe';
+                    if (substr($str, 0, strlen($prefix)) === $prefix) {
+                        $str = substr($str, strlen($prefix));
+                    }
+                } else {
+                    $name = $repo['name'];
+                }
+
+                //if(strlen($name) < strlen($repo["name"])) {
+                if ($isSSModule) {
+                    //is it listed yet?
+                    if (! in_array($name, self::$_modules, true)) {
+                        self::$_modules[$name] = [
+                            'name' => $name ?? 'tba',
+                            'Description' => $repo['description'] ?? 'tba',
+                            'Created' => $repo['created_at'] ?? 'tba',
+                            'LastEdited' => $repo['updated_at'] ?? 'tba',
+                            'ForksCount' => $repo['forks_count'] ?? 'tba',
+                            'DefaultBranch' => $repo['default_branch'] ?? 'tba',
+                            'Private' => $repo['private'] ?? 'tba',
+                            'HomePage' => $repo['private'] ?? 'tba',
+                        ];
+                    }
+                } else {
+                    DB::alteration_message('skipping ' . $repo['name'] . ' as it does not appear to me a silverstripe module, you can add it manually to this task, using the configs ... ');
+                }
+            } else {
+                DB::alteration_message('skipping ' . $repo['name'] . ' as it has a different owner');
+            }
+        } elseif (isset($repo['name'])) {
+            DB::alteration_message('skipping ' . $repo['name'] . ' as it is a fork');
+        }
+
     }
 
 }

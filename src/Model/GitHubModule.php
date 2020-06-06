@@ -20,7 +20,6 @@ class GitHubModule extends DataObject
     /**
      * wrapper also relates to one git hub repo only!!!!
      *
-     * @var GitcommsWrapper
      */
     protected $commsWrapper = null;
 
@@ -58,13 +57,34 @@ class GitHubModule extends DataObject
      *
      * @var string
      */
-    private static $absolute_temp_folder = '';
+    private static $absolute_temp_folder = '/var/www/temp/';
 
     private static $table_name = 'GitHubModule';
 
     private static $db = [
         'ModuleName' => 'Varchar(100)',
         'Description' => 'Varchar(300)',
+        'ForksCount' => 'Int',
+        'DefaultBranch' => 'Varchar(100)',
+        'Private' => 'Boolean',
+        'HomePage' => 'Varchar(100)',
+    ];
+
+    private static $summary_fields = [
+        'ModuleName' => 'Name',
+        'Description' => 'Description',
+        'ForksCount' => 'Count',
+        'DefaultBranch' => 'Branch',
+        'Private.Nice' => 'private',
+        'HomePage' => 'HomePage',
+    ];
+
+    private static $searchable_fields = [
+        'ModuleName' => 'PartialMatchFilter',
+        'Description' => 'PartialMatchFilter',
+        'DefaultBranch' => 'PartialMatchFilter',
+        'Private' => 'ExactMatchFilter',
+        'HomePage' => 'PartialMatchFilter',
     ];
 
     private static $indexes = [
@@ -409,9 +429,9 @@ class GitHubModule extends DataObject
         return $content;
     }
 
-    public static function get_or_create_github_module($moduleName)
+    public static function get_or_create_github_module(array $moduleDetails) : self
     {
-        $moduleName = trim($moduleName);
+        $moduleName = trim($moduleName[$moduleDetails['name']]);
         $filter = ['ModuleName' => $moduleName];
         $gitHubModule = GitHubModule::get()->filter($filter)->first();
         if (! $gitHubModule) {

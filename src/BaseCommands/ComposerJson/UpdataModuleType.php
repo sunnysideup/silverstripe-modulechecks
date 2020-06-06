@@ -1,6 +1,6 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\ComposerJson;
+namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
 
 use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 

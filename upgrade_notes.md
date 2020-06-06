@@ -314,7 +314,7 @@ modified:	src/Api/GitHubApi.php
 modified:	src/FilesToAdd/AddGitAttributesToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -327,7 +327,7 @@ modified:	src/FilesToAdd/AddGitAttributesToModule.php
 modified:	src/FilesToAdd/AddGitIgnoreToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -340,7 +340,7 @@ modified:	src/FilesToAdd/AddGitIgnoreToModule.php
 modified:	src/FilesToAdd/AddHtAccessToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -353,7 +353,7 @@ modified:	src/FilesToAdd/AddHtAccessToModule.php
 modified:	src/FilesToAdd/AddTravisYmlToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -366,7 +366,7 @@ modified:	src/FilesToAdd/AddTravisYmlToModule.php
 modified:	src/FilesToAdd/AddEditorConfigToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -379,7 +379,7 @@ modified:	src/FilesToAdd/AddEditorConfigToModule.php
 modified:	src/FilesToAdd/AddContributingToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -392,7 +392,7 @@ modified:	src/FilesToAdd/AddContributingToModule.php
 modified:	src/FilesToAdd/AddUserguideMdToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -405,7 +405,7 @@ modified:	src/FilesToAdd/AddUserguideMdToModule.php
 modified:	src/FilesToAdd/AddSourceReadmeToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -418,7 +418,7 @@ modified:	src/FilesToAdd/AddSourceReadmeToModule.php
 modified:	src/FilesToAdd/AddLicenceToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -431,7 +431,7 @@ modified:	src/FilesToAdd/AddLicenceToModule.php
 modified:	src/FilesToAdd/AddScrutinizerYmlToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -444,7 +444,7 @@ modified:	src/FilesToAdd/AddScrutinizerYmlToModule.php
 modified:	src/FilesToAdd/AddGitAttribuesToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -457,7 +457,7 @@ modified:	src/FilesToAdd/AddGitAttribuesToModule.php
 modified:	src/FilesToAdd/AddChangeLogToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -470,7 +470,7 @@ modified:	src/FilesToAdd/AddChangeLogToModule.php
 modified:	src/FilesToAdd/AddTestToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -483,7 +483,7 @@ modified:	src/FilesToAdd/AddTestToModule.php
 modified:	src/FilesToAdd/AddManifestExcludeToModule.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\FilesToAdd;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
 -use AddFileToModule;
 +
@@ -496,7 +496,7 @@ modified:	src/FilesToAdd/AddManifestExcludeToModule.php
 modified:	src/ComposerJson/UpdateLicense.php
 @@ -2,8 +2,12 @@
 
- namespace Sunnysideup\ModuleChecks\ComposerJson;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
 
 -use Config;
 -use UpdateComposer;
@@ -522,7 +522,7 @@ modified:	src/ComposerJson/UpdateLicense.php
 modified:	src/ComposerJson/UpdateModuleType.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\ComposerJson;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
 
 -use UpdateComposer;
 +
@@ -535,7 +535,7 @@ modified:	src/ComposerJson/UpdateModuleType.php
 modified:	src/ComposerJson/CheckOrAddExtraArray.php
 @@ -2,8 +2,11 @@
 
- namespace Sunnysideup\ModuleChecks\ComposerJson;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
 
 -use GeneralMethods;
 -use UpdateComposer;
@@ -551,7 +551,7 @@ modified:	src/ComposerJson/CheckOrAddExtraArray.php
 modified:	src/ComposerJson/UpdataModuleType.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\ComposerJson;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
 
 -use UpdateComposer;
 +
@@ -564,7 +564,7 @@ modified:	src/ComposerJson/UpdataModuleType.php
 modified:	src/ShellCommands/FixPSR2.php
 @@ -2,8 +2,11 @@
 
- namespace Sunnysideup\ModuleChecks\ShellCommands;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
 -use Director;
 -use RunCommandLineMethodOnModule;
@@ -580,7 +580,7 @@ modified:	src/ShellCommands/FixPSR2.php
 modified:	src/ShellCommands/SetPermissions.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\ShellCommands;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
 -use RunCommandLineMethodOnModule;
 +
@@ -593,7 +593,7 @@ modified:	src/ShellCommands/SetPermissions.php
 modified:	src/ShellCommands/RemoveOrig.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\ShellCommands;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
 -use RunCommandLineMethodOnModule;
 +
@@ -606,7 +606,7 @@ modified:	src/ShellCommands/RemoveOrig.php
 modified:	src/ShellCommands/RemoveSVN.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\ShellCommands;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
 -use RunCommandLineMethodOnModule;
 +
@@ -619,7 +619,7 @@ modified:	src/ShellCommands/RemoveSVN.php
 modified:	src/ShellCommands/RemoveAPI.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\ShellCommands;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
 -use RunCommandLineMethodOnModule;
 +
@@ -632,7 +632,7 @@ modified:	src/ShellCommands/RemoveAPI.php
 modified:	src/ShellCommands/FixConfigBasics.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\ShellCommands;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
 -use RunCommandLineMethodOnModule;
 +
