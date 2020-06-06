@@ -3,7 +3,7 @@ mappings:
   RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
   AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
   GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
-  GitRepoFinder: Sunnysideup\ModuleChecks\Api\GitRepoFinder
+  GitHubApi: Sunnysideup\ModuleChecks\Api\GitHubApi
   AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
   AddGitIgnoreToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitIgnoreToModule
   AddHtAccessToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddHtAccessToModule

@@ -7,7 +7,7 @@ use SilverStripe\Core\Environment;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
+use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
 /**
@@ -39,7 +39,7 @@ class ModuleChecks extends BuildTask
     {
         Environment::increaseTimeLimitTo(3600);
 
-        $modules = GitRepoFinder::get_all_repos();
+        $modules = GitHubApi::get_all_repos();
 
         $gitUser = Config::inst()->get(GitHubModule::class, 'github_user_name');
         $packagistUser = $this->Config()->get('packagist_user_name');

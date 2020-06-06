@@ -5,7 +5,7 @@ SilverStripe\ORM\DatabaseAdmin:
       Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
       Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
       Sunnysideup\ModuleChecks\Api\GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
-      Sunnysideup\ModuleChecks\Api\GitRepoFinder: Sunnysideup\ModuleChecks\Api\GitRepoFinder
+      Sunnysideup\ModuleChecks\Api\GitHubApi: Sunnysideup\ModuleChecks\Api\GitHubApi
       Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
       Sunnysideup\ModuleChecks\FilesToAdd\AddGitIgnoreToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitIgnoreToModule
       Sunnysideup\ModuleChecks\FilesToAdd\AddHtAccessToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddHtAccessToModule

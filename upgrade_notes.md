@@ -18,8 +18,8 @@ Array
     [10] => [2020-06-05 17:52:19] Applying ClassToTraitRule to AddFileToModule.php...
     [11] => [2020-06-05 17:52:19] Applying RenameClasses to GeneralMethods.php...
     [12] => [2020-06-05 17:52:19] Applying ClassToTraitRule to GeneralMethods.php...
-    [13] => [2020-06-05 17:52:19] Applying RenameClasses to GitRepoFinder.php...
-    [14] => [2020-06-05 17:52:19] Applying ClassToTraitRule to GitRepoFinder.php...
+    [13] => [2020-06-05 17:52:19] Applying RenameClasses to GitHubApi.php...
+    [14] => [2020-06-05 17:52:19] Applying ClassToTraitRule to GitHubApi.php...
     [15] => [2020-06-05 17:52:19] Applying RenameClasses to AddGitAttributesToModule.php...
     [16] => [2020-06-05 17:52:19] Applying ClassToTraitRule to AddGitAttributesToModule.php...
     [17] => [2020-06-05 17:52:19] Applying RenameClasses to AddGitIgnoreToModule.php...
@@ -99,8 +99,8 @@ Running upgrades on "/var/www/ss3/upgrades/modulechecks/modulechecks"
 [2020-06-05 18:13:46] Applying ClassToTraitRule to AddFileToModule.php...
 [2020-06-05 18:13:46] Applying RenameClasses to GeneralMethods.php...
 [2020-06-05 18:13:46] Applying ClassToTraitRule to GeneralMethods.php...
-[2020-06-05 18:13:46] Applying RenameClasses to GitRepoFinder.php...
-[2020-06-05 18:13:46] Applying ClassToTraitRule to GitRepoFinder.php...
+[2020-06-05 18:13:46] Applying RenameClasses to GitHubApi.php...
+[2020-06-05 18:13:46] Applying ClassToTraitRule to GitHubApi.php...
 [2020-06-05 18:13:46] Applying RenameClasses to AddGitAttributesToModule.php...
 [2020-06-05 18:13:46] Applying ClassToTraitRule to AddGitAttributesToModule.php...
 [2020-06-05 18:13:46] Applying RenameClasses to AddGitIgnoreToModule.php...
@@ -254,7 +254,7 @@ modified:	src/Api/GeneralMethods.php
  /**
   * ### @@@@ START REPLACEMENT @@@@ ###
 
-modified:	src/Api/GitRepoFinder.php
+modified:	src/Api/GitHubApi.php
 @@ -2,11 +2,17 @@
 
  namespace Sunnysideup\ModuleChecks\Api;
@@ -732,13 +732,13 @@ modified:	src/Tasks/ModuleChecks.php
 -use Config;
 -use DB;
 -use GeneralMethods;
--use GitRepoFinder;
+-use GitHubApi;
 +
 +
 +
 +
 +
-+use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
++use Sunnysideup\ModuleChecks\Api\GitHubApi;
 +use SilverStripe\Core\Config\Config;
 +use Sunnysideup\ModuleChecks\Model\GitHubModule;
 +use SilverStripe\ORM\DB;
@@ -750,7 +750,7 @@ modified:	src/Tasks/ModuleChecks.php
   * check if everything is in plcae for a module
 @@ -39,7 +46,7 @@
 
-         $modules = GitRepoFinder::get_all_repos();
+         $modules = GitHubApi::get_all_repos();
 
 -        $gitUser = Config::inst()->get('GitHubModule', 'github_user_name');
 +        $gitUser = Config::inst()->get(GitHubModule::class, 'github_user_name');
@@ -803,13 +803,13 @@ modified:	src/Tasks/UpdateModules.php
 -use GeneralMethods;
 -
 -use GitHubModule;
--use GitRepoFinder;
+-use GitHubApi;
 +
 +
 +
 +
 +use Sunnysideup\ModuleChecks\Model\GitHubModule;
-+use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
++use Sunnysideup\ModuleChecks\Api\GitHubApi;
 +use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +use SilverStripe\Core\ClassInfo;
 +use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
@@ -858,7 +858,7 @@ modified:	_config/database.legacy.yml
 -    RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
 -    AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
 -    GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
--    GitRepoFinder: Sunnysideup\ModuleChecks\Api\GitRepoFinder
+-    GitHubApi: Sunnysideup\ModuleChecks\Api\GitHubApi
 -    AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
 -    AddGitIgnoreToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitIgnoreToModule
 -    AddHtAccessToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddHtAccessToModule
@@ -891,7 +891,7 @@ modified:	_config/database.legacy.yml
 +    Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
 +    Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
 +    Sunnysideup\ModuleChecks\Api\GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
-+    Sunnysideup\ModuleChecks\Api\GitRepoFinder: Sunnysideup\ModuleChecks\Api\GitRepoFinder
++    Sunnysideup\ModuleChecks\Api\GitHubApi: Sunnysideup\ModuleChecks\Api\GitHubApi
 +    Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
 +    Sunnysideup\ModuleChecks\FilesToAdd\AddGitIgnoreToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitIgnoreToModule
 +    Sunnysideup\ModuleChecks\FilesToAdd\AddHtAccessToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddHtAccessToModule
@@ -941,8 +941,8 @@ Running upgrades on "/var/www/ss3/upgrades/modulechecks/modulechecks"
 [2020-06-05 18:14:28] Applying ClassToTraitRule to AddFileToModule.php...
 [2020-06-05 18:14:28] Applying RenameClasses to GeneralMethods.php...
 [2020-06-05 18:14:28] Applying ClassToTraitRule to GeneralMethods.php...
-[2020-06-05 18:14:28] Applying RenameClasses to GitRepoFinder.php...
-[2020-06-05 18:14:28] Applying ClassToTraitRule to GitRepoFinder.php...
+[2020-06-05 18:14:28] Applying RenameClasses to GitHubApi.php...
+[2020-06-05 18:14:28] Applying ClassToTraitRule to GitHubApi.php...
 [2020-06-05 18:14:28] Applying RenameClasses to AddGitAttributesToModule.php...
 [2020-06-05 18:14:28] Applying ClassToTraitRule to AddGitAttributesToModule.php...
 [2020-06-05 18:14:28] Applying RenameClasses to AddGitIgnoreToModule.php...

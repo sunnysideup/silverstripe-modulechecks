@@ -7,7 +7,10 @@ use FileSystem;
 
 use GitWrapper\GitWrapper;
 use GitWrapper\GitWorkingCopy;
+<<<<<<< HEAD
 use GitWrapper\Exception\GitException;
+=======
+>>>>>>> 2f66c972beacb1fc5cd82659e9f244b626c1eb39
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DataObject;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;

@@ -4,7 +4,7 @@ namespace Sunnysideup\ModuleChecks\Tasks;
 
 use SilverStripe\Core\Environment;
 use SilverStripe\Dev\BuildTask;
-use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
+use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
 /**
@@ -20,7 +20,7 @@ class LoadModules extends BuildTask
     {
         Environment::increaseTimeLimitTo(3600);
 
-        $modules = GitRepoFinder::get_all_repos();
+        $modules = GitHubApi::get_all_repos();
 
         foreach ($modules as $module) {
             GitHubModule::get_or_create_github_module($module);

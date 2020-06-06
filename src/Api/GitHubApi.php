@@ -7,7 +7,7 @@ use SilverStripe\ORM\DB;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
-class GitRepoFinder
+class GitHubApi
 {
     /**
      * @var string
@@ -20,7 +20,7 @@ class GitRepoFinder
      */
     public static function get_all_repos($username = '', $getNamesWithPrefix = false)
     {
-        # $oauth_token = GitRepoFinder::Config()->get('github_oauth_token');
+        # $oauth_token = GitHubApi::Config()->get('github_oauth_token');
 
         self::get_all_repos_no_oauth($username, $getNamesWithPrefix);
         if (! self::$_modules) {
@@ -194,7 +194,7 @@ class GitRepoFinder
         return $curlResult;
     }
 
-    protected static function runCurlResult( string $url, string $method, string $jsonData)
+    protected static function runCurlResult( string $url, string $method, array $jsonData)
     {
         $method = trim(strtoupper($method));
 
