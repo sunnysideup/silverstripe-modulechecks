@@ -2,7 +2,7 @@
 
 namespace Sunnysideup\ModuleChecks\ShellCommands;
 
-use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 
 class RemoveSVN extends RunCommandLineMethodOnModule
 {

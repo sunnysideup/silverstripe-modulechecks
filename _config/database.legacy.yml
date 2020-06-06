@@ -1,9 +1,9 @@
 SilverStripe\ORM\DatabaseAdmin:
   classname_value_remapping:
     classname_value_remapping:
-      Sunnysideup\ModuleChecks\Api\UpdateComposer: Sunnysideup\ModuleChecks\Api\UpdateComposer
-      Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule
-      Sunnysideup\ModuleChecks\Api\AddFileToModule: Sunnysideup\ModuleChecks\Api\AddFileToModule
+      Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer
+      Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
+      Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
       Sunnysideup\ModuleChecks\Api\GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
       Sunnysideup\ModuleChecks\Api\GitRepoFinder: Sunnysideup\ModuleChecks\Api\GitRepoFinder
       Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
@@ -19,9 +19,9 @@ SilverStripe\ORM\DatabaseAdmin:
       Sunnysideup\ModuleChecks\FilesToAdd\AddChangeLogToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddChangeLogToModule
       Sunnysideup\ModuleChecks\FilesToAdd\AddTestToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddTestToModule
       Sunnysideup\ModuleChecks\FilesToAdd\AddManifestExcludeToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddManifestExcludeToModule
-      Sunnysideup\ModuleChecks\Composerjson\UpdateLicense: Sunnysideup\ModuleChecks\Composerjson\UpdateLicense
-      Sunnysideup\ModuleChecks\Composerjson\UpdataModuleType: Sunnysideup\ModuleChecks\Composerjson\UpdataModuleType
-      Sunnysideup\ModuleChecks\Composerjson\CheckOrAddExtraArray: Sunnysideup\ModuleChecks\Composerjson\CheckOrAddExtraArray
+      Sunnysideup\ModuleChecks\ComposerJson\UpdateLicense: Sunnysideup\ModuleChecks\ComposerJson\UpdateLicense
+      Sunnysideup\ModuleChecks\ComposerJson\UpdataModuleType: Sunnysideup\ModuleChecks\ComposerJson\UpdataModuleType
+      Sunnysideup\ModuleChecks\ComposerJson\CheckOrAddExtraArray: Sunnysideup\ModuleChecks\ComposerJson\CheckOrAddExtraArray
       Sunnysideup\ModuleChecks\Interface\ModuleConfigInterface: Sunnysideup\ModuleChecks\Interface\ModuleConfigInterface
       Sunnysideup\ModuleChecks\ShellCommands\FixPSR2: Sunnysideup\ModuleChecks\ShellCommands\FixPSR2
       Sunnysideup\ModuleChecks\ShellCommands\SetPermissions: Sunnysideup\ModuleChecks\ShellCommands\SetPermissions
@@ -29,8 +29,8 @@ SilverStripe\ORM\DatabaseAdmin:
       Sunnysideup\ModuleChecks\ShellCommands\RemoveSVN: Sunnysideup\ModuleChecks\ShellCommands\RemoveSVN
       Sunnysideup\ModuleChecks\ShellCommands\RemoveAPI: Sunnysideup\ModuleChecks\ShellCommands\RemoveAPI
       Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics: Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics
-      Sunnysideup\ModuleChecks\Objects\ConfigYML: Sunnysideup\ModuleChecks\Objects\ConfigYML
-      Sunnysideup\ModuleChecks\Objects\ComposerJson: Sunnysideup\ModuleChecks\Objects\ComposerJson
-      Sunnysideup\ModuleChecks\Objects\GitHubModule: Sunnysideup\ModuleChecks\Objects\GitHubModule
+      Sunnysideup\ModuleChecks\Api\ConfigYML: Sunnysideup\ModuleChecks\Api\ConfigYML
+      Sunnysideup\ModuleChecks\Objects\ComposerJson: Sunnysideup\ModuleChecks\Api\ComposerJsonClass
+      Sunnysideup\ModuleChecks\Model\GitHubModule: Sunnysideup\ModuleChecks\Model\GitHubModule
       Sunnysideup\ModuleChecks\Tasks\ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
       Sunnysideup\ModuleChecks\Tasks\UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules

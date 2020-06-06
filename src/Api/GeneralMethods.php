@@ -8,7 +8,7 @@ use SilverStripe\Control\Director;
 use SilverStripe\ORM\DB;
 use SilverStripe\View\ViewableData;
 
-class GeneralMethods extends ViewableData
+class GeneralMethods
 {
     /**
      * opens a location with curl to see if it exists.
@@ -17,7 +17,7 @@ class GeneralMethods extends ViewableData
      *
      * @return boolean
      */
-    public static function check_location($url)
+    public static function check_location(string $url)
     {
         $handle = curl_init($url);
         curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
@@ -39,7 +39,7 @@ class GeneralMethods extends ViewableData
      * @param  string $message
      * @param  string $type
      */
-    public static function output_to_screen($message, $type = '')
+    public static function output_to_screen(string $message, string $type = '')
     {
         if (Director::is_cli()) {
             DB::alteration_message($message, $type);
@@ -58,7 +58,7 @@ class GeneralMethods extends ViewableData
      * @param  string $path
      */
 
-    public static function removeDirectory($path)
+    public static function removeDirectory(string $path)
     {
         FileSystem::removeFolder($path);
     }

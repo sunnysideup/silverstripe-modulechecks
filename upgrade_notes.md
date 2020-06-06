@@ -218,7 +218,7 @@ modified:	src/Api/AddFileToModule.php
 +use SilverStripe\Control\Director;
 +use SilverStripe\Assets\Filesystem;
 +use SilverStripe\Core\Injector\Injector;
-+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
++use Sunnysideup\ModuleChecks\Model\GitHubModule;
 +use SilverStripe\View\ViewableData;
 +
 
@@ -271,7 +271,7 @@ modified:	src/Api/GitRepoFinder.php
 +
 +use SilverStripe\Core\Config\Config;
 +use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
++use Sunnysideup\ModuleChecks\Model\GitHubModule;
 +use SilverStripe\ORM\DB;
 +use SilverStripe\View\ViewableData;
 +
@@ -318,7 +318,7 @@ modified:	src/FilesToAdd/AddGitAttributesToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddGitAttributesToModule extends AddFileToModule
@@ -331,7 +331,7 @@ modified:	src/FilesToAdd/AddGitIgnoreToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddGitIgnoreToModule extends AddFileToModule
@@ -344,7 +344,7 @@ modified:	src/FilesToAdd/AddHtAccessToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddHtAccessToModule extends AddFileToModule
@@ -357,7 +357,7 @@ modified:	src/FilesToAdd/AddTravisYmlToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddTravisYmlToModule extends AddFileToModule
@@ -370,7 +370,7 @@ modified:	src/FilesToAdd/AddEditorConfigToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddEditorConfigToModule extends AddFileToModule
@@ -383,7 +383,7 @@ modified:	src/FilesToAdd/AddContributingToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddContributingToModule extends AddFileToModule
@@ -396,7 +396,7 @@ modified:	src/FilesToAdd/AddUserguideMdToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddUserguideMdToModule extends AddFileToModule
@@ -409,7 +409,7 @@ modified:	src/FilesToAdd/AddSourceReadmeToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddSourceReadmeToModule extends AddFileToModule
@@ -422,7 +422,7 @@ modified:	src/FilesToAdd/AddLicenceToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddLicenceToModule extends AddFileToModule
@@ -435,7 +435,7 @@ modified:	src/FilesToAdd/AddScrutinizerYmlToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddScrutinizerYmlToModule extends AddFileToModule
@@ -448,7 +448,7 @@ modified:	src/FilesToAdd/AddGitAttribuesToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddGitAttribuesToModule extends AddFileToModule
@@ -461,7 +461,7 @@ modified:	src/FilesToAdd/AddChangeLogToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddChangeLogToModule extends AddFileToModule
@@ -474,7 +474,7 @@ modified:	src/FilesToAdd/AddTestToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddTestToModule extends AddFileToModule
@@ -487,24 +487,24 @@ modified:	src/FilesToAdd/AddManifestExcludeToModule.php
 
 -use AddFileToModule;
 +
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +
 
  class AddManifestExcludeToModule extends AddFileToModule
  {
 
-modified:	src/Composerjson/UpdateLicense.php
+modified:	src/ComposerJson/UpdateLicense.php
 @@ -2,8 +2,12 @@
 
- namespace Sunnysideup\ModuleChecks\Composerjson;
+ namespace Sunnysideup\ModuleChecks\ComposerJson;
 
 -use Config;
 -use UpdateComposer;
 +
 +
 +use SilverStripe\Core\Config\Config;
-+use Sunnysideup\ModuleChecks\Composerjson\UpdateLicense;
-+use Sunnysideup\ModuleChecks\Api\UpdateComposer;
++use Sunnysideup\ModuleChecks\ComposerJson\UpdateLicense;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 +
 
  /**
@@ -519,43 +519,43 @@ modified:	src/Composerjson/UpdateLicense.php
          $this->setJsonData($json);
      }
 
-modified:	src/Composerjson/UpdateModuleType.php
+modified:	src/ComposerJson/UpdateModuleType.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\Composerjson;
+ namespace Sunnysideup\ModuleChecks\ComposerJson;
 
 -use UpdateComposer;
 +
-+use Sunnysideup\ModuleChecks\Api\UpdateComposer;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 +
 
  /**
   * sets the default installation folder
 
-modified:	src/Composerjson/CheckOrAddExtraArray.php
+modified:	src/ComposerJson/CheckOrAddExtraArray.php
 @@ -2,8 +2,11 @@
 
- namespace Sunnysideup\ModuleChecks\Composerjson;
+ namespace Sunnysideup\ModuleChecks\ComposerJson;
 
 -use GeneralMethods;
 -use UpdateComposer;
 +
 +
 +use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-+use Sunnysideup\ModuleChecks\Api\UpdateComposer;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 +
 
  /**
   * sets the default installation folder
 
-modified:	src/Composerjson/UpdataModuleType.php
+modified:	src/ComposerJson/UpdataModuleType.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\Composerjson;
+ namespace Sunnysideup\ModuleChecks\ComposerJson;
 
 -use UpdateComposer;
 +
-+use Sunnysideup\ModuleChecks\Api\UpdateComposer;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 +
 
  /**
@@ -571,7 +571,7 @@ modified:	src/ShellCommands/FixPSR2.php
 +
 +
 +use SilverStripe\Control\Director;
-+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 +
 
  class FixPSR2 extends RunCommandLineMethodOnModule
@@ -584,7 +584,7 @@ modified:	src/ShellCommands/SetPermissions.php
 
 -use RunCommandLineMethodOnModule;
 +
-+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 +
 
  class SetPermissions extends RunCommandLineMethodOnModule
@@ -597,7 +597,7 @@ modified:	src/ShellCommands/RemoveOrig.php
 
 -use RunCommandLineMethodOnModule;
 +
-+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 +
 
  class RemoveOrig extends RunCommandLineMethodOnModule
@@ -610,7 +610,7 @@ modified:	src/ShellCommands/RemoveSVN.php
 
 -use RunCommandLineMethodOnModule;
 +
-+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 +
 
  class RemoveSVN extends RunCommandLineMethodOnModule
@@ -623,7 +623,7 @@ modified:	src/ShellCommands/RemoveAPI.php
 
 -use RunCommandLineMethodOnModule;
 +
-+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 +
 
  class RemoveAPI extends RunCommandLineMethodOnModule
@@ -636,7 +636,7 @@ modified:	src/ShellCommands/FixConfigBasics.php
 
 -use RunCommandLineMethodOnModule;
 +
-+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 +
 
  class FixConfigBasics extends RunCommandLineMethodOnModule
@@ -676,7 +676,7 @@ modified:	src/Objects/ComposerJson.php
 +
 +
 +use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-+use Sunnysideup\ModuleChecks\Api\UpdateComposer;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 +use SilverStripe\Core\ClassInfo;
 +use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 +use SilverStripe\View\ViewableData;
@@ -740,7 +740,7 @@ modified:	src/Tasks/ModuleChecks.php
 +
 +use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
 +use SilverStripe\Core\Config\Config;
-+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
++use Sunnysideup\ModuleChecks\Model\GitHubModule;
 +use SilverStripe\ORM\DB;
 +use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 +use SilverStripe\Dev\BuildTask;
@@ -808,14 +808,14 @@ modified:	src/Tasks/UpdateModules.php
 +
 +
 +
-+use Sunnysideup\ModuleChecks\Objects\GitHubModule;
++use Sunnysideup\ModuleChecks\Model\GitHubModule;
 +use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
-+use Sunnysideup\ModuleChecks\Api\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 +use SilverStripe\Core\ClassInfo;
-+use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
 +use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 +use Sunnysideup\ModuleChecks\Objects\ComposerJson;
-+use Sunnysideup\ModuleChecks\Objects\ConfigYML;
++use Sunnysideup\ModuleChecks\Api\ConfigYML;
 +use SilverStripe\Dev\BuildTask;
 +
 
@@ -854,9 +854,9 @@ modified:	_config/database.legacy.yml
 @@ -1,36 +1,36 @@
  SilverStripe\ORM\DatabaseAdmin:
    classname_value_remapping:
--    UpdateComposer: Sunnysideup\ModuleChecks\Api\UpdateComposer
--    RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule
--    AddFileToModule: Sunnysideup\ModuleChecks\Api\AddFileToModule
+-    UpdateComposer: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer
+-    RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
+-    AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
 -    GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
 -    GitRepoFinder: Sunnysideup\ModuleChecks\Api\GitRepoFinder
 -    AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
@@ -872,9 +872,9 @@ modified:	_config/database.legacy.yml
 -    AddChangeLogToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddChangeLogToModule
 -    AddTestToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddTestToModule
 -    AddManifestExcludeToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddManifestExcludeToModule
--    UpdateLicense: Sunnysideup\ModuleChecks\Composerjson\UpdateLicense
--    UpdataModuleType: Sunnysideup\ModuleChecks\Composerjson\UpdataModuleType
--    CheckOrAddExtraArray: Sunnysideup\ModuleChecks\Composerjson\CheckOrAddExtraArray
+-    UpdateLicense: Sunnysideup\ModuleChecks\ComposerJson\UpdateLicense
+-    UpdataModuleType: Sunnysideup\ModuleChecks\ComposerJson\UpdataModuleType
+-    CheckOrAddExtraArray: Sunnysideup\ModuleChecks\ComposerJson\CheckOrAddExtraArray
 -    ModuleConfigInterface: Sunnysideup\ModuleChecks\Interface\ModuleConfigInterface
 -    FixPSR2: Sunnysideup\ModuleChecks\ShellCommands\FixPSR2
 -    SetPermissions: Sunnysideup\ModuleChecks\ShellCommands\SetPermissions
@@ -882,14 +882,14 @@ modified:	_config/database.legacy.yml
 -    RemoveSVN: Sunnysideup\ModuleChecks\ShellCommands\RemoveSVN
 -    RemoveAPI: Sunnysideup\ModuleChecks\ShellCommands\RemoveAPI
 -    FixConfigBasics: Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics
--    ConfigYML: Sunnysideup\ModuleChecks\Objects\ConfigYML
+-    ConfigYML: Sunnysideup\ModuleChecks\Api\ConfigYML
 -    ComposerJson: Sunnysideup\ModuleChecks\Objects\ComposerJson
--    GitHubModule: Sunnysideup\ModuleChecks\Objects\GitHubModule
+-    GitHubModule: Sunnysideup\ModuleChecks\Model\GitHubModule
 -    ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
 -    UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules
-+    Sunnysideup\ModuleChecks\Api\UpdateComposer: Sunnysideup\ModuleChecks\Api\UpdateComposer
-+    Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule
-+    Sunnysideup\ModuleChecks\Api\AddFileToModule: Sunnysideup\ModuleChecks\Api\AddFileToModule
++    Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer
++    Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
++    Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
 +    Sunnysideup\ModuleChecks\Api\GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
 +    Sunnysideup\ModuleChecks\Api\GitRepoFinder: Sunnysideup\ModuleChecks\Api\GitRepoFinder
 +    Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
@@ -905,9 +905,9 @@ modified:	_config/database.legacy.yml
 +    Sunnysideup\ModuleChecks\FilesToAdd\AddChangeLogToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddChangeLogToModule
 +    Sunnysideup\ModuleChecks\FilesToAdd\AddTestToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddTestToModule
 +    Sunnysideup\ModuleChecks\FilesToAdd\AddManifestExcludeToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddManifestExcludeToModule
-+    Sunnysideup\ModuleChecks\Composerjson\UpdateLicense: Sunnysideup\ModuleChecks\Composerjson\UpdateLicense
-+    Sunnysideup\ModuleChecks\Composerjson\UpdataModuleType: Sunnysideup\ModuleChecks\Composerjson\UpdataModuleType
-+    Sunnysideup\ModuleChecks\Composerjson\CheckOrAddExtraArray: Sunnysideup\ModuleChecks\Composerjson\CheckOrAddExtraArray
++    Sunnysideup\ModuleChecks\ComposerJson\UpdateLicense: Sunnysideup\ModuleChecks\ComposerJson\UpdateLicense
++    Sunnysideup\ModuleChecks\ComposerJson\UpdataModuleType: Sunnysideup\ModuleChecks\ComposerJson\UpdataModuleType
++    Sunnysideup\ModuleChecks\ComposerJson\CheckOrAddExtraArray: Sunnysideup\ModuleChecks\ComposerJson\CheckOrAddExtraArray
 +    Sunnysideup\ModuleChecks\Interface\ModuleConfigInterface: Sunnysideup\ModuleChecks\Interface\ModuleConfigInterface
 +    Sunnysideup\ModuleChecks\ShellCommands\FixPSR2: Sunnysideup\ModuleChecks\ShellCommands\FixPSR2
 +    Sunnysideup\ModuleChecks\ShellCommands\SetPermissions: Sunnysideup\ModuleChecks\ShellCommands\SetPermissions
@@ -915,9 +915,9 @@ modified:	_config/database.legacy.yml
 +    Sunnysideup\ModuleChecks\ShellCommands\RemoveSVN: Sunnysideup\ModuleChecks\ShellCommands\RemoveSVN
 +    Sunnysideup\ModuleChecks\ShellCommands\RemoveAPI: Sunnysideup\ModuleChecks\ShellCommands\RemoveAPI
 +    Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics: Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics
-+    Sunnysideup\ModuleChecks\Objects\ConfigYML: Sunnysideup\ModuleChecks\Objects\ConfigYML
++    Sunnysideup\ModuleChecks\Api\ConfigYML: Sunnysideup\ModuleChecks\Api\ConfigYML
 +    Sunnysideup\ModuleChecks\Objects\ComposerJson: Sunnysideup\ModuleChecks\Objects\ComposerJson
-+    Sunnysideup\ModuleChecks\Objects\GitHubModule: Sunnysideup\ModuleChecks\Objects\GitHubModule
++    Sunnysideup\ModuleChecks\Model\GitHubModule: Sunnysideup\ModuleChecks\Model\GitHubModule
 +    Sunnysideup\ModuleChecks\Tasks\ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
 +    Sunnysideup\ModuleChecks\Tasks\UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules
 

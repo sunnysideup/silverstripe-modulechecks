@@ -3,7 +3,7 @@ Sunnysideup\ModuleChecks\Tasks\ModuleChecks:
   # the variable below is not required, but allows you to check for additional ones that may not be listed on github
   modules: []
 
-Sunnysideup\ModuleChecks\Objects\GitHubModule:
+Sunnysideup\ModuleChecks\Model\GitHubModule:
   github_user_name: "sunnysideup"
   github_user_email: "bla@foo.com"
   github_account_base_url: "git://github.com"

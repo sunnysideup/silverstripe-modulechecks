@@ -5,10 +5,10 @@ namespace Sunnysideup\ModuleChecks\Api;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DB;
 use SilverStripe\View\ViewableData;
-use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use Sunnysideup\ModuleChecks\Model\GitHubModule;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
-class GitRepoFinder extends ViewableData
+class GitRepoFinder
 {
     /**
      * @var string
@@ -206,5 +206,58 @@ class GitRepoFinder extends ViewableData
             }
         }
         return self::$_modules;
+    }
+
+
+    protected function gitApiCall($data, $gitAPIcommand = '', $method = 'GET')
+    {
+        $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        GeneralMethods::output_to_screen('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
+        $gitUserName = Config::inst()->get(GitHubModule::class, 'github_user_name');
+        $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($this->ModuleName);
+        if (trim($gitAPIcommand)) {
+            $url .= '/' . trim($gitAPIcommand);
+        }
+        $method = trim(strtoupper($method));
+        $ch = curl_init($url);
+        $header = 'Content-Type: application/json';
+        if ($method === 'GET') {
+            $url .= '?' . http_build_query($data);
+        }
+        $gitApiUserName = trim(Config::inst()->get(GitHubModule::class, 'git_api_login_username'));
+        $gitApiUserPassword = trim(Config::inst()->get(GitHubModule::class, 'git_api_login_password'));
+        $gitApiAccessToken = trim(Config::inst()->get(GitHubModule::class, 'git_personal_access_token'));
+        if (trim($gitApiAccessToken)) {
+            $gitApiUserPassword = $gitApiAccessToken;
+        }
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [$header]);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_USERAGENT,
+            'Silverstripe-update-module-module'
+        );
+        if (isset($gitApiUserName) && isset($gitApiUserPassword)) {
+            curl_setopt($ch, CURLOPT_USERPWD, $gitApiUserName . ':' . $gitApiUserPassword);
+            curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        }
+        if ($method === 'POST') {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+        }
+        $curlResult = curl_exec($ch);
+        if (! $curlResult) {
+            $msg = 'curl exectution failed';
+            GeneralMethods::output_to_screen($msg);
+            UpdateModules::$unsolvedItems['none'] = $msg;
+        }
+        print_r($url);
+        print_r('<br/>');
+        print_r($curlResult);
+        die();
+        return $curlResult;
     }
 }

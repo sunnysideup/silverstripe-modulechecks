@@ -2,7 +2,7 @@
 
 namespace Sunnysideup\ModuleChecks\FilesToAdd;
 
-use Sunnysideup\ModuleChecks\Api\AddFileToModule;
+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 
 class AddManifestExcludeToModule extends AddFileToModule
 {

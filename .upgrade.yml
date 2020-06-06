@@ -1,7 +1,7 @@
 mappings:
-  UpdateComposer: Sunnysideup\ModuleChecks\Api\UpdateComposer
-  RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule
-  AddFileToModule: Sunnysideup\ModuleChecks\Api\AddFileToModule
+  UpdateComposer: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer
+  RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
+  AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
   GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
   GitRepoFinder: Sunnysideup\ModuleChecks\Api\GitRepoFinder
   AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
@@ -17,9 +17,9 @@ mappings:
   AddChangeLogToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddChangeLogToModule
   AddTestToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddTestToModule
   AddManifestExcludeToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddManifestExcludeToModule
-  UpdateLicense: Sunnysideup\ModuleChecks\Composerjson\UpdateLicense
-  UpdataModuleType: Sunnysideup\ModuleChecks\Composerjson\UpdataModuleType
-  CheckOrAddExtraArray: Sunnysideup\ModuleChecks\Composerjson\CheckOrAddExtraArray
+  UpdateLicense: Sunnysideup\ModuleChecks\ComposerJson\UpdateLicense
+  UpdataModuleType: Sunnysideup\ModuleChecks\ComposerJson\UpdataModuleType
+  CheckOrAddExtraArray: Sunnysideup\ModuleChecks\ComposerJson\CheckOrAddExtraArray
   ModuleConfigInterface: Sunnysideup\ModuleChecks\Interface\ModuleConfigInterface
   FixPSR2: Sunnysideup\ModuleChecks\ShellCommands\FixPSR2
   SetPermissions: Sunnysideup\ModuleChecks\ShellCommands\SetPermissions
@@ -27,8 +27,8 @@ mappings:
   RemoveSVN: Sunnysideup\ModuleChecks\ShellCommands\RemoveSVN
   RemoveAPI: Sunnysideup\ModuleChecks\ShellCommands\RemoveAPI
   FixConfigBasics: Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics
-  ConfigYML: Sunnysideup\ModuleChecks\Objects\ConfigYML
-  ComposerJson: Sunnysideup\ModuleChecks\Objects\ComposerJson
-  GitHubModule: Sunnysideup\ModuleChecks\Objects\GitHubModule
+  ConfigYML: Sunnysideup\ModuleChecks\Api\ConfigYML
+  ComposerJson: Sunnysideup\ModuleChecks\Api\ComposerJsonClass
+  GitHubModule: Sunnysideup\ModuleChecks\Model\GitHubModule
   ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
   UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules

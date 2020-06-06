@@ -10,13 +10,13 @@ use FileSystem;
 
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Dev\BuildTask;
-use Sunnysideup\ModuleChecks\Api\AddFileToModule;
+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
-use Sunnysideup\ModuleChecks\Api\RunCommandLineMethodOnModule;
-use Sunnysideup\ModuleChecks\Objects\ComposerJson;
-use Sunnysideup\ModuleChecks\Objects\ConfigYML;
-use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
+use Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
+use Sunnysideup\ModuleChecks\Api\ConfigYML;
+use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
 /**
  * main class running all the updates
@@ -183,7 +183,7 @@ class UpdateModules extends BuildTask
         }
 
         if ($updateComposerJson) {
-            $composerJsonObj = new ComposerJson($moduleObject);
+            $composerJsonObj = new ComposerJsonClass($moduleObject);
             $composerJsonObj->updateJsonFile();
             $moduleObject->setDescription($composerJsonObj->getDescription());
         }

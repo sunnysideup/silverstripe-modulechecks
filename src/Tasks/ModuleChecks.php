@@ -7,7 +7,7 @@ use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Api\GitRepoFinder;
-use Sunnysideup\ModuleChecks\Objects\GitHubModule;
+use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
 /**
  * check if everything is in plcae for a module

@@ -1,9 +1,9 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\Composerjson;
+namespace Sunnysideup\ModuleChecks\ComposerJson;
 
 use SilverStripe\Core\Config\Config;
-use Sunnysideup\ModuleChecks\Api\UpdateComposer;
+use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 
 /**
  * sets the default installation folder
