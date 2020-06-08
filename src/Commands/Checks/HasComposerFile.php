@@ -15,6 +15,11 @@ class HasComposerFile extends ChecksAbstract
         return $this->hasFileOnGitHub('composer.json');
     }
 
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
 
     /**
      * what does it do?

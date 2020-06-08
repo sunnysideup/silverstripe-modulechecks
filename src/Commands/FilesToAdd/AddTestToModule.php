@@ -12,9 +12,24 @@ class AddTestToModule extends FilesToAddAbstract
 
     protected $sourceLocation = 'app/template_files/ChecksAbstract.php';
 
-    public function __construct($gitObject)
+    public function __construct($repo)
     {
-        $this-> fileLocation = 'tests/' . $gitObject->ShortUCFirstName() . 'Test.php';
-        parent::__construct($gitObject);
+        parent::__construct($repo);
+        $this->fileLocation = 'tests/' . $repo->ShortUCFirstName() . 'Test.php';
+    }
+
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Add example test file';
     }
 }

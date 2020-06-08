@@ -6,6 +6,7 @@ use SilverStripe\Core\ClassInfo;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use Sunnysideup\ModuleChecks\BaseObject;
 
 class ComposerJsonClass extends BaseObject
 {

@@ -5,14 +5,18 @@ namespace Sunnysideup\ModuleChecks\Commands;
 abstract class ChecksAbstract extends BaseObject
 {
 
+    private static $enabled = false;
+
+    protected $repo = null;
+
     public function __construct($repo)
     {
         $this->repo = $repo;
     }
 
-    protected $repo = null;
-
     abstract public function run() : bool;
+
+    abstract public function description() : string;
 
     protected function getName() :string
     {
@@ -31,6 +35,5 @@ abstract class ChecksAbstract extends BaseObject
         );
     }
 
-    // abstract public function description() : string;
 
 }

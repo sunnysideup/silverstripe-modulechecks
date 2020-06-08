@@ -4,6 +4,9 @@ namespace Sunnysideup\ModuleChecks\Commands;
 
 abstract class ShellCommandsAbstract extends BaseObject
 {
+
+    private static $enabled = false;
+
     /**
      * root dir for module
      * e.g. /var/www/modules/mymodule
@@ -11,15 +14,16 @@ abstract class ShellCommandsAbstract extends BaseObject
      *
      * @var string
      */
-    protected $rootDirForModule = '';
+    protected $repo = '';
 
     /**
      * @var string
      */
     protected $commands = [];
 
-    public function __construct($rootDirForModule = '')
+    public function __construct($repo)
     {
+        $this->repo = $repo;
         $this->rootDirForModule = $rootDirForModule;
     }
 
@@ -58,6 +62,8 @@ abstract class ShellCommandsAbstract extends BaseObject
         }
         $this->runCommand();
     }
+
+    abstract public function description() : string;
 
     public static function CheckCommandExists($cmd)
     {

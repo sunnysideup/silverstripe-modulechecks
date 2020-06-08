@@ -1,6 +1,11 @@
 <?php
 
-class ComposerFixRequirements extends UpdateComposer
+namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
+
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
+
+class ComposerFixRequirements extends UpdateComposerAbstract
 {
     public function run()
     {
@@ -24,4 +29,20 @@ class ComposerFixRequirements extends UpdateComposer
 
         $this->composerJsonObj->setJsonData($json);
     }
+
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = false;
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Set framework version.';
+    }
+
 }

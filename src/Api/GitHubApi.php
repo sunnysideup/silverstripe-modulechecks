@@ -112,7 +112,7 @@ class GitHubApi extends BaseObject
         return self::$_modules;
     }
 
-    protected function gitApiCall(string $moduleName, array $data, ?string $gitAPIcommand = '', ?string $method = 'GET')
+    protected function apiCall(string $moduleName, array $data, ?string $gitAPIcommand = '', ?string $method = 'GET')
     {
         $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         GeneralMethods::output_to_screen('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
@@ -130,6 +130,33 @@ class GitHubApi extends BaseObject
         return $curlResult;
     }
 
+    /**
+     * retrieves a raw file from Github
+     *
+     * @return string
+     */
+    public function getRawFileFromGithub(GitHubModule $repo, string $fileName) : string
+    {
+        $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
+
+        $rawURL = 'https://raw.githubusercontent.com/' . $gitUserName . '/' . $repo->ModuleName . '/' . $repo->getBranch() . '/' . $fileName;
+
+        set_error_handler([$this, 'catchFopenWarning'], E_WARNING);
+        $file = fopen($rawURL, 'r');
+        restore_error_handler();
+
+        if (! $file) {
+            GeneralMethods::output_to_screen('<li>Could not find ' . $rawURL . '</li>');
+            return '';
+        }
+        $content = '';
+        while (! feof($file)) {
+            $content .= fgets($file);
+        }
+        fclose($file);
+
+        return $content;
+    }
     protected static function runCurlResult( string $url, string $method, array $jsonData)
     {
         $method = trim(strtoupper($method));

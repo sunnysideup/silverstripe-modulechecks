@@ -6,8 +6,11 @@ abstract class UpdateComposerAbstract extends BaseObject
 {
     protected $composerJsonObj = null;
 
-    public function __construct($composerJsonObj)
+    private static $enabled = false;
+
+    public function __construct($repo)
     {
+        $this->repo = $repo;
         $this->composerJsonObj = $composerJsonObj;
         if (! $this->composerJsonObj->getJsonData()) {
             user_error('No Json data!');
@@ -15,6 +18,8 @@ abstract class UpdateComposerAbstract extends BaseObject
     }
 
     abstract public function run();
+
+    abstract public function description() : string;
 
     /**
      * @return array

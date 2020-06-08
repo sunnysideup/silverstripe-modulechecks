@@ -7,13 +7,23 @@ use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
 
 class FixPSR2 extends ShellCommandsAbstract
 {
-    public function __construct($rootDirForModule = '')
+    protected $commands = [
+        'dir=src sslint-ecs > errorsToFixECS.txt',
+        'dir=src level=1 sslint-stan > errorsToFixStan.txt',
+    ];
+
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
     {
-        parent::__construct($rootDirForModule);
-        $this->commands = [
-            'cp ' . Director::baseFolder() . '/modulechecks/ecs.yml ./',
-            'composer require --dev symplify/easy-coding-standard',
-            'vendor/bin/ecs check app/src --fix > errorsToFix.txt',
-        ];
+        return 'Run coding standards';
     }
 }

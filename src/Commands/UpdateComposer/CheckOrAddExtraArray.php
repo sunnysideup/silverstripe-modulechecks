@@ -27,4 +27,18 @@ class CheckOrAddExtraArray extends UpdateComposerAbstract
 
         $this->setJsonData($json);
     }
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = false;
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Fix extra installer folder.';
+    }
 }

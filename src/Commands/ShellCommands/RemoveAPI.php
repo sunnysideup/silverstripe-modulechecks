@@ -6,9 +6,23 @@ use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
 
 class RemoveAPI extends ShellCommandsAbstract
 {
-    private static $enabled = false;
-
     protected $commands = [
         'rm ./docs/api/ -Rf',
     ];
+
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = false;
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Remove api folder';
+    }
+
 }

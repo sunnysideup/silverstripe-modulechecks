@@ -1,6 +1,11 @@
 <?php
 
-class ComposerAddKeywords extends UpdateComposer
+namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
+
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
+
+class ComposerAddKeywords extends UpdateComposerAbstract
 {
     protected $defaultWords = array(
         'Silverstripe',
@@ -47,4 +52,21 @@ class ComposerAddKeywords extends UpdateComposer
 
         $json = $this->composerJsonObj->setJsonData($json);
     }
+
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Add basic keywords (e.g. Silverstripe) to composer file';
+    }
+
+
 }

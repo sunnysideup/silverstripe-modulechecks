@@ -14,6 +14,12 @@ class HasTLDRFile extends ChecksAbstract
     ];
 
     /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
+    /**
      *
      * @return boolean
      */

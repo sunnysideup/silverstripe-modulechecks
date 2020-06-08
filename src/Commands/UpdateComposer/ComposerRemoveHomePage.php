@@ -1,6 +1,10 @@
 <?php
+namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
 
-class ComposerRemoveHomePage extends UpdateComposer
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
+
+class ComposerRemoveHomePage extends UpdateComposerAbstract
 {
     public function run()
     {
@@ -13,5 +17,20 @@ class ComposerRemoveHomePage extends UpdateComposer
         }
 
         return $this->composerJsonObj->setJsonData($json);
+    }
+
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Remove composer requirements for dev-master versions.';
     }
 }

@@ -6,6 +6,7 @@ use SilverStripe\Assets\Filesystem;
 
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DB;
+use Sunnysideup\ModuleChecks\BaseObject;
 
 class GeneralMethods extends BaseObject
 {

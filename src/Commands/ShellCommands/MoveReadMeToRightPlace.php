@@ -4,17 +4,17 @@ namespace Sunnysideup\ModuleChecks\Commands\ShellCommands;
 
 use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
 
-class RemoveSVN extends ShellCommandsAbstract
+class MoveReadMeToRightPlace extends ShellCommandsAbstract
 {
     protected $commands = [
-        ' find ./ -type d -name ".svn" -exec rm  -Rf "{}" \;',
+        'mv -vn docs/en/README.md docs/en/INDEX.md'
     ];
 
     /**
      * should it be included by default?
      * @var bool
      */
-    private static $enabled = false;
+    private static $enabled = true;
 
     /**
      * what does it do?
@@ -22,6 +22,6 @@ class RemoveSVN extends ShellCommandsAbstract
      */
     public function getDescription() : string
     {
-        return 'Remove .svn files';
+        return 'Remove old readme';
     }
 }

@@ -10,6 +10,9 @@ use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
 abstract class FilesToAddAbstract extends BaseObject
 {
+
+    private static $enabled = false;
+
     protected $gitReplaceArray = [
         '+++long-module-name-goes-here+++' => 'LongModuleName',
         '+++medium-module-name-goes-here+++' => 'MediumModuleName',
@@ -63,13 +66,12 @@ abstract class FilesToAddAbstract extends BaseObject
 
     protected $useCustomisationFile = false;
 
-    protected $gitObject = null;
+    protected $repo = null;
 
-    public function __construct($gitObject)
+    public function __construct($repo)
     {
-        $this->gitObject = $gitObject;
-        $rootDirForModule = $gitObject->Directory();
-        $this->rootDirForModule = $rootDirForModule;
+        $this->repo = $repo;
+        $this->rootDirForModule = $repo->Directory();
     }
 
     public function setRootDirForModule($rootDirForModule)
@@ -86,6 +88,8 @@ abstract class FilesToAddAbstract extends BaseObject
     {
         $this->fileLocation = $relativeDirAndFileName;
     }
+
+    abstract public function description() : string;
 
     public function run()
     {
@@ -109,7 +113,7 @@ abstract class FilesToAddAbstract extends BaseObject
 
     /**
      * @param string $file
-     * @param GitHubModule $gitObject
+     * @param GitHubModule $repo
      *
      * @return string
      */
@@ -117,7 +121,7 @@ abstract class FilesToAddAbstract extends BaseObject
     {
         foreach ($this->gitReplaceArray as $searchTerm => $replaceMethod) {
             $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
-            GeneralMethods::replaceInFile($fileName, $searchTerm, $this->gitObject->{$replaceMethod}());
+            GeneralMethods::replaceInFile($fileName, $searchTerm, $this->repo->{$replaceMethod}());
         }
 
         foreach ($this->replaceArray as $searchTerm => $replaceMethod) {
@@ -141,7 +145,7 @@ abstract class FilesToAddAbstract extends BaseObject
     public function replaceWordsInText($text)
     {
         foreach ($this->gitReplaceArray as $searchTerm => $replaceMethod) {
-            $text = str_replace($searchTerm, $this->gitObject->{$replaceMethod}(), $text);
+            $text = str_replace($searchTerm, $this->repo->{$replaceMethod}(), $text);
         }
 
         foreach ($this->replaceArray as $searchTerm => $replaceMethod) {
@@ -164,9 +168,9 @@ abstract class FilesToAddAbstract extends BaseObject
      *
      * @param string $fileContent
      *
-     * @return bool - true on success, false on failure
+     * @return string
      */
-    protected function getStandardFile()
+    protected function getStandardFile() :string
     {
         $isURL = (strpos($this->sourceLocation, '//') !== false);
 
@@ -191,7 +195,7 @@ abstract class FilesToAddAbstract extends BaseObject
 
             return $fileContents;
         }
-        return false;
+        return '';
     }
 
     /**
@@ -267,7 +271,7 @@ abstract class FilesToAddAbstract extends BaseObject
     protected function getReadMeComponent($componentName): string
     {
         $temp_dir = GitHubModule::Config()->get('absolute_temp_folder');
-        $moduleName = $this->gitObject->ModuleName;
+        $moduleName = $this->repo->ModuleName;
 
         $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . strtoupper($componentName) . '.md';
 

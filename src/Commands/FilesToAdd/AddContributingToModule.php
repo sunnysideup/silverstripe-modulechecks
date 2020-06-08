@@ -11,6 +11,12 @@ class AddContributingToModule extends FilesToAddAbstract
     protected $fileLocation = 'CONTRIBUTING.md';
 
     /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
+    /**
      * what does it do?
      * @return string
      */

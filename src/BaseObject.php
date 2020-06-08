@@ -18,6 +18,7 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\View\SSViewer;
 use UnexpectedValueException;
+use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
 class BaseObject
 {
@@ -27,14 +28,24 @@ class BaseObject
     use Configurable;
 
     private const CHECKS = [
-        'core_classes',
         'github_account_base_url',
         'github_user_name',
         'github_user_email',
         'path_to_private_key',
-        'absolute_temp_folder',
-        'license_type',
+        'absolute_temp_folder'
     ];
+
+    protected static $inst = null;
+
+    public static function inst() : BaseObject
+    {
+        if(! self::$inst) {
+            self::$inst = Injector::inst()->get(BaseObject::class);
+            self::$inst->areWeReady();
+        }
+        self::$inst;
+    }
+
     /**
      * list of classes to run,  in the right order
      * @var array
@@ -44,6 +55,7 @@ class BaseObject
         'FilesToAddAbstract',
         'UpdateComposerAbstract',
         'ShellCommandsAbstract',
+        'OtherCommands',
     ];
 
     /**
@@ -67,6 +79,15 @@ class BaseObject
      * @var string
      */
     private static $path_to_private_key = '~/.ssh/id_rsa';
+
+
+    /**
+     *
+     * @var string
+     */
+    private static $packagist_user_name = '';
+
+    private static $scrutinizer_api_key = '';
 
     /**
      * where the git module is temporary
@@ -111,13 +132,10 @@ class BaseObject
 
     ];
 
+    private static $home_page = 'https://silverstripe.org';
+
     private static $debug = true;
 
-    /**
-     *
-     * @var string
-     */
-    private static $packagist_user_name = '';
 
     public function areWeReady()
     {
@@ -125,30 +143,80 @@ class BaseObject
             $value = $this->Config()->get($check);
             if(! $value) {
                 user_error('You need to set '.$check.' as a private static in BaseObject');
+                return false;
             }
             if(strpos($value, '/') !== false) {
                 if(! file_exists($value)) {
                     user_error('The following dir/file can not be found! '.$value);
+                    return false;
                 }
             }
         }
+        return true;
     }
 
 
-    public function availableCommands()
+    protected $availableCommandsList = [];
+
+    public function availableCommands() : array
     {
-        $list = [];
-        foreach($this->Config()->get('core_classes') as $class) {
-            $classes = ClassInfo::subclassesFor($class, false);
-            foreach($classes as $class) {
-                $list[$class] = [
-                    'Name' => $class,
-                    'Description' => Injector::inst()->get($class)->getDescription(),
-                ];
+        if (! count($this->availableCommandsList)) {
+            foreach($this->Config()->get('core_classes') as $class) {
+                $classes = ClassInfo::subclassesFor($class, false);
+                foreach($classes as $class) {
+                    $obj = Injector::inst()->get($class);
+                    if (Config::inst()->get($class, 'enabled')) {
+                        $this->availableCommandsList[$class] = $obj;
+                    }
+                }
             }
         }
 
-        return $list;
+        return $this->availableCommandsList;
     }
 
+
+    public function availableCommandsForDropdown() : array
+    {
+        $list = $this->availableCommands();
+        $array = [];
+        foreach($list as $class => $details) {
+            $array[$class] = $details->getDescription();
+        }
+
+        return $array;
+
+    }
+    protected $availableRepos = [];
+
+    public function getAvailableRepos() : array
+    {
+        if (! count($this->availableRepos)) {
+            $list = GitHubModule::get();
+            foreach($list as $obj) {
+                $this->availableRepos[$obj->ModuleName] = $obj;
+            }
+        }
+
+        return $this->availableRepos;
+    }
+
+
+    public function getAvailableReposForDropdown() : array
+    {
+        $list = $this->getAvailableRepos();
+        $array = [];
+        foreach($list as $obj) {
+            $array[$obj->ModuleName] = $obj->ModuleName;
+        }
+
+        return $array;
+
+    }
+    /*
+     * This function is just used to suppression of warnings
+     * */
+    private function catchFopenWarning($errno, $errstr)
+    {
+    }
 }

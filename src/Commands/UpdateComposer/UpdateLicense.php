@@ -17,4 +17,19 @@ class UpdateLicense extends UpdateComposerAbstract
 
         $this->setJsonData($json);
     }
+
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Update license type.';
+    }
 }

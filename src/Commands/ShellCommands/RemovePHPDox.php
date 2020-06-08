@@ -1,6 +1,9 @@
 <?php
+namespace Sunnysideup\ModuleChecks\Commands\ShellCommands;
 
-class RemovePHPDox extends RunCommandLineMethodOnModule
+use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
+
+class RemovePHPDox extends ShellCommandsAbstract
 {
     protected $command = [
         'rm ./docs/en/phpdox/ -rf',
@@ -9,4 +12,18 @@ class RemovePHPDox extends RunCommandLineMethodOnModule
         'rm ./docs/api/ -rf',
         'rm ./docs/build/ -rf ',
     ];
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = false;
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Remove phpdox files';
+    }
 }

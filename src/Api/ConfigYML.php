@@ -9,20 +9,26 @@ use Exception;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 use Yaml;
+use Sunnysideup\ModuleChecks\BaseObject;
 
 class ConfigYML extends BaseObject
 {
-    public function __construct($gitHubModuleInstance)
+
+    protected $moduleName = '';
+    protected $repo = null;
+    protected $ymlData = null;
+    protected $filename = '';
+
+    public function __construct($gitHubModuleInstance, $fileToCheck = 'config.yml')
     {
         if (! $gitHubModuleInstance) {
             user_error('ConfigYML needs an instance of GitHubModule');
         }
-        $this->gitHubModuleInstance = $gitHubModuleInstance;
-        $this->moduleName = $gitHubModuleInstance->ModuleName;
-        $this->yaml_data = null;
+        $this->repo = $gitHubModuleInstance;
+        $this->ymlData = null;
         $folder = GitHubModule::Config()->get('absolute_temp_folder');
 
-        $this->filename = $folder . '/' . $this->moduleName . '/_config/config.yml';
+        $this->filename = $gitHubModuleInstance->Directory() . '/_config/' . $fileToCheck;
     }
 
     public function reWrite()
@@ -44,18 +50,18 @@ class ConfigYML extends BaseObject
             GeneralMethods::output_to_screen('<li>Unable to load: ' . $this->filename, 'updated');
             //UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to load " . $this->filename;
 
-            UpdateModules::addUnsolvedProblem($this->gitHubModuleInstance->ModuleName, 'Unable to load ' . $this->filename);
+            UpdateModules::addUnsolvedProblem($this->repo->ModuleName, 'Unable to load ' . $this->filename);
             return false;
         }
 
         try {
-            $this->yaml_data = Yaml::parse(file_get_contents($this->filename));
+            $this->ymlData = Yaml::parse(file_get_contents($this->filename));
         } catch (Exception $e) {
             GeneralMethods::output_to_screen('<li>Unable to parse the YAML string: ' . $e->getMessage() . ' <li>', 'updated');
 
             //UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to parse the YAML string: " .$e->getMessage();
 
-            UpdateModules::addUnsolvedProblem($this->gitHubModuleInstance->ModuleName, 'Unable to parse the YAML string: ' . $e->getMessage());
+            UpdateModules::addUnsolvedProblem($this->repo->ModuleName, 'Unable to parse the YAML string: ' . $e->getMessage());
 
             //trigger_error ("Error in YML file");
 
@@ -64,7 +70,7 @@ class ConfigYML extends BaseObject
             return false;
         }
 
-        return $this->yaml_data;
+        return $this->ymlData;
     }
 
     public function replaceFaultyYML()
@@ -112,11 +118,11 @@ class ConfigYML extends BaseObject
     {
         GeneralMethods::output_to_screen('Writing config yml ... ', 'updating');
 
-        if (! $this->yaml_data) {
+        if (! $this->ymlData) {
             return false;
         }
 
-        $yaml = Yaml::dump($this->yaml_data);
+        $yaml = Yaml::dump($this->ymlData);
         file_put_contents($this->filename, $yaml);
         return true;
     }

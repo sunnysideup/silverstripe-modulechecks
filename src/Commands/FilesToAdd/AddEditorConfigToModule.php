@@ -11,6 +11,12 @@ class AddEditorConfigToModule extends FilesToAddAbstract
     protected $fileLocation = '.editorconfig';
 
     /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
+    /**
      * what does it do?
      * @return string
      */
