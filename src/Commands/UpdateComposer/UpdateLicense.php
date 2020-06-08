@@ -1,17 +1,15 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\Commands\ComposerJson;
+namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
 
 use SilverStripe\Core\Config\Config;
-use Sunnysideup\ModuleChecks\Commands\UpdateComposer;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 
 /**
  * sets the default installation folder
  */
-class UpdateLicense extends UpdateComposer
+class UpdateLicense extends UpdateComposerAbstract
 {
-    private static $license_type = 'BSD-3-Clause';
-
     public function run()
     {
         $json = $this->getJsonData();

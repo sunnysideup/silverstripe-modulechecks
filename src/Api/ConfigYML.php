@@ -10,7 +10,7 @@ use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 use Yaml;
 
-class ConfigYML
+class ConfigYML extends BaseObject
 {
     public function __construct($gitHubModuleInstance)
     {

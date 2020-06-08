@@ -2,9 +2,9 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\ShellCommands;
 
-use Sunnysideup\ModuleChecks\Commands\RunCommandLineMethodOnModule;
+use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
 
-class RemoveAPI extends RunCommandLineMethodOnModule
+class RemoveAPI extends ShellCommandsAbstract
 {
     protected $commands = [
         'rm ./docs/api/ -Rf',

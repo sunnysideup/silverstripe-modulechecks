@@ -4,10 +4,10 @@ namespace Sunnysideup\ModuleChecks\Api;
 
 use SilverStripe\Core\ClassInfo;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use Sunnysideup\ModuleChecks\Commands\UpdateComposer;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
-class ComposerJsonClass
+class ComposerJsonClass extends BaseObject
 {
     /**
      * @var array|null
@@ -49,7 +49,7 @@ class ComposerJsonClass
 
         if (is_array($this->jsonData)) {
             GeneralMethods::output_to_screen('<li> Updating composer.json </li>');
-            $composerUpdates = ClassInfo::subclassesFor(UpdateComposer::class);
+            $composerUpdates = ClassInfo::subclassesFor(UpdateComposerAbstract::class);
 
             //remove base class
             array_shift($composerUpdates);

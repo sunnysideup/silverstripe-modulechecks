@@ -2,9 +2,9 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\ShellCommands;
 
-use Sunnysideup\ModuleChecks\Commands\RunCommandLineMethodOnModule;
+use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
 
-class SetPermissions extends RunCommandLineMethodOnModule
+class SetPermissions extends ShellCommandsAbstract
 {
     protected $commands = [
         'find ./ -type f -exec chmod 644 {} \;',

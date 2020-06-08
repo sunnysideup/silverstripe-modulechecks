@@ -1,13 +1,13 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\Commands\ComposerJson;
+namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
 
-use Sunnysideup\ModuleChecks\Commands\UpdateComposer;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 
 /**
  * sets the default installation folder
  */
-class UpdataModuleType extends UpdateComposer
+class UpdataModuleType extends UpdateComposerAbstract
 {
     public function run()
     {

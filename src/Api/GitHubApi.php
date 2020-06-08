@@ -7,7 +7,7 @@ use SilverStripe\ORM\DB;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
-class GitHubApi
+class GitHubApi extends BaseObject
 {
     /**
      * @var string

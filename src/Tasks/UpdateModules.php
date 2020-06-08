@@ -3,7 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Tasks;
 
 use Exception;
-use FileSystem;
+use SilverStripe\Assets\Filesystem;
 
 
 
@@ -15,8 +15,8 @@ use Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
 use Sunnysideup\ModuleChecks\Api\ConfigYML;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
-use Sunnysideup\ModuleChecks\Commands\AddFileToModule;
-use Sunnysideup\ModuleChecks\Commands\RunCommandLineMethodOnModule;
+use Sunnysideup\ModuleChecks\Commands\FilesToAddAbstract;
+use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
 /**
@@ -30,7 +30,9 @@ class UpdateModules extends BuildTask
 
     protected $title = 'Update Modules';
 
-    protected $description = 'Adds files necessary for publishing a module to GitHub. The list of modules is specified in standard config or else it retrieves a list of modules from GitHub.';
+    protected $description = '
+        Adds files necessary for publishing a module to GitHub.
+        The list of modules is specified in standard config or else it retrieves a list of modules from GitHub.';
 
     /**
      * e.g.
@@ -67,7 +69,7 @@ class UpdateModules extends BuildTask
         //Check temp module folder is empty
         $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
         if (! file_exists($tempFolder)) {
-            FileSystem::makeFolder($tempFolder);
+            Filesystem::makeFolder($tempFolder);
         }
         $tempDirFiles = scandir($tempFolder);
         if (count($tempDirFiles) > 2) {
@@ -81,7 +83,7 @@ class UpdateModules extends BuildTask
         /*
          * Get files to add to modules
          * */
-        $files = ClassInfo::subclassesFor(AddFileToModule::class);
+        $files = ClassInfo::subclassesFor(FilesToAddAbstract::class);
         array_shift($files);
         $limitedFileClasses = $this->Config()->get('files_to_update');
         if ($limitedFileClasses === []) {
@@ -96,7 +98,7 @@ class UpdateModules extends BuildTask
          * Get commands to run on modules
          * */
 
-        $commands = ClassInfo::subclassesFor(RunCommandLineMethodOnModule::class);
+        $commands = ClassInfo::subclassesFor(ShellCommandsAbstract::class);
         array_shift($commands);
         $limitedCommands = $this->Config()->get('commands_to_run');
         if ($limitedCommands === 'none') {
@@ -263,7 +265,7 @@ class UpdateModules extends BuildTask
 
     protected function renameTest($moduleObject)
     {
-        $oldName = $moduleObject->Directory() . '/tests/ModuleTest.php';
+        $oldName = $moduleObject->Directory() . '/tests/ChecksAbstract.php';
 
         if (! file_exists($oldName)) {
             print_r($oldName);

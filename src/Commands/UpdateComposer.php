@@ -2,7 +2,7 @@
 
 namespace Sunnysideup\ModuleChecks\Commands;
 
-abstract class UpdateComposer
+abstract class UpdateComposerAbstract extends BaseObject
 {
     protected $composerJsonObj = null;
 

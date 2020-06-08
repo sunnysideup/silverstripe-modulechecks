@@ -1,14 +1,14 @@
 <?php
 
-namespace Sunnysideup\ModuleChecks\Commands\ComposerJson;
+namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
 
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use Sunnysideup\ModuleChecks\Commands\UpdateComposer;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 
 /**
  * sets the default installation folder
  */
-class CheckOrAddExtraArray extends UpdateComposer
+class CheckOrAddExtraArray extends UpdateComposerAbstract
 {
     public function run()
     {

@@ -2,9 +2,9 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\FilesToAdd;
 
-use Sunnysideup\ModuleChecks\Commands\AddFileToModule;
+use Sunnysideup\ModuleChecks\Commands\FilesToAddAbstract;
 
-class AddTravisYmlToModule extends AddFileToModule
+class AddTravisYmlToModule extends FilesToAddAbstract
 {
     protected $sourceLocation = 'app/template_files/.travis.yml';
 

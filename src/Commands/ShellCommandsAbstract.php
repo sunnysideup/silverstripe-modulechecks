@@ -2,7 +2,7 @@
 
 namespace Sunnysideup\ModuleChecks\Commands;
 
-abstract class RunCommandLineMethodOnModule
+abstract class ShellCommandsAbstract extends BaseObject
 {
     /**
      * root dir for module

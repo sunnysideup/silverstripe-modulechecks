@@ -2,12 +2,12 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-use FileSystem;
+use SilverStripe\Assets\Filesystem;
 
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\DB;
 
-class GeneralMethods
+class GeneralMethods extends BaseObject
 {
     /**
      * opens a location with curl to see if it exists.
@@ -30,29 +30,6 @@ class GeneralMethods
         return $outcome;
     }
 
-    /**
-     * @use
-     * ```
-     *    GeneralMethods::output_to_screen('asdf', 'created')
-     * ```
-     * @see DB::alteration_message for types...
-     *
-     * @param  string $message
-     * @param  string $type
-     */
-    public static function output_to_screen(string $message, string $type = '')
-    {
-        if (Director::is_cli()) {
-            DB::alteration_message($message, $type);
-        } else {
-            echo '<br />';
-            flush();
-            ob_end_flush();
-            DB::alteration_message($message, $type);
-            ob_start();
-        }
-    }
-
     /*
      * Recursively removes a directory
      *
@@ -61,7 +38,7 @@ class GeneralMethods
 
     public static function removeDirectory(string $path)
     {
-        FileSystem::removeFolder($path);
+        Filesystem::removeFolder($path);
     }
 
     /*

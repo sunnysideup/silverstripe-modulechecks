@@ -4,7 +4,7 @@ namespace Sunnysideup\ModuleChecks\Api;
 
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
-class Scrutinizer
+class Scrutinizer extends BaseObject
 {
     public static function send_to_scrutinizer($apiKey, $gitHubUserName, $moduleName)
     {

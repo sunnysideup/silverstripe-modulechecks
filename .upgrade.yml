@@ -1,7 +1,7 @@
 mappings:
-  UpdateComposer: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer
-  RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
-  AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
+  UpdateComposerAbstract: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract
+  ShellCommandsAbstract: Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract
+  FilesToAddAbstract: Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract
   GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
   GitHubApi: Sunnysideup\ModuleChecks\Api\GitHubApi
   AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule

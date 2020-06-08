@@ -1,9 +1,9 @@
 SilverStripe\ORM\DatabaseAdmin:
   classname_value_remapping:
     classname_value_remapping:
-      Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer
-      Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
-      Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
+      Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract
+      Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract: Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract
+      Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract: Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract
       Sunnysideup\ModuleChecks\Api\GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
       Sunnysideup\ModuleChecks\Api\GitHubApi: Sunnysideup\ModuleChecks\Api\GitHubApi
       Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule

@@ -3,9 +3,9 @@
 namespace Sunnysideup\ModuleChecks\Commands\ShellCommands;
 
 use SilverStripe\Control\Director;
-use Sunnysideup\ModuleChecks\Commands\RunCommandLineMethodOnModule;
+use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
 
-class FixPSR2 extends RunCommandLineMethodOnModule
+class FixPSR2 extends ShellCommandsAbstract
 {
     public function __construct($rootDirForModule = '')
     {

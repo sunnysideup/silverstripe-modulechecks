@@ -21,20 +21,6 @@ class ModuleChecks extends BuildTask
 
     protected $description = 'Goes through every module on github and checks for some of the basic requirements. You will need to set your GitHub Username in the configs.';
 
-    private static $packagist_user_name = '';
-
-    /**
-     * list of methods to run for each module
-     * @var array
-     */
-    private static $methods_to_check = [
-        'exitsOnPackagist',
-        'hasReadMeFile',
-        'hasLicense',
-        'hasComposerFile',
-        'existsOnAddOns',
-    ];
-
     public function run($request)
     {
         Environment::increaseTimeLimitTo(3600);
@@ -74,60 +60,6 @@ class ModuleChecks extends BuildTask
         echo '----------------------------- THE END --------------------------';
     }
 
-    /**
-     * @param string $name
-     *
-     * @return boolean
-     */
-    protected function exitsOnPackagist($name)
-    {
-        return GeneralMethods::check_location('https://packagist.org/packages/' . $this->Config()->get('packagist_user_name') . "/${name}");
-    }
 
-    /**
-     * @param string $name
-     *
-     * @return boolean
-     */
-    protected function hasLicense($name)
-    {
-        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(GitHubModule::class, 'github_user_name') . '/silverstripe-' . $name . '/master/LICENSE');
-    }
 
-    /**
-     * @param string $name
-     *
-     * @return boolean
-     */
-    protected function hasComposerFile($name)
-    {
-        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(GitHubModule::class, 'github_user_name') . '/silverstripe-' . $name . '/master/composer.json');
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return boolean
-     */
-    protected function hasReadMeFile($name)
-    {
-        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(GitHubModule::class, 'github_user_name') . '/silverstripe-' . $name . '/master/README.md');
-    }
-
-    protected function existsOnAddOns($name)
-    {
-        return GeneralMethods::check_location('http://addons.silverstripe.org/add-ons/' . $this->Config()->get('packagist_user_name') . "/${name}");
-    }
-
-    /**
-     * checks if a particular variable is present in the composer.json file
-     *
-     * @param string $name
-     * @param string $variable
-     * @return boolean
-     */
-    protected function checkForDetailsInComposerFile($name, $variable)
-    {
-        die('to be completed');
-    }
 }

@@ -8,7 +8,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\View\Requirements;
 use Sunnysideup\ModuleChecks\Model\GitHubModule;
 
-abstract class AddFileToModule
+abstract class FilesToAddAbstract extends BaseObject
 {
     protected $gitReplaceArray = [
         '+++long-module-name-goes-here+++' => 'LongModuleName',

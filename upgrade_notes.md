@@ -10,12 +10,12 @@ Array
     [2] => [2020-06-05 17:52:19] Applying ClassToTraitRule to _config.php...
     [3] => [2020-06-05 17:52:19] Applying RenameClasses to ModulechecksTest.php...
     [4] => [2020-06-05 17:52:19] Applying ClassToTraitRule to ModulechecksTest.php...
-    [5] => [2020-06-05 17:52:19] Applying RenameClasses to UpdateComposer.php...
-    [6] => [2020-06-05 17:52:19] Applying ClassToTraitRule to UpdateComposer.php...
-    [7] => [2020-06-05 17:52:19] Applying RenameClasses to RunCommandLineMethodOnModule.php...
-    [8] => [2020-06-05 17:52:19] Applying ClassToTraitRule to RunCommandLineMethodOnModule.php...
-    [9] => [2020-06-05 17:52:19] Applying RenameClasses to AddFileToModule.php...
-    [10] => [2020-06-05 17:52:19] Applying ClassToTraitRule to AddFileToModule.php...
+    [5] => [2020-06-05 17:52:19] Applying RenameClasses to UpdateComposerAbstract.php...
+    [6] => [2020-06-05 17:52:19] Applying ClassToTraitRule to UpdateComposerAbstract.php...
+    [7] => [2020-06-05 17:52:19] Applying RenameClasses to ShellCommandsAbstract.php...
+    [8] => [2020-06-05 17:52:19] Applying ClassToTraitRule to ShellCommandsAbstract.php...
+    [9] => [2020-06-05 17:52:19] Applying RenameClasses to FilesToAddAbstract.php...
+    [10] => [2020-06-05 17:52:19] Applying ClassToTraitRule to FilesToAddAbstract.php...
     [11] => [2020-06-05 17:52:19] Applying RenameClasses to GeneralMethods.php...
     [12] => [2020-06-05 17:52:19] Applying ClassToTraitRule to GeneralMethods.php...
     [13] => [2020-06-05 17:52:19] Applying RenameClasses to GitHubApi.php...
@@ -91,12 +91,12 @@ Running upgrades on "/var/www/ss3/upgrades/modulechecks/modulechecks"
 [2020-06-05 18:13:46] Applying ClassToTraitRule to _config.php...
 [2020-06-05 18:13:46] Applying RenameClasses to ModulechecksTest.php...
 [2020-06-05 18:13:46] Applying ClassToTraitRule to ModulechecksTest.php...
-[2020-06-05 18:13:46] Applying RenameClasses to UpdateComposer.php...
-[2020-06-05 18:13:46] Applying ClassToTraitRule to UpdateComposer.php...
-[2020-06-05 18:13:46] Applying RenameClasses to RunCommandLineMethodOnModule.php...
-[2020-06-05 18:13:46] Applying ClassToTraitRule to RunCommandLineMethodOnModule.php...
-[2020-06-05 18:13:46] Applying RenameClasses to AddFileToModule.php...
-[2020-06-05 18:13:46] Applying ClassToTraitRule to AddFileToModule.php...
+[2020-06-05 18:13:46] Applying RenameClasses to UpdateComposerAbstract.php...
+[2020-06-05 18:13:46] Applying ClassToTraitRule to UpdateComposerAbstract.php...
+[2020-06-05 18:13:46] Applying RenameClasses to ShellCommandsAbstract.php...
+[2020-06-05 18:13:46] Applying ClassToTraitRule to ShellCommandsAbstract.php...
+[2020-06-05 18:13:46] Applying RenameClasses to FilesToAddAbstract.php...
+[2020-06-05 18:13:46] Applying ClassToTraitRule to FilesToAddAbstract.php...
 [2020-06-05 18:13:46] Applying RenameClasses to GeneralMethods.php...
 [2020-06-05 18:13:46] Applying ClassToTraitRule to GeneralMethods.php...
 [2020-06-05 18:13:46] Applying RenameClasses to GitHubApi.php...
@@ -173,7 +173,7 @@ modified:	tests/ModulechecksTest.php
  class ModulechecksTest extends SapphireTest
  {
 
-modified:	src/Api/UpdateComposer.php
+modified:	src/Api/UpdateComposerAbstract.php
 @@ -2,7 +2,9 @@
 
  namespace Sunnysideup\ModuleChecks\Api;
@@ -186,7 +186,7 @@ modified:	src/Api/UpdateComposer.php
  /**
   * ### @@@@ START REPLACEMENT @@@@ ###
 
-modified:	src/Api/RunCommandLineMethodOnModule.php
+modified:	src/Api/ShellCommandsAbstract.php
 @@ -2,7 +2,9 @@
 
  namespace Sunnysideup\ModuleChecks\Api;
@@ -199,7 +199,7 @@ modified:	src/Api/RunCommandLineMethodOnModule.php
  /**
   * ### @@@@ START REPLACEMENT @@@@ ###
 
-modified:	src/Api/AddFileToModule.php
+modified:	src/Api/FilesToAddAbstract.php
 @@ -2,11 +2,18 @@
 
  namespace Sunnysideup\ModuleChecks\Api;
@@ -316,12 +316,12 @@ modified:	src/FilesToAdd/AddGitAttributesToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddGitAttributesToModule extends AddFileToModule
+ class AddGitAttributesToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddGitIgnoreToModule.php
@@ -329,12 +329,12 @@ modified:	src/FilesToAdd/AddGitIgnoreToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddGitIgnoreToModule extends AddFileToModule
+ class AddGitIgnoreToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddHtAccessToModule.php
@@ -342,12 +342,12 @@ modified:	src/FilesToAdd/AddHtAccessToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddHtAccessToModule extends AddFileToModule
+ class AddHtAccessToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddTravisYmlToModule.php
@@ -355,12 +355,12 @@ modified:	src/FilesToAdd/AddTravisYmlToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddTravisYmlToModule extends AddFileToModule
+ class AddTravisYmlToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddEditorConfigToModule.php
@@ -368,12 +368,12 @@ modified:	src/FilesToAdd/AddEditorConfigToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddEditorConfigToModule extends AddFileToModule
+ class AddEditorConfigToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddContributingToModule.php
@@ -381,12 +381,12 @@ modified:	src/FilesToAdd/AddContributingToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddContributingToModule extends AddFileToModule
+ class AddContributingToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddUserguideMdToModule.php
@@ -394,12 +394,12 @@ modified:	src/FilesToAdd/AddUserguideMdToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddUserguideMdToModule extends AddFileToModule
+ class AddUserguideMdToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddSourceReadmeToModule.php
@@ -407,12 +407,12 @@ modified:	src/FilesToAdd/AddSourceReadmeToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddSourceReadmeToModule extends AddFileToModule
+ class AddSourceReadmeToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddLicenceToModule.php
@@ -420,12 +420,12 @@ modified:	src/FilesToAdd/AddLicenceToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddLicenceToModule extends AddFileToModule
+ class AddLicenceToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddScrutinizerYmlToModule.php
@@ -433,12 +433,12 @@ modified:	src/FilesToAdd/AddScrutinizerYmlToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddScrutinizerYmlToModule extends AddFileToModule
+ class AddScrutinizerYmlToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddGitAttribuesToModule.php
@@ -446,12 +446,12 @@ modified:	src/FilesToAdd/AddGitAttribuesToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddGitAttribuesToModule extends AddFileToModule
+ class AddGitAttribuesToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddChangeLogToModule.php
@@ -459,12 +459,12 @@ modified:	src/FilesToAdd/AddChangeLogToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddChangeLogToModule extends AddFileToModule
+ class AddChangeLogToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddTestToModule.php
@@ -472,12 +472,12 @@ modified:	src/FilesToAdd/AddTestToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddTestToModule extends AddFileToModule
+ class AddTestToModule extends FilesToAddAbstract
  {
 
 modified:	src/FilesToAdd/AddManifestExcludeToModule.php
@@ -485,26 +485,26 @@ modified:	src/FilesToAdd/AddManifestExcludeToModule.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\FilesToAdd;
 
--use AddFileToModule;
+-use FilesToAddAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +
 
- class AddManifestExcludeToModule extends AddFileToModule
+ class AddManifestExcludeToModule extends FilesToAddAbstract
  {
 
 modified:	src/ComposerJson/UpdateLicense.php
 @@ -2,8 +2,12 @@
 
- namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 
 -use Config;
--use UpdateComposer;
+-use UpdateComposerAbstract;
 +
 +
 +use SilverStripe\Core\Config\Config;
 +use Sunnysideup\ModuleChecks\ComposerJson\UpdateLicense;
-+use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract;
 +
 
  /**
@@ -522,11 +522,11 @@ modified:	src/ComposerJson/UpdateLicense.php
 modified:	src/ComposerJson/UpdateModuleType.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 
--use UpdateComposer;
+-use UpdateComposerAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract;
 +
 
  /**
@@ -535,14 +535,14 @@ modified:	src/ComposerJson/UpdateModuleType.php
 modified:	src/ComposerJson/CheckOrAddExtraArray.php
 @@ -2,8 +2,11 @@
 
- namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 
 -use GeneralMethods;
--use UpdateComposer;
+-use UpdateComposerAbstract;
 +
 +
 +use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-+use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract;
 +
 
  /**
@@ -551,11 +551,11 @@ modified:	src/ComposerJson/CheckOrAddExtraArray.php
 modified:	src/ComposerJson/UpdataModuleType.php
 @@ -2,7 +2,9 @@
 
- namespace Sunnysideup\ModuleChecks\BaseCommands\ComposerJson;
+ namespace Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
 
--use UpdateComposer;
+-use UpdateComposerAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract;
 +
 
  /**
@@ -567,14 +567,14 @@ modified:	src/ShellCommands/FixPSR2.php
  namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
 -use Director;
--use RunCommandLineMethodOnModule;
+-use ShellCommandsAbstract;
 +
 +
 +use SilverStripe\Control\Director;
-+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract;
 +
 
- class FixPSR2 extends RunCommandLineMethodOnModule
+ class FixPSR2 extends ShellCommandsAbstract
  {
 
 modified:	src/ShellCommands/SetPermissions.php
@@ -582,12 +582,12 @@ modified:	src/ShellCommands/SetPermissions.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
--use RunCommandLineMethodOnModule;
+-use ShellCommandsAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract;
 +
 
- class SetPermissions extends RunCommandLineMethodOnModule
+ class SetPermissions extends ShellCommandsAbstract
  {
 
 modified:	src/ShellCommands/RemoveOrig.php
@@ -595,12 +595,12 @@ modified:	src/ShellCommands/RemoveOrig.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
--use RunCommandLineMethodOnModule;
+-use ShellCommandsAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract;
 +
 
- class RemoveOrig extends RunCommandLineMethodOnModule
+ class RemoveOrig extends ShellCommandsAbstract
  {
 
 modified:	src/ShellCommands/RemoveSVN.php
@@ -608,12 +608,12 @@ modified:	src/ShellCommands/RemoveSVN.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
--use RunCommandLineMethodOnModule;
+-use ShellCommandsAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract;
 +
 
- class RemoveSVN extends RunCommandLineMethodOnModule
+ class RemoveSVN extends ShellCommandsAbstract
  {
 
 modified:	src/ShellCommands/RemoveAPI.php
@@ -621,12 +621,12 @@ modified:	src/ShellCommands/RemoveAPI.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
--use RunCommandLineMethodOnModule;
+-use ShellCommandsAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract;
 +
 
- class RemoveAPI extends RunCommandLineMethodOnModule
+ class RemoveAPI extends ShellCommandsAbstract
  {
 
 modified:	src/ShellCommands/FixConfigBasics.php
@@ -634,12 +634,12 @@ modified:	src/ShellCommands/FixConfigBasics.php
 
  namespace Sunnysideup\ModuleChecks\BaseCommands\ShellCommands;
 
--use RunCommandLineMethodOnModule;
+-use ShellCommandsAbstract;
 +
-+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract;
 +
 
- class FixConfigBasics extends RunCommandLineMethodOnModule
+ class FixConfigBasics extends ShellCommandsAbstract
  {
 
 modified:	src/Objects/ConfigYML.php
@@ -676,7 +676,7 @@ modified:	src/Objects/ComposerJson.php
 +
 +
 +use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-+use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer;
++use Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract;
 +use SilverStripe\Core\ClassInfo;
 +use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 +use SilverStripe\View\ViewableData;
@@ -688,8 +688,8 @@ modified:	src/Objects/ComposerJson.php
 
          if (is_array($this->jsonData)) {
              GeneralMethods::output_to_screen('<li> Updating composer.json </li>');
--            $composerUpdates = ClassInfo::subclassesFor('UpdateComposer');
-+            $composerUpdates = ClassInfo::subclassesFor(UpdateComposer::class);
+-            $composerUpdates = ClassInfo::subclassesFor('UpdateComposerAbstract');
++            $composerUpdates = ClassInfo::subclassesFor(UpdateComposerAbstract::class);
 
              //remove base class
              array_shift($composerUpdates);
@@ -810,9 +810,9 @@ modified:	src/Tasks/UpdateModules.php
 +
 +use Sunnysideup\ModuleChecks\Model\GitHubModule;
 +use Sunnysideup\ModuleChecks\Api\GitHubApi;
-+use Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule;
++use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +use SilverStripe\Core\ClassInfo;
-+use Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule;
++use Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract;
 +use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 +use Sunnysideup\ModuleChecks\Objects\ComposerJson;
 +use Sunnysideup\ModuleChecks\Api\ConfigYML;
@@ -825,8 +825,8 @@ modified:	src/Tasks/UpdateModules.php
          /*
           * Get files to add to modules
           * */
--        $files = ClassInfo::subclassesFor('AddFileToModule');
-+        $files = ClassInfo::subclassesFor(AddFileToModule::class);
+-        $files = ClassInfo::subclassesFor('FilesToAddAbstract');
++        $files = ClassInfo::subclassesFor(FilesToAddAbstract::class);
          array_shift($files);
          $limitedFileClasses = $this->Config()->get('files_to_update');
          if ($limitedFileClasses === []) {
@@ -834,8 +834,8 @@ modified:	src/Tasks/UpdateModules.php
           * Get commands to run on modules
           * */
 
--        $commands = ClassInfo::subclassesFor('RunCommandLineMethodOnModule');
-+        $commands = ClassInfo::subclassesFor(RunCommandLineMethodOnModule::class);
+-        $commands = ClassInfo::subclassesFor('ShellCommandsAbstract');
++        $commands = ClassInfo::subclassesFor(ShellCommandsAbstract::class);
          array_shift($commands);
          $limitedCommands = $this->Config()->get('commands_to_run');
          if ($limitedCommands === 'none') {
@@ -854,9 +854,9 @@ modified:	_config/database.legacy.yml
 @@ -1,36 +1,36 @@
  SilverStripe\ORM\DatabaseAdmin:
    classname_value_remapping:
--    UpdateComposer: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer
--    RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
--    AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
+-    UpdateComposerAbstract: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract
+-    ShellCommandsAbstract: Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract
+-    FilesToAddAbstract: Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract
 -    GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
 -    GitHubApi: Sunnysideup\ModuleChecks\Api\GitHubApi
 -    AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
@@ -887,9 +887,9 @@ modified:	_config/database.legacy.yml
 -    GitHubModule: Sunnysideup\ModuleChecks\Model\GitHubModule
 -    ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
 -    UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules
-+    Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposer
-+    Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule: Sunnysideup\ModuleChecks\BaseCommands\RunCommandLineMethodOnModule
-+    Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule: Sunnysideup\ModuleChecks\BaseCommands\AddFileToModule
++    Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract
++    Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract: Sunnysideup\ModuleChecks\BaseCommands\ShellCommandsAbstract
++    Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract: Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract
 +    Sunnysideup\ModuleChecks\Api\GeneralMethods: Sunnysideup\ModuleChecks\Api\GeneralMethods
 +    Sunnysideup\ModuleChecks\Api\GitHubApi: Sunnysideup\ModuleChecks\Api\GitHubApi
 +    Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule: Sunnysideup\ModuleChecks\FilesToAdd\AddGitAttributesToModule
@@ -933,12 +933,12 @@ Running upgrades on "/var/www/ss3/upgrades/modulechecks/modulechecks"
 [2020-06-05 18:14:28] Applying ClassToTraitRule to _config.php...
 [2020-06-05 18:14:28] Applying RenameClasses to ModulechecksTest.php...
 [2020-06-05 18:14:28] Applying ClassToTraitRule to ModulechecksTest.php...
-[2020-06-05 18:14:28] Applying RenameClasses to UpdateComposer.php...
-[2020-06-05 18:14:28] Applying ClassToTraitRule to UpdateComposer.php...
-[2020-06-05 18:14:28] Applying RenameClasses to RunCommandLineMethodOnModule.php...
-[2020-06-05 18:14:28] Applying ClassToTraitRule to RunCommandLineMethodOnModule.php...
-[2020-06-05 18:14:28] Applying RenameClasses to AddFileToModule.php...
-[2020-06-05 18:14:28] Applying ClassToTraitRule to AddFileToModule.php...
+[2020-06-05 18:14:28] Applying RenameClasses to UpdateComposerAbstract.php...
+[2020-06-05 18:14:28] Applying ClassToTraitRule to UpdateComposerAbstract.php...
+[2020-06-05 18:14:28] Applying RenameClasses to ShellCommandsAbstract.php...
+[2020-06-05 18:14:28] Applying ClassToTraitRule to ShellCommandsAbstract.php...
+[2020-06-05 18:14:28] Applying RenameClasses to FilesToAddAbstract.php...
+[2020-06-05 18:14:28] Applying ClassToTraitRule to FilesToAddAbstract.php...
 [2020-06-05 18:14:28] Applying RenameClasses to GeneralMethods.php...
 [2020-06-05 18:14:28] Applying ClassToTraitRule to GeneralMethods.php...
 [2020-06-05 18:14:28] Applying RenameClasses to GitHubApi.php...

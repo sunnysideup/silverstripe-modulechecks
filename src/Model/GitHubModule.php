@@ -3,7 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Model;
 
 use Exception;
-use FileSystem;
+use SilverStripe\Assets\Filesystem;
 
 use GitWrapper\GitWrapper;
 use GitWrapper\GitWorkingCopy;
@@ -27,37 +27,6 @@ class GitHubModule extends DataObject
      * @var git module
      */
     protected $gitRepo = null;
-
-    /**
-     * e.g.
-     * @var string
-     */
-    private static $github_account_base_url = '';
-
-    /**
-     * e.g. boss
-     * @var string
-     */
-    private static $github_user_name = '';
-
-    /**
-     * @var string
-     */
-    private static $github_user_email = '';
-
-    /**
-     * @var string
-     */
-    private static $path_to_private_key = '~/.ssh/id_rsa';
-
-    /**
-     * where the git module is temporary
-     * cloned and fixed up
-     * should be an absolute_path
-     *
-     * @var string
-     */
-    private static $absolute_temp_folder = '/var/www/temp/';
 
     private static $table_name = 'GitHubModule';
 
@@ -396,7 +365,7 @@ class GitHubModule extends DataObject
         $dir = $this->Directory();
         GeneralMethods::output_to_screen('Removing ' . $dir . ' and all its contents ...  ', 'created');
         $this->gitRepo = null;
-        FileSystem::removeFolder($dir); // removes contents but not the actual folder
+        Filesystem::removeFolder($dir); // removes contents but not the actual folder
         //rmdir ($dir);
         return ! file_exists($dir);
     }
@@ -435,9 +404,13 @@ class GitHubModule extends DataObject
         $filter = ['ModuleName' => $moduleName];
         $gitHubModule = GitHubModule::get()->filter($filter)->first();
         if (! $gitHubModule) {
-            $gitHubModule = GitHubModule::create($filter);
-            $gitHubModule->write();
+            $gitHubModule = GitHubModule::create($moduleDetails);
+        } else {
+            foreach($moduleDetails as $field =>$value) {
+                $gitHubModule->$field = $value;
+            }
         }
+        $gitHubModule->write();
 
         return $gitHubModule;
     }
@@ -649,7 +622,7 @@ class GitHubModule extends DataObject
 
     public function addRepoToScrutinzer()
     {
-        Scrutizer::send_to_scrutinizer(
+        Scrutinizer::send_to_scrutinizer(
             $this->Config()->get('scrutinizer_api_key'),
             $this->Config()->get('github_user_name'),
             $this->ModuleName
