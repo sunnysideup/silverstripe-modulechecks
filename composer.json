@@ -23,9 +23,10 @@
         }
     ],
     "require": {
-        "symfony/yaml": "^3.1",
+        "symfony/yaml": "^5.1",
         "silverstripe/recipe-cms": "^4.5",
         "sunnysideup/flush": "dev-master",
+        "sunnysideup/cms-niceties": "dev-master",
         "cpliakas/git-wrapper": "^3.0"
     },
     "extra": [],

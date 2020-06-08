@@ -15,10 +15,30 @@ use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 
 
 class GitHubModule extends DataObject
 {
+
+    public static function get_or_create_github_module(array $moduleDetails) : self
+    {
+        $moduleName = trim($moduleName[$moduleDetails['name']]);
+        $filter = ['ModuleName' => $moduleName];
+        $gitHubModule = GitHubModule::get()->filter($filter)->first();
+        if (! $gitHubModule) {
+            $gitHubModule = GitHubModule::create($moduleDetails);
+        } else {
+            foreach($moduleDetails as $field =>$value) {
+                $gitHubModule->$field = $value;
+            }
+        }
+        $gitHubModule->write();
+
+        return $gitHubModule;
+    }
+
+
 
     private static $table_name = 'GitHubModule';
 
@@ -56,6 +76,8 @@ class GitHubModule extends DataObject
         'Directory' => 'Varchar(255)',
         'URL' => 'Varchar(255)',
     ];
+
+    private static $primary_model_admin_class = ModuleCheckModelAdmin::class;
 
     public function getDirectory()
     {
@@ -202,24 +224,6 @@ class GitHubModule extends DataObject
 
         return $obj->getRawFileFromGithub($this, $fileName);
     }
-
-    public static function get_or_create_github_module(array $moduleDetails) : self
-    {
-        $moduleName = trim($moduleName[$moduleDetails['name']]);
-        $filter = ['ModuleName' => $moduleName];
-        $gitHubModule = GitHubModule::get()->filter($filter)->first();
-        if (! $gitHubModule) {
-            $gitHubModule = GitHubModule::create($moduleDetails);
-        } else {
-            foreach($moduleDetails as $field =>$value) {
-                $gitHubModule->$field = $value;
-            }
-        }
-        $gitHubModule->write();
-
-        return $gitHubModule;
-    }
-
 
 
 

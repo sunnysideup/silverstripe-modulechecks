@@ -158,7 +158,7 @@ class BaseObject
 
     protected $availableCommandsList = [];
 
-    public function availableCommands() : array
+    public function availableChecks() : array
     {
         if (! count($this->availableCommandsList)) {
             foreach($this->Config()->get('core_classes') as $class) {
@@ -176,9 +176,9 @@ class BaseObject
     }
 
 
-    public function availableCommandsForDropdown() : array
+    public function availableChecksForDropdown() : array
     {
-        $list = $this->availableCommands();
+        $list = $this->availableChecks();
         $array = [];
         foreach($list as $class => $details) {
             $array[$class] = $details->getDescription();
