@@ -21,21 +21,6 @@ class GitHubModule extends DataObject
 {
 
 
-    public function availableCommands()
-    {
-        $list = [];
-        foreach($this->Config()->get('core_classes') as $class) {
-            $classes = ClassInfo::subclassesFor($class, false);
-            foreach($classes as $class) {
-                $list[$class] = [
-                    'Name' => $class,
-                    'Description' => Injector::inst()->get($class)->getDescription(),
-                ];
-            }
-        }
-
-        return $list;
-    }
 
 
 

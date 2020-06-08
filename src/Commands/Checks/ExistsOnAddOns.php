@@ -22,5 +22,13 @@ class ExistsOnAddOns extends ChecksAbstract
         );
     }
 
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Does the module exist on addons.silverstripe.org?';
+    }
 
 }

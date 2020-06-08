@@ -4,17 +4,25 @@ namespace Sunnysideup\ModuleChecks\Commands\Checks;
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 
-class HasComposerFile extends ChecksAbstract
+class HasTLDRFile extends ChecksAbstract
 {
+
+    protected $options = [
+        'docs/en/INDEX.md',
+        'docs/en/INDEX.MD',
+        'docs/en/index.md',
+    ];
+
     /**
      *
      * @return boolean
      */
     public function run() : bool
     {
-        return $this->hasFileOnGitHub('composer.json');
+        foreach($this->options as $option) {
+            return $this->hasFileOnGitHub('docs/en/' . $option);
+        }
     }
-
 
     /**
      * what does it do?
@@ -22,7 +30,8 @@ class HasComposerFile extends ChecksAbstract
      */
     public function getDescription() : string
     {
-        return 'Does the module have a composer file?';
+        return 'Does the module have a README file?';
     }
+
 
 }

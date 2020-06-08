@@ -84,6 +84,36 @@ class BaseObject
     private static $license_type = 'BSD-3-Clause';
 
     /**
+     * Auto tag creation delay, using strtotime format. defaults to a week ago if not set
+     * @var string
+     */
+    private static $tag_delay = '-1 weeks';
+
+    /**
+     *  message for auto-created tags (git tag!)
+     * @var string
+     */
+    private static $tag_create_message = 'Auto-created tag.';
+
+
+     /**
+      * log folder is needed to write log file with unresolved problems, leave out
+      * not to write log file
+      * @var string
+      */
+    private static $logfolder = '/var/www/moduletools/log/';
+
+    /**
+     *  Words to check for accross all files in test modules. Produces warnings
+     *  when matches are found. Regex fomat. Leave empty not to do any checks
+     */
+    private static $excluded_words= [
+
+    ];
+
+    private static $debug = true;
+
+    /**
      *
      * @var string
      */
@@ -102,6 +132,23 @@ class BaseObject
                 }
             }
         }
+    }
+
+
+    public function availableCommands()
+    {
+        $list = [];
+        foreach($this->Config()->get('core_classes') as $class) {
+            $classes = ClassInfo::subclassesFor($class, false);
+            foreach($classes as $class) {
+                $list[$class] = [
+                    'Name' => $class,
+                    'Description' => Injector::inst()->get($class)->getDescription(),
+                ];
+            }
+        }
+
+        return $list;
     }
 
 }

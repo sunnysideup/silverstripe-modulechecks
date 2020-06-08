@@ -14,5 +14,14 @@ class HasLicense extends ChecksAbstract
         return $this->hasFileOnGitHub('LICENSE');
     }
 
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription() : string
+    {
+        return 'Does the module have a LICENSE?';
+    }
+
 
 }
