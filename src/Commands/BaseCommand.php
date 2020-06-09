@@ -10,6 +10,8 @@ class BaseCommand extends BaseObject
 
     private static $enabled = false;
 
+    protected $errorString = '';
+
     public function __construct($repo)
     {
         $this->repo = $repo;
@@ -23,5 +25,10 @@ class BaseCommand extends BaseObject
     protected function getName(): string
     {
         return $this->repo->ModuleName;
+    }
+
+    protected function logError(string $error)
+    {
+        $this->errorString =" \n|".$error;
     }
 }
