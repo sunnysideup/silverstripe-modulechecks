@@ -21,7 +21,7 @@ class ExistsOnAddOns extends ChecksAbstract
         $name = $this->getName();
         $packagistUserName = $this->Config()->get('packagist_user_name');
 
-        return GeneralMethods::check_location(
+        return $this->checkLocation(
             'http://addons.silverstripe.org/add-ons/' .
             $packagistUserName .
             '/' . $name

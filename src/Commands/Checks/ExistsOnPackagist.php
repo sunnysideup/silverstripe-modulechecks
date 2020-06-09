@@ -21,7 +21,7 @@ class ExistsOnPackagist extends ChecksAbstract
         $name = $this->getName();
         $packagistUserName = $this->Config()->get('packagist_user_name');
 
-        return GeneralMethods::check_location(
+        return $this->checkLocation(
             'https://packagist.org/packages/' .
             $packagistUserName . '/' . $name
         );

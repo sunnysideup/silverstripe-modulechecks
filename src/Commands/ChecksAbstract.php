@@ -20,10 +20,32 @@ abstract class ChecksAbstract extends BaseCommand
         $name = $this->getName();
         $gitHubUserName = $this->Config()->get('github_user_name');
 
-        return GeneralMethods::check_location(
+        return $this->checkLocation(
             'https://raw.githubusercontent.com/' .
             $gitHubUserName . '/silverstripe-' . $name .
             '/master/' . $file
         );
     }
+
+    /**
+     * opens a location with curl to see if it exists.
+     *
+     * @param string $url
+     *
+     * @return boolean
+     */
+    public function checkLocation(string $url): bool
+    {
+        $handle = curl_init($url);
+        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, true);
+        curl_exec($handle);
+
+        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+        $outcome = $httpCode === intval(200) ? true : false;
+        curl_close($handle);
+
+        return $outcome;
+    }
+
 }
