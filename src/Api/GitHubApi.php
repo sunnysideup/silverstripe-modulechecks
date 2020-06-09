@@ -4,7 +4,8 @@ namespace Sunnysideup\ModuleChecks\Api;
 
 use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DB;
-use Sunnysideup\ModuleChecks\Model\GitHubModule;
+use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Model\Module;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
 class GitHubApi extends BaseObject
@@ -36,7 +37,7 @@ class GitHubApi extends BaseObject
             return $preSelected;
         }
         if (! $username) {
-            $username = Config::inst()->get(GitHubModule::class, 'github_user_name');
+            $username = Config::inst()->get(BaseObject::class, 'github_user_name');
         }
         print "<li>Retrieving List of modules from GitHub for user ${username} without AUTH... </li>";
         die('asdfs');
@@ -79,7 +80,7 @@ class GitHubApi extends BaseObject
             if ($username) {
                 $gitUserName = $username;
             } else {
-                $gitUserName = Config::inst()->get(GitHubModule::class, 'github_user_name');
+                $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
             }
             print "<li>Retrieving List of modules from GitHub for user ${username} with AUTH ... </li>";
             if (! count(self::$_modules)) {
@@ -93,7 +94,6 @@ class GitHubApi extends BaseObject
 
                     $method = 'GET';
                     $curlResult = self::runCurlResult($url, $method, $data);
-
 
                     if (! $curlResult) {
                         GeneralMethods::output_to_screen('Could not retrieve list of modules from GitHub');
@@ -112,30 +112,12 @@ class GitHubApi extends BaseObject
         return self::$_modules;
     }
 
-    protected function apiCall(string $moduleName, array $data, ?string $gitAPIcommand = '', ?string $method = 'GET')
-    {
-        $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        GeneralMethods::output_to_screen('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
-        $gitUserName = Config::inst()->get(GitHubModule::class, 'github_user_name');
-        $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($moduleName);
-        if (trim($gitAPIcommand)) {
-            $url .= '/' . trim($gitAPIcommand);
-        }
-
-        $curlResult = self::runCurlResult($url, $method, $jsonData);
-
-        print_r($url);
-        print_r('<br/>');
-        print_r($curlResult);
-        return $curlResult;
-    }
-
     /**
      * retrieves a raw file from Github
      *
      * @return string
      */
-    public function getRawFileFromGithub(GitHubModule $repo, string $fileName) : string
+    public function getRawFileFromGithub(Module $repo, string $fileName): string
     {
         $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
 
@@ -157,15 +139,33 @@ class GitHubApi extends BaseObject
 
         return $content;
     }
-    protected static function runCurlResult( string $url, string $method, array $jsonData)
+
+    protected function apiCall(string $moduleName, array $data, ?string $gitAPIcommand = '', ?string $method = 'GET')
+    {
+        $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        GeneralMethods::output_to_screen('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
+        $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
+        $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($moduleName);
+        if (trim($gitAPIcommand)) {
+            $url .= '/' . trim($gitAPIcommand);
+        }
+
+        $curlResult = self::runCurlResult($url, $method, $jsonData);
+
+        print_r($url);
+        print_r('<br/>');
+        print_r($curlResult);
+        return $curlResult;
+    }
+
+    protected static function runCurlResult(string $url, string $method, array $jsonData)
     {
         $method = trim(strtoupper($method));
 
-        $gitApiUserName = trim(GitHubModule::Config()->get('git_api_login_username'));
-        $gitUserName = trim(GitHubModule::Config()->get('github_user_name'));
-        $gitApiUserPassword = trim(GitHubModule::Config()->get('git_api_login_password'));
+        $gitApiUserName = trim(Config::inst()->get(BaseObject::class, 'git_api_login_username'));
+        $gitApiUserPassword = trim(Config::inst()->get(BaseObject::class, 'git_api_login_password'));
 
-        $gitApiAccessToken = trim(GitHubModule::Config()->get('git_personal_access_token'));
+        $gitApiAccessToken = trim(Config::inst()->get(BaseObject::class, 'git_personal_access_token'));
         if (trim($gitApiAccessToken)) {
             $gitApiUserPassword = $gitApiAccessToken;
         }
@@ -244,7 +244,5 @@ class GitHubApi extends BaseObject
         } elseif (isset($repo['name'])) {
             DB::alteration_message('skipping ' . $repo['name'] . ' as it is a fork');
         }
-
     }
-
 }

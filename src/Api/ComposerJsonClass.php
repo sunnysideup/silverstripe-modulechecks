@@ -3,10 +3,10 @@
 namespace Sunnysideup\ModuleChecks\Api;
 
 use SilverStripe\Core\ClassInfo;
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
-use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
+use Sunnysideup\ModuleChecks\Model\Module;
+use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
 class ComposerJsonClass extends BaseObject
 {
@@ -15,13 +15,20 @@ class ComposerJsonClass extends BaseObject
      */
     protected $jsonData = null;
 
-    public function __construct($gitHubModuleInstance)
+    /**
+     * @var Module|null
+     */
+    protected $repo = null;
+
+    /**
+     * @var Module|null
+     */
+    protected $moduleName = '';
+
+    public function __construct($repo)
     {
-        if (! $gitHubModuleInstance) {
-            user_error('CheckComposerJson needs an instance of GitHubModule');
-        }
-        $this->gitHubModuleInstance = $gitHubModuleInstance;
-        $this->moduleName = $gitHubModuleInstance->ModuleName;
+        $this->repo = $repo;
+        $this->moduleName = $this->repo->ModuleName;
     }
 
     /**
@@ -42,45 +49,6 @@ class ComposerJsonClass extends BaseObject
         return $this;
     }
 
-    public function updateJsonFile()
-    {
-        if (! is_array($this->jsonData)) {
-            $this->readJsonFromFile();
-        }
-
-        if (is_array($this->jsonData)) {
-            GeneralMethods::output_to_screen('<li> Updating composer.json </li>');
-            $composerUpdates = ClassInfo::subclassesFor(UpdateComposerAbstract::class);
-
-            //remove base class
-            array_shift($composerUpdates);
-
-            //get all updates and if they exists then get the ones that we need to do ...
-            $limitedComposerUpdates = $this->Config()->get('updates');
-            if ($limitedComposerUpdates === 'none') {
-                $composerUpdates = [];
-            } elseif (is_array($limitedComposerUpdates) && count($limitedComposerUpdates)) {
-                $composerUpdates = array_intersect($composerUpdates, $limitedComposerUpdates);
-            }
-
-            foreach ($composerUpdates as $composerUpdate) {
-                $obj = $composerUpdate::create($this);
-                $obj->run();
-            }
-            if ($this->writeJsonToFile()) {
-                GeneralMethods::output_to_screen('<li> Updated JSON </li>');
-            } else {
-                UpdateModules::addUnsolvedProblem($this->moduleName, 'Could not write JSON');
-            }
-        } else {
-            //UpdateModules::$unsolvedItems[$this->moduleName] = 'No composer.json';
-
-            UpdateModules::addUnsolvedProblem($this->moduleName, 'No composer.json');
-        }
-
-        return $this;
-    }
-
     public function getDescription(): string
     {
         if (! is_array($this->jsonData)) { //if not loaded
@@ -96,8 +64,8 @@ class ComposerJsonClass extends BaseObject
             return false;
         }
 
-        $folder = GitHubModule::Config()->get('absolute_temp_folder');
-        $filename = $folder . '/' . $this->gitHubModuleInstance->ModuleName . '/composer.json';
+        $folder = Config::inst()->get(BaseObject::class, 'absolute_temp_folder');
+        $filename = $folder . '/' . $this->repo->ModuleName . '/composer.json';
         $value = file_put_contents($filename, json_encode($this->jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         return $value ? true : false;
@@ -105,7 +73,7 @@ class ComposerJsonClass extends BaseObject
 
     private function readJsonFromFile(): bool
     {
-        $folder = GitHubModule::Config()->get('absolute_temp_folder');
+        $folder = Config::inst()->get(BaseObject::class, 'absolute_temp_folder');
         $filename = $folder . '/' . $this->moduleName . '/composer.json';
         set_error_handler([$this, 'catchFopenWarning'], E_WARNING);
 
@@ -123,4 +91,43 @@ class ComposerJsonClass extends BaseObject
     {
         user_error('Can not open composer file ....');
     }
+
+    // public function updateJsonFile()
+    // {
+    //     if (! is_array($this->jsonData)) {
+    //         $this->readJsonFromFile();
+    //     }
+    //
+    //     if (is_array($this->jsonData)) {
+    //         GeneralMethods::output_to_screen('<li> Updating composer.json </li>');
+    //         $composerUpdates = ClassInfo::subclassesFor(UpdateComposerAbstract::class);
+    //
+    //         //remove base class
+    //         array_shift($composerUpdates);
+    //
+    //         //get all updates and if they exists then get the ones that we need to do ...
+    //         $limitedComposerUpdates = $this->Config()->get('updates');
+    //         if ($limitedComposerUpdates === 'none') {
+    //             $composerUpdates = [];
+    //         } elseif (is_array($limitedComposerUpdates) && count($limitedComposerUpdates)) {
+    //             $composerUpdates = array_intersect($composerUpdates, $limitedComposerUpdates);
+    //         }
+    //
+    //         foreach ($composerUpdates as $composerUpdate) {
+    //             $obj = $composerUpdate::create($this);
+    //             $obj->run();
+    //         }
+    //         if ($this->writeJsonToFile()) {
+    //             GeneralMethods::output_to_screen('<li> Updated JSON </li>');
+    //         } else {
+    //             UpdateModules::addUnsolvedProblem($this->moduleName, 'Could not write JSON');
+    //         }
+    //     } else {
+    //         //UpdateModules::$unsolvedItems[$this->moduleName] = 'No composer.json';
+    //
+    //         UpdateModules::addUnsolvedProblem($this->moduleName, 'No composer.json');
+    //     }
+    //
+    //     return $this;
+    // }
 }

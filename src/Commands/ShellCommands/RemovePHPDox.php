@@ -1,4 +1,5 @@
 <?php
+
 namespace Sunnysideup\ModuleChecks\Commands\ShellCommands;
 
 use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
@@ -12,6 +13,7 @@ class RemovePHPDox extends ShellCommandsAbstract
         'rm ./docs/api/ -rf',
         'rm ./docs/build/ -rf ',
     ];
+
     /**
      * should it be included by default?
      * @var bool
@@ -22,7 +24,7 @@ class RemovePHPDox extends ShellCommandsAbstract
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Remove phpdox files';
     }

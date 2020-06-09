@@ -2,7 +2,6 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\ShellCommands;
 
-use SilverStripe\Control\Director;
 use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
 
 class FixPSR2 extends ShellCommandsAbstract
@@ -22,7 +21,7 @@ class FixPSR2 extends ShellCommandsAbstract
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Run coding standards';
     }

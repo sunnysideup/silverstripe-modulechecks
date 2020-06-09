@@ -2,11 +2,8 @@
 
 namespace Sunnysideup\ModuleChecks\Commands;
 
-abstract class ShellCommandsAbstract extends BaseObject
+abstract class ShellCommandsAbstract extends BaseCommand
 {
-
-    private static $enabled = false;
-
     /**
      * root dir for module
      * e.g. /var/www/modules/mymodule
@@ -16,15 +13,21 @@ abstract class ShellCommandsAbstract extends BaseObject
      */
     protected $repo = '';
 
+    protected $commands = [];
+
+    protected $outcomes = [];
+
     /**
      * @var string
      */
-    protected $commands = [];
+    protected $rootDirForModule = '';
+
+    private static $enabled = false;
 
     public function __construct($repo)
     {
-        $this->repo = $repo;
-        $this->rootDirForModule = $rootDirForModule;
+        parent::__construct($repo);
+        $this->rootDirForModule = $this->repo->Directory();
     }
 
     public function setRootDirForModule($rootDirForModule)
@@ -52,7 +55,7 @@ abstract class ShellCommandsAbstract extends BaseObject
         return $this;
     }
 
-    public function run()
+    public function run(): bool
     {
         if (! $this->rootDirForModule) {
             user_error('no root dir for module has been set');
@@ -60,14 +63,19 @@ abstract class ShellCommandsAbstract extends BaseObject
         if (! count($this->commands)) {
             user_error('command not set');
         }
-        $this->runCommand();
+        return $this->runCommand();
     }
 
-    abstract public function description() : string;
+    abstract public function description(): string;
 
     public static function CheckCommandExists($cmd)
     {
         return ! empty(shell_exec("which ${cmd}"));
+    }
+
+    public function getError(): string
+    {
+        return print_r($this->outcomes, 1);
     }
 
     /**
@@ -77,11 +85,17 @@ abstract class ShellCommandsAbstract extends BaseObject
     {
         foreach ($this->commands as $command) {
             GeneralMethods::output_to_screen('Running ' . $command);
-            return exec(
-                ' cd ' . $this->rootDirForModule . ';
-                ' . $command . '
-                '
+            $obj = PHP2CommandLineSingleton::create();
+            $results = $obj->exec(
+                $this->rootDirForModule, //dir ...
+                $command, //command
+                'Running ' . $command, //comment
+                true //run immediately?
             );
+            foreach ($results as $result) {
+                $this->outcomes[] = $result;
+            }
         }
+        return true;
     }
 }

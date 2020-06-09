@@ -155,8 +155,8 @@ Running upgrades on "/var/www/ss3/upgrades/modulechecks/modulechecks"
 [2020-06-05 18:13:46] Applying ClassToTraitRule to ConfigYML.php...
 [2020-06-05 18:13:46] Applying RenameClasses to ComposerJson.php...
 [2020-06-05 18:13:46] Applying ClassToTraitRule to ComposerJson.php...
-[2020-06-05 18:13:46] Applying RenameClasses to GitHubModule.php...
-[2020-06-05 18:13:46] Applying ClassToTraitRule to GitHubModule.php...
+[2020-06-05 18:13:46] Applying RenameClasses to Module.php...
+[2020-06-05 18:13:46] Applying ClassToTraitRule to Module.php...
 [2020-06-05 18:13:46] Applying RenameClasses to ModuleChecks.php...
 [2020-06-05 18:13:46] Applying ClassToTraitRule to ModuleChecks.php...
 [2020-06-05 18:13:46] Applying RenameClasses to UpdateModules.php...
@@ -206,7 +206,7 @@ modified:	src/Api/FilesToAddAbstract.php
 
 -use Director;
 -use Filesystem;
--use GitHubModule;
+-use Module;
 -use Injector;
 -use ViewableData;
 +
@@ -218,7 +218,7 @@ modified:	src/Api/FilesToAddAbstract.php
 +use SilverStripe\Control\Director;
 +use SilverStripe\Assets\Filesystem;
 +use SilverStripe\Core\Injector\Injector;
-+use Sunnysideup\ModuleChecks\Model\GitHubModule;
++use Sunnysideup\ModuleChecks\Model\Module;
 +use SilverStripe\View\ViewableData;
 +
 
@@ -261,7 +261,7 @@ modified:	src/Api/GitHubApi.php
 
 -use Config;
 -use DB;
--use GitHubModule;
+-use Module;
 -use UpdateModules;
 -use ViewableData;
 +
@@ -271,7 +271,7 @@ modified:	src/Api/GitHubApi.php
 +
 +use SilverStripe\Core\Config\Config;
 +use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-+use Sunnysideup\ModuleChecks\Model\GitHubModule;
++use Sunnysideup\ModuleChecks\Model\Module;
 +use SilverStripe\ORM\DB;
 +use SilverStripe\View\ViewableData;
 +
@@ -288,8 +288,8 @@ modified:	src/Api/GitHubApi.php
              return $preSelected;
          }
          if (! $username) {
--            $username = Config::inst()->get('GitHubModule', 'github_user_name');
-+            $username = Config::inst()->get(GitHubModule::class, 'github_user_name');
+-            $username = Config::inst()->get('Module', 'github_user_name');
++            $username = Config::inst()->get(BaseObject::class, 'github_user_name');
          }
          print "<li>Retrieving List of modules from GitHub for user ${username} ... </li>";
          if (! count(self::$_modules)) {
@@ -305,8 +305,8 @@ modified:	src/Api/GitHubApi.php
              if ($username) {
                  $gitUserName = $username;
              } else {
--                $gitUserName = Config::inst()->get('GitHubModule', 'github_user_name');
-+                $gitUserName = Config::inst()->get(GitHubModule::class, 'github_user_name');
+-                $gitUserName = Config::inst()->get('Module', 'github_user_name');
++                $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
              }
              print "<li>Retrieving List of modules from GitHub for user ${username} ... </li>";
              if (! count(self::$_modules)) {
@@ -698,7 +698,7 @@ Warnings for src/Objects/ComposerJson.php:
  - src/Objects/ComposerJson.php:72 PhpParser\Node\Expr\Variable
  - WARNING: New class instantiated by a dynamic value on line 72
 
-modified:	src/Objects/GitHubModule.php
+modified:	src/Objects/Module.php
 @@ -2,13 +2,18 @@
 
  namespace Sunnysideup\ModuleChecks\Objects;
@@ -720,7 +720,7 @@ modified:	src/Objects/GitHubModule.php
 +use SilverStripe\ORM\DataObject;
 +
 
- class GitHubModule extends DataObject
+ class Module extends DataObject
  {
 
 modified:	src/Tasks/ModuleChecks.php
@@ -740,7 +740,7 @@ modified:	src/Tasks/ModuleChecks.php
 +
 +use Sunnysideup\ModuleChecks\Api\GitHubApi;
 +use SilverStripe\Core\Config\Config;
-+use Sunnysideup\ModuleChecks\Model\GitHubModule;
++use Sunnysideup\ModuleChecks\Model\Module;
 +use SilverStripe\ORM\DB;
 +use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 +use SilverStripe\Dev\BuildTask;
@@ -752,8 +752,8 @@ modified:	src/Tasks/ModuleChecks.php
 
          $modules = GitHubApi::get_all_repos();
 
--        $gitUser = Config::inst()->get('GitHubModule', 'github_user_name');
-+        $gitUser = Config::inst()->get(GitHubModule::class, 'github_user_name');
+-        $gitUser = Config::inst()->get('Module', 'github_user_name');
++        $gitUser = Config::inst()->get(BaseObject::class, 'github_user_name');
          $packagistUser = $this->Config()->get('packagist_user_name');
 
          if ($gitUser && $packagistUser) {
@@ -761,8 +761,8 @@ modified:	src/Tasks/ModuleChecks.php
       */
      protected function hasLicense($name)
      {
--        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get('GitHubModule', 'github_user_name') . '/silverstripe-' . $name . '/master/LICENSE');
-+        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(GitHubModule::class, 'github_user_name') . '/silverstripe-' . $name . '/master/LICENSE');
+-        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get('Module', 'github_user_name') . '/silverstripe-' . $name . '/master/LICENSE');
++        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(BaseObject::class, 'github_user_name') . '/silverstripe-' . $name . '/master/LICENSE');
      }
 
      /**
@@ -770,8 +770,8 @@ modified:	src/Tasks/ModuleChecks.php
       */
      protected function hasComposerFile($name)
      {
--        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get('GitHubModule', 'github_user_name') . '/silverstripe-' . $name . '/master/composer.json');
-+        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(GitHubModule::class, 'github_user_name') . '/silverstripe-' . $name . '/master/composer.json');
+-        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get('Module', 'github_user_name') . '/silverstripe-' . $name . '/master/composer.json');
++        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(BaseObject::class, 'github_user_name') . '/silverstripe-' . $name . '/master/composer.json');
      }
 
      /**
@@ -779,8 +779,8 @@ modified:	src/Tasks/ModuleChecks.php
       */
      protected function hasReadMeFile($name)
      {
--        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get('GitHubModule', 'github_user_name') . '/silverstripe-' . $name . '/master/README.md');
-+        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(GitHubModule::class, 'github_user_name') . '/silverstripe-' . $name . '/master/README.md');
+-        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get('Module', 'github_user_name') . '/silverstripe-' . $name . '/master/README.md');
++        return GeneralMethods::check_location('https://raw.githubusercontent.com/' . Config::inst()->get(BaseObject::class, 'github_user_name') . '/silverstripe-' . $name . '/master/README.md');
      }
 
      protected function existsOnAddOns($name)
@@ -802,13 +802,13 @@ modified:	src/Tasks/UpdateModules.php
  use FileSystem;
 -use GeneralMethods;
 -
--use GitHubModule;
+-use Module;
 -use GitHubApi;
 +
 +
 +
 +
-+use Sunnysideup\ModuleChecks\Model\GitHubModule;
++use Sunnysideup\ModuleChecks\Model\Module;
 +use Sunnysideup\ModuleChecks\Api\GitHubApi;
 +use Sunnysideup\ModuleChecks\BaseCommands\FilesToAddAbstract;
 +use SilverStripe\Core\ClassInfo;
@@ -884,7 +884,7 @@ modified:	_config/database.legacy.yml
 -    FixConfigBasics: Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics
 -    ConfigYML: Sunnysideup\ModuleChecks\Api\ConfigYML
 -    ComposerJson: Sunnysideup\ModuleChecks\Objects\ComposerJson
--    GitHubModule: Sunnysideup\ModuleChecks\Model\GitHubModule
+-    Module: Sunnysideup\ModuleChecks\Model\Module
 -    ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
 -    UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules
 +    Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract: Sunnysideup\ModuleChecks\BaseCommands\UpdateComposerAbstract
@@ -917,7 +917,7 @@ modified:	_config/database.legacy.yml
 +    Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics: Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics
 +    Sunnysideup\ModuleChecks\Api\ConfigYML: Sunnysideup\ModuleChecks\Api\ConfigYML
 +    Sunnysideup\ModuleChecks\Objects\ComposerJson: Sunnysideup\ModuleChecks\Objects\ComposerJson
-+    Sunnysideup\ModuleChecks\Model\GitHubModule: Sunnysideup\ModuleChecks\Model\GitHubModule
++    Sunnysideup\ModuleChecks\Model\Module: Sunnysideup\ModuleChecks\Model\Module
 +    Sunnysideup\ModuleChecks\Tasks\ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
 +    Sunnysideup\ModuleChecks\Tasks\UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules
 
@@ -997,8 +997,8 @@ Running upgrades on "/var/www/ss3/upgrades/modulechecks/modulechecks"
 [2020-06-05 18:14:28] Applying ClassToTraitRule to ConfigYML.php...
 [2020-06-05 18:14:28] Applying RenameClasses to ComposerJson.php...
 [2020-06-05 18:14:28] Applying ClassToTraitRule to ComposerJson.php...
-[2020-06-05 18:14:28] Applying RenameClasses to GitHubModule.php...
-[2020-06-05 18:14:28] Applying ClassToTraitRule to GitHubModule.php...
+[2020-06-05 18:14:28] Applying RenameClasses to Module.php...
+[2020-06-05 18:14:28] Applying ClassToTraitRule to Module.php...
 [2020-06-05 18:14:28] Applying RenameClasses to ModuleChecks.php...
 [2020-06-05 18:14:28] Applying ClassToTraitRule to ModuleChecks.php...
 [2020-06-05 18:14:28] Applying RenameClasses to UpdateModules.php...

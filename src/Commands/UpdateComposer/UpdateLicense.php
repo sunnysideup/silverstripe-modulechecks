@@ -10,6 +10,12 @@ use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
  */
 class UpdateLicense extends UpdateComposerAbstract
 {
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
     public function run()
     {
         $json = $this->getJsonData();
@@ -19,16 +25,10 @@ class UpdateLicense extends UpdateComposerAbstract
     }
 
     /**
-     * should it be included by default?
-     * @var bool
-     */
-    private static $enabled = true;
-
-    /**
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Update license type.';
     }

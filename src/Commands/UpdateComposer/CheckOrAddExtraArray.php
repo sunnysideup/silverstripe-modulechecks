@@ -10,14 +10,20 @@ use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
  */
 class CheckOrAddExtraArray extends UpdateComposerAbstract
 {
-    public function run()
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = false;
+
+    public function run(): bool
     {
         $json = $this->getJsonData();
 
         if (isset($json['extra'])) {
             GeneralMethods::output_to_screen('<li> already has composer.json[extra][installer-name] </li>');
 
-            return;
+            return false;
         }
         GeneralMethods::output_to_screen("<li> Adding 'extra' array to composer.json </li>");
         if (! isset($json['extra'])) {
@@ -26,18 +32,15 @@ class CheckOrAddExtraArray extends UpdateComposerAbstract
         $json['extra']['installer-name'] = str_replace('silverstripe-', '', $this->composerJsonObj->moduleName);
 
         $this->setJsonData($json);
+
+        return true;
     }
-    /**
-     * should it be included by default?
-     * @var bool
-     */
-    private static $enabled = false;
 
     /**
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Fix extra installer folder.';
     }

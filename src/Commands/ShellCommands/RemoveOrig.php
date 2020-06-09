@@ -9,6 +9,7 @@ class RemoveOrig extends ShellCommandsAbstract
     protected $commands = [
         'find . -type f -name "*.orig" -exec rm  -Rf "{}" \;',
     ];
+
     /**
      * should it be included by default?
      * @var bool
@@ -19,7 +20,7 @@ class RemoveOrig extends ShellCommandsAbstract
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Remove *.orig files';
     }

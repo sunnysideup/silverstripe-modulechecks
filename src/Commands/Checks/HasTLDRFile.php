@@ -1,12 +1,11 @@
 <?php
 
 namespace Sunnysideup\ModuleChecks\Commands\Checks;
+
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 
 class HasTLDRFile extends ChecksAbstract
 {
-
     protected $options = [
         'docs/en/INDEX.md',
         'docs/en/INDEX.MD',
@@ -20,12 +19,11 @@ class HasTLDRFile extends ChecksAbstract
     private static $enabled = true;
 
     /**
-     *
      * @return boolean
      */
-    public function run() : bool
+    public function run(): bool
     {
-        foreach($this->options as $option) {
+        foreach ($this->options as $option) {
             return $this->hasFileOnGitHub('docs/en/' . $option);
         }
     }
@@ -34,10 +32,8 @@ class HasTLDRFile extends ChecksAbstract
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Does the module have a README file?';
     }
-
-
 }

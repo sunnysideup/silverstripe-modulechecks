@@ -31,6 +31,6 @@ SilverStripe\ORM\DatabaseAdmin:
       Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics: Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics
       Sunnysideup\ModuleChecks\Api\ConfigYML: Sunnysideup\ModuleChecks\Api\ConfigYML
       Sunnysideup\ModuleChecks\Objects\ComposerJson: Sunnysideup\ModuleChecks\Api\ComposerJsonClass
-      Sunnysideup\ModuleChecks\Model\GitHubModule: Sunnysideup\ModuleChecks\Model\GitHubModule
+      Sunnysideup\ModuleChecks\Model\Module: Sunnysideup\ModuleChecks\Model\Module
       Sunnysideup\ModuleChecks\Tasks\ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
       Sunnysideup\ModuleChecks\Tasks\UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules

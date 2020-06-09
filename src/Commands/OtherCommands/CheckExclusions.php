@@ -1,14 +1,18 @@
 <?php
 
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
-use Sunnysideup\ModuleChecks\Commands\OtherCommandsAbstract;
-use Sunnysideup\ModuleChecks\Api\Scrutinizer;
+
 use Sunnysideup\ModuleChecks\BaseObject;
 
 class CheckExclusions extends ChecksAbstract
 {
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
 
-    public function run($array) : bool
+    public function run($array): bool
     {
         $excludedWords = Config::inst()->get(BaseObject::class, 'excluded_words');
 
@@ -61,7 +65,7 @@ class CheckExclusions extends ChecksAbstract
         return $problem_files;
     }
 
-    private function checkFileExcludedWords($fileName, $wordArray) : array
+    private function checkFileExcludedWords($fileName, $wordArray): array
     {
         $matchedWords = [];
 

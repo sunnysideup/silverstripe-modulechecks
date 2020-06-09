@@ -2,37 +2,29 @@
 
 namespace Sunnysideup\ModuleChecks\Api;
 
-use SilverStripe\Core\ClassInfo;
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
-use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-
-
 use Exception;
-use SilverStripe\Assets\Filesystem;
+
+
+use GitWrapper\Exception\GitException;
 
 use GitWrapper\GitWrapper;
-use GitWrapper\GitWorkingCopy;
-use GitWrapper\Exception\GitException;
 use SilverStripe\Control\Director;
-use SilverStripe\ORM\DataObject;
 use SilverStripe\Core\Config\Config;
 use Sunnysideup\ModuleChecks\BaseObject;
-use Sunnysideup\ModuleChecks\Api\GitHubApi;
-use Sunnysideup\ModuleChecks\Model\GitHubModule;
+use Sunnysideup\ModuleChecks\Model\Module;
+use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
 class GitApi extends BaseObject
 {
-
-    private $repo = null;
-
     protected $gitApiWrapper = null;
 
     protected $commsWrapper = null;
 
+    private $repo = null;
+
     private $latestTag = null;
 
-    public function __construct(GitHubModule $repo, ?bool $forceNew = false)
+    public function __construct(Module $repo, ?bool $forceNew = false)
     {
         $this->repo = $repo;
         //check if one has been created already...
@@ -60,12 +52,12 @@ class GitApi extends BaseObject
             //otherwise clone it....
             if ($this->repo->IsDirGitRepo($this->repo->Directory())) {
                 if ($forceNew) {
-                    $this->repo->removeClone();
+                    $this->repo->RemoveClone();
                     return $this->__construct($this->repo, false);
                 }
                 $this->gitApiWrapper = $this->commsWrapper->workingCopy($this->repo->Directory());
             } else {
-                GeneralMethods::output_to_screen('cloning ... ' . $this->repo->fullGitURL(), 'created');
+                GeneralMethods::output_to_screen('cloning ... ' . $this->repo->FullGitURL(), 'created');
 
                 $this->gitApiWrapper = null;
                 $cloneAttempts = 0;
@@ -79,9 +71,10 @@ class GitApi extends BaseObject
                     try {
                         $this->commsWrapper->setTimeout(240); //Big modules need a longer timeout
                         $this->gitApiWrapper = $this->commsWrapper->cloneRepository(
-                            $this->repo->fullGitURL(),
+                            $this->repo->FullGitURL(),
                             $this->repo->Directory()
                         );
+                        $this->pull();
                         $this->commsWrapper->setTimeout(60);
                     } catch (Exception $e) {
                         if (strpos($e->getMessage(), 'already exists and is not an empty directory') !== false) {
@@ -101,7 +94,6 @@ class GitApi extends BaseObject
             $this->commsWrapper->git('config -l');
         }
     }
-
 
     /**
      * pulls a git repo
@@ -132,7 +124,7 @@ class GitApi extends BaseObject
      *
      * @return bool
      */
-    public function commit($message = 'PATCH: module clean-up') : bool
+    public function commit($message = 'PATCH: module clean-up'): bool
     {
         if ($this->gitApiWrapper) {
             try {
@@ -157,7 +149,7 @@ class GitApi extends BaseObject
      * adds all files to a git repo
      * @return bool
      */
-    public function add() : bool
+    public function add(): bool
     {
         GeneralMethods::output_to_screen('Adding new files to ' . $this->repo->ModuleName . ' ...  ', 'created');
 
@@ -186,7 +178,7 @@ class GitApi extends BaseObject
      *
      * @return bool
      */
-    public function push() : bool
+    public function push(): bool
     {
         GeneralMethods::output_to_screen('Pushing files to ' . $this->repo->ModuleName . ' ...  ', 'created');
 
@@ -214,7 +206,6 @@ class GitApi extends BaseObject
         }
         return false;
     }
-
 
     public function getLatestCommitTime()
     {
@@ -388,4 +379,8 @@ class GitApi extends BaseObject
         $this->gitApiWrapper->push(['tags' => true]);
     }
 
+    protected function IsDirGitRepo($directory)
+    {
+        return file_exists($directory . '/.git');
+    }
 }

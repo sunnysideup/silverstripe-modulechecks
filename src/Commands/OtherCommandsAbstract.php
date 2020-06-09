@@ -2,17 +2,16 @@
 
 namespace Sunnysideup\ModuleChecks\Commands;
 
-abstract class OtherCommandsAbstract extends BaseObject
+abstract class OtherCommandsAbstract extends BaseCommand
 {
-
     private static $enabled = false;
 
-    public function __construct($repo)
+    abstract public function run(): bool;
+
+    abstract public function description(): string;
+
+    public function getError(): string
     {
-        $this->repo = $repo;
+        return 'Could not run command.';
     }
-
-    abstract public function run();
-
-    abstract public function description() : string;
 }

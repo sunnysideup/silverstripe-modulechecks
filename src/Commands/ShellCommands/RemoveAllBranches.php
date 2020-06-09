@@ -29,7 +29,7 @@ class RemoveAllBranches extends ShellCommandsAbstract
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Remove all branches';
     }

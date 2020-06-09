@@ -2,11 +2,16 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
 
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 
 class ComposerFixRequirements extends UpdateComposerAbstract
 {
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = false;
+
     public function run()
     {
         $json = $this->composerJsonObj->getJsonData();
@@ -19,9 +24,9 @@ class ComposerFixRequirements extends UpdateComposerAbstract
         }
 
         if ($is2Point4) {
-            $version = "~2.4";
+            $version = '~2.4';
         } else {
-            $version = "~3.6";
+            $version = '~3.6';
         }
 
         $json['require']['silverstripe/framework'] = $version;
@@ -31,18 +36,11 @@ class ComposerFixRequirements extends UpdateComposerAbstract
     }
 
     /**
-     * should it be included by default?
-     * @var bool
-     */
-    private static $enabled = false;
-
-    /**
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Set framework version.';
     }
-
 }

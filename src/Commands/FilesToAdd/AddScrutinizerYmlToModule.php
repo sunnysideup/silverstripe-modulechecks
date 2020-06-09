@@ -9,6 +9,7 @@ class AddScrutinizerYmlToModule extends FilesToAddAbstract
     protected $sourceLocation = 'app/template_files/.scrutinizer.yml';
 
     protected $fileLocation = '.scrutinizer.yml';
+
     /**
      * should it be included by default?
      * @var bool
@@ -19,7 +20,7 @@ class AddScrutinizerYmlToModule extends FilesToAddAbstract
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Add .scrutinizer.yml file';
     }

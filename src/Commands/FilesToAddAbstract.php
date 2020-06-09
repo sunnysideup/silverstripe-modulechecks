@@ -6,13 +6,10 @@ use SilverStripe\Assets\Filesystem;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\View\Requirements;
-use Sunnysideup\ModuleChecks\Model\GitHubModule;
+use Sunnysideup\ModuleChecks\Model\Module;
 
-abstract class FilesToAddAbstract extends BaseObject
+abstract class FilesToAddAbstract extends BaseCommand
 {
-
-    private static $enabled = false;
-
     protected $gitReplaceArray = [
         '+++long-module-name-goes-here+++' => 'LongModuleName',
         '+++medium-module-name-goes-here+++' => 'MediumModuleName',
@@ -68,9 +65,11 @@ abstract class FilesToAddAbstract extends BaseObject
 
     protected $repo = null;
 
-    public function __construct($repo)
+    private static $enabled = false;
+
+    public function __construct(Module $repo)
     {
-        $this->repo = $repo;
+        parent::__construct($repo);
         $this->rootDirForModule = $repo->Directory();
     }
 
@@ -89,7 +88,7 @@ abstract class FilesToAddAbstract extends BaseObject
         $this->fileLocation = $relativeDirAndFileName;
     }
 
-    abstract public function description() : string;
+    abstract public function description(): string;
 
     public function run()
     {
@@ -105,15 +104,17 @@ abstract class FilesToAddAbstract extends BaseObject
             $fileContent = $this->customiseStandardFile($fileContent);
         }
 
-        $this->saveFile($fileContent);
+        $outcome = $this->saveFile($fileContent);
         if ($fileContent) {
             $this->replaceWordsInFile();
         }
+
+        return (bool) $outcome;
     }
 
     /**
      * @param string $file
-     * @param GitHubModule $repo
+     * @param Module $repo
      *
      * @return string
      */
@@ -161,6 +162,11 @@ abstract class FilesToAddAbstract extends BaseObject
         return trim($text) === trim($compareText);
     }
 
+    public function getError(): string
+    {
+        return 'Could not add file.';
+    }
+
     /**
      * you can either return the string from the
      * `$sourceLocation` or you can just have a string here
@@ -170,7 +176,7 @@ abstract class FilesToAddAbstract extends BaseObject
      *
      * @return string
      */
-    protected function getStandardFile() :string
+    protected function getStandardFile(): string
     {
         $isURL = (strpos($this->sourceLocation, '//') !== false);
 
@@ -207,7 +213,7 @@ abstract class FilesToAddAbstract extends BaseObject
     protected function customiseStandardFile($fileContent)
     {
         $obj = $this->getCustomisationFile();
-        if($obj) {
+        if ($obj) {
             $fileContent = $obj->customiseFile($this->fileLocation, $fileContent);
         }
     }
@@ -257,12 +263,12 @@ abstract class FilesToAddAbstract extends BaseObject
     }
 
     /**
-     * @return Mixed
+     * @return mixed
      */
     protected function getCustomisationFile()
     {
         $fileLocation = $this->rootDirForModule . '/ssmoduleconfigs/ModuleConfig.php';
-        if(file_exists($fileLocation)) {
+        if (file_exists($fileLocation)) {
             require_once($fileLocation);
             return Injector::inst()->get('ModuleConfig');
         }
@@ -270,7 +276,7 @@ abstract class FilesToAddAbstract extends BaseObject
 
     protected function getReadMeComponent($componentName): string
     {
-        $temp_dir = GitHubModule::Config()->get('absolute_temp_folder');
+        $temp_dir = Config::inst()->get(BaseObject::class, 'absolute_temp_folder');
         $moduleName = $this->repo->ModuleName;
 
         $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . strtoupper($componentName) . '.md';

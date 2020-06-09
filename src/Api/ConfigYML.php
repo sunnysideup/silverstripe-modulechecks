@@ -6,27 +6,23 @@ use Exception;
 
 
 
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 use Yaml;
-use Sunnysideup\ModuleChecks\BaseObject;
 
 class ConfigYML extends BaseObject
 {
-
     protected $moduleName = '';
+
     protected $repo = null;
+
     protected $ymlData = null;
+
     protected $filename = '';
 
-    public function __construct($gitHubModuleInstance, $fileToCheck = 'config.yml')
+    public function __construct($repo, $fileToCheck = 'config.yml')
     {
-        if (! $gitHubModuleInstance) {
-            user_error('ConfigYML needs an instance of GitHubModule');
-        }
-        $this->repo = $gitHubModuleInstance;
-        $this->ymlData = null;
-        $folder = GitHubModule::Config()->get('absolute_temp_folder');
+        $this->repo = $repo;
 
         $this->filename = $gitHubModuleInstance->Directory() . '/_config/' . $fileToCheck;
     }
@@ -48,7 +44,7 @@ class ConfigYML extends BaseObject
 
         if (! file_exists($this->filename)) {
             GeneralMethods::output_to_screen('<li>Unable to load: ' . $this->filename, 'updated');
-            //UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to load " . $this->filename;
+            //UpdateModules::$unsolvedItems[$this->repo->ModuleName] = "Unable to load " . $this->filename;
 
             UpdateModules::addUnsolvedProblem($this->repo->ModuleName, 'Unable to load ' . $this->filename);
             return false;
@@ -59,7 +55,7 @@ class ConfigYML extends BaseObject
         } catch (Exception $e) {
             GeneralMethods::output_to_screen('<li>Unable to parse the YAML string: ' . $e->getMessage() . ' <li>', 'updated');
 
-            //UpdateModules::$unsolvedItems[$this->gitHubModuleInstance->ModuleName] = "Unable to parse the YAML string: " .$e->getMessage();
+            //UpdateModules::$unsolvedItems[$this->repo->ModuleName] = "Unable to parse the YAML string: " .$e->getMessage();
 
             UpdateModules::addUnsolvedProblem($this->repo->ModuleName, 'Unable to parse the YAML string: ' . $e->getMessage());
 

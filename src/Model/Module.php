@@ -2,45 +2,21 @@
 
 namespace Sunnysideup\ModuleChecks\Model;
 
-use Exception;
-use SilverStripe\Assets\Filesystem;
-
-use GitWrapper\GitWrapper;
 use GitWrapper\GitWorkingCopy;
-use GitWrapper\Exception\GitException;
-use SilverStripe\Control\Director;
-use SilverStripe\ORM\DataObject;
+
+use SilverStripe\Assets\Filesystem;
 use SilverStripe\Core\Config\Config;
-use Sunnysideup\ModuleChecks\BaseObject;
-use Sunnysideup\ModuleChecks\Api\GitHubApi;
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use SilverStripe\ORM\DataObject;
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
+use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Api\GitHubApi;
+use Sunnysideup\ModuleChecks\BaseObject;
 
-
-class GitHubModule extends DataObject
+class Module extends DataObject
 {
+    protected $gitWrapper = null;
 
-    public static function get_or_create_github_module(array $moduleDetails) : self
-    {
-        $moduleName = trim($moduleName[$moduleDetails['name']]);
-        $filter = ['ModuleName' => $moduleName];
-        $gitHubModule = GitHubModule::get()->filter($filter)->first();
-        if (! $gitHubModule) {
-            $gitHubModule = GitHubModule::create($moduleDetails);
-        } else {
-            foreach($moduleDetails as $field =>$value) {
-                $gitHubModule->$field = $value;
-            }
-        }
-        $gitHubModule->write();
-
-        return $gitHubModule;
-    }
-
-
-
-    private static $table_name = 'GitHubModule';
+    private static $table_name = 'Module';
 
     private static $db = [
         'ModuleName' => 'Varchar(100)',
@@ -49,6 +25,19 @@ class GitHubModule extends DataObject
         'DefaultBranch' => 'Varchar(100)',
         'Private' => 'Boolean',
         'HomePage' => 'Varchar(100)',
+        'Disabled' => 'Boolean',
+    ];
+
+    private static $has_many = [
+        'ModuleChecks' => ModuleCheck::class,
+    ];
+
+    private static $many_many = [
+        'ExcludedFromPlan' => CheckPlan::class,
+    ];
+
+    private static $belongs_many_many = [
+        'IncludedInPlan' => CheckPlan::class,
     ];
 
     private static $summary_fields = [
@@ -56,7 +45,7 @@ class GitHubModule extends DataObject
         'Description' => 'Description',
         'ForksCount' => 'Count',
         'DefaultBranch' => 'Branch',
-        'Private.Nice' => 'private',
+        'Disabled.Nice' => 'Disabled',
         'HomePage' => 'HomePage',
     ];
 
@@ -65,6 +54,7 @@ class GitHubModule extends DataObject
         'Description' => 'PartialMatchFilter',
         'DefaultBranch' => 'PartialMatchFilter',
         'Private' => 'ExactMatchFilter',
+        'Disabled' => 'ExactMatchFilter',
         'HomePage' => 'PartialMatchFilter',
     ];
 
@@ -79,7 +69,24 @@ class GitHubModule extends DataObject
 
     private static $primary_model_admin_class = ModuleCheckModelAdmin::class;
 
-    public function getDirectory()
+    public static function get_or_create_github_module(array $moduleDetails): self
+    {
+        $moduleName = trim($moduleName[$moduleDetails['name']]);
+        $filter = ['ModuleName' => $moduleName];
+        $gitHubModule = Module::get()->filter($filter)->first();
+        if (! $gitHubModule) {
+            $gitHubModule = Module::create($moduleDetails);
+        } else {
+            foreach ($moduleDetails as $field => $value) {
+                $gitHubModule->{$field} = $value;
+            }
+        }
+        $gitHubModule->write();
+
+        return $gitHubModule;
+    }
+
+    public function getDirectory(): string
     {
         return $this->Directory();
     }
@@ -88,7 +95,7 @@ class GitHubModule extends DataObject
      * absolute path
      * @return string
      */
-    public function Directory() :string
+    public function Directory(): string
     {
         $tempFolder = Config::inst()->get(BaseObject::class, 'absolute_temp_folder');
         if ($this->ModuleName) {
@@ -110,7 +117,7 @@ class GitHubModule extends DataObject
     /**
      * @var string
      */
-    public function getURL() : string
+    public function getURL(): string
     {
         return $this->URL();
     }
@@ -128,7 +135,7 @@ class GitHubModule extends DataObject
     /**
      * @var string
      */
-    public function LongModuleName() : string
+    public function LongModuleName(): string
     {
         return Config::inst()->get(BaseObject::class, 'github_user_name') . '/' . $this->ModuleName;
     }
@@ -142,12 +149,12 @@ class GitHubModule extends DataObject
      * @todo: check that silverstripe- is at the start of string.
      * @return string
      */
-    public function ShortModuleName() : string
+    public function ShortModuleName(): string
     {
         return str_replace('silverstripe-', '', $this->ModuleName);
     }
 
-    public function ShortUCFirstName() : string
+    public function ShortUCFirstName(): string
     {
         $array = explode(['_', '-'], $this->ShortModuleName());
 
@@ -160,7 +167,7 @@ class GitHubModule extends DataObject
         return $name;
     }
 
-    public function ModuleNameFirstLetterCapital() : string
+    public function ModuleNameFirstLetterCapital(): string
     {
         $shortName = $this->ShortModuleName();
 
@@ -173,37 +180,22 @@ class GitHubModule extends DataObject
     /**
      * @var string
      */
-    public function fullGitURL()
+    public function FullGitURL()
     {
         $username = Config::inst()->get(BaseObject::class, 'github_user_name');
         // $gitURL = Config::inst()->get(BaseObject::class, 'github_account_base_url');
         return 'git@github.com:/' . $username . '/' . $this->ModuleName . '.git';
     }
 
-    public function getBranch() : string
+    public function getBranch(): string
     {
         return 'master';
-    }
-
-    protected $gitWrapper = null;
-
-    /**
-     * @param bool (optional) $forceNew - create a new repo and ditch all changes
-     * @return GitWorkingCopy Repo Object
-     */
-    protected function checkOrSetGitCommsWrapper(?bool $forceNew = false): GitWorkingCopy
-    {
-        if ($this->gitWrapper === null) {
-            $this->gitWrapper = GitApi($this, $forceNew);
-        }
-
-        return $this->gitWrapper;
     }
 
     /**
      * removes a cloned repo
      */
-    public function removeClone() : bool
+    public function removeClone(): bool
     {
         $dir = $this->Directory();
         GeneralMethods::output_to_screen('Removing ' . $dir . ' and all its contents ...  ', 'created');
@@ -218,21 +210,12 @@ class GitHubModule extends DataObject
      *
      * @return string
      */
-    public function getRawFileFromGithub(string $fileName) : string
+    public function getRawFileFromGithub(string $fileName): string
     {
         $obj = new GitHubApi();
 
         return $obj->getRawFileFromGithub($this, $fileName);
     }
-
-
-
-    protected function IsDirGitRepo($directory)
-    {
-        return file_exists($directory . '/.git');
-    }
-
-
 
     /**
      * pulls a git repo
@@ -251,7 +234,7 @@ class GitHubModule extends DataObject
      *
      * @return bool
      */
-    public function commit($message = 'PATCH: module clean-up') : bool
+    public function commit($message = 'PATCH: module clean-up'): bool
     {
         return $this->checkOrSetGitCommsWrapper()->commit($message);
     }
@@ -260,7 +243,7 @@ class GitHubModule extends DataObject
      * adds all files to a git repo
      * @return bool
      */
-    public function add() : bool
+    public function add(): bool
     {
         return $this->checkOrSetGitCommsWrapper()->add();
     }
@@ -270,11 +253,10 @@ class GitHubModule extends DataObject
      *
      * @return bool
      */
-    public function push() : bool
+    public function push(): bool
     {
         return $this->checkOrSetGitCommsWrapper()->push();
     }
-
 
     public function getLatestCommitTime()
     {
@@ -291,7 +273,7 @@ class GitHubModule extends DataObject
      * returns string (major | minor | patch)
      * @return string
      */
-    public function getChangeTypeSinceLastTag() : string
+    public function getChangeTypeSinceLastTag(): string
     {
         return $this->checkOrSetGitCommsWrapper()->getChangeTypeSinceLastTag();
     }
@@ -301,5 +283,16 @@ class GitHubModule extends DataObject
         return $this->checkOrSetGitCommsWrapper()->createTag($tagCommandOptions);
     }
 
+    /**
+     * @param bool (optional) $forceNew - create a new repo and ditch all changes
+     * @return GitWorkingCopy Repo Object
+     */
+    protected function checkOrSetGitCommsWrapper(?bool $forceNew = false): GitWorkingCopy
+    {
+        if ($this->gitWrapper === null) {
+            $this->gitWrapper = GitApi($this, $forceNew);
+        }
 
+        return $this->gitWrapper;
+    }
 }

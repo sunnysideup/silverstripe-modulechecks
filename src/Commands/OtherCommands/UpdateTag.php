@@ -1,15 +1,42 @@
 <?php
 
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
-use Sunnysideup\ModuleChecks\Commands\OtherCommandsAbstract;
-use Sunnysideup\ModuleChecks\Api\Scrutinizer;
-use Sunnysideup\ModuleChecks\BaseObject;
+
 use SilverStripe\Core\Config\Config;
+use Sunnysideup\ModuleChecks\BaseObject;
 
 class UpdateTag extends ChecksAbstract
 {
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
 
-    private function run() : bool
+    protected function findNextTag(array $tag, string $changeType): string
+    {
+        switch ($changeType) {
+            case 'MAJOR':
+                $tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
+                $tag['tagparts'][1] = 0;
+                $tag['tagparts'][2] = 0;
+                break;
+
+            case 'MINOR':
+                $tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
+                $tag['tagparts'][2] = 0;
+                break;
+
+            default:
+                case 'PATCH':
+                $tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
+                break;
+        }
+
+        return trim(implode('.', $tag['tagparts']));
+    }
+
+    private function run(): bool
     {
         $tagDelayString = Config::inst()->get(BaseObject::class, 'tag_delay');
         if (! $tagDelayString) {
@@ -53,28 +80,4 @@ class UpdateTag extends ChecksAbstract
 
         return true;
     }
-
-    protected function findNextTag(array $tag, string $changeType) : string
-    {
-        switch ($changeType) {
-            case 'MAJOR':
-                $tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
-                $tag['tagparts'][1] = 0;
-                $tag['tagparts'][2] = 0;
-                break;
-
-            case 'MINOR':
-                $tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
-                $tag['tagparts'][2] = 0;
-                break;
-
-            default:
-                case 'PATCH':
-                $tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
-                break;
-        }
-
-        return trim(implode('.', $tag['tagparts']));
-    }
-
 }

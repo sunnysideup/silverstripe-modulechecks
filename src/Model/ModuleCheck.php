@@ -2,23 +2,14 @@
 
 namespace Sunnysideup\ModuleChecks\Model;
 
-
-
-
-
-use Error;
-use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
-use SilverStripe\Security\Member;
-use SilverStripe\Security\Permission;
+use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 
 class ModuleCheck extends DataObject
 {
-
-
     #######################
     ### Names Section
     #######################
@@ -29,9 +20,6 @@ class ModuleCheck extends DataObject
 
     private static $table_name = 'ModuleCheck';
 
-
-
-
     #######################
     ### Model Section
     #######################
@@ -39,15 +27,15 @@ class ModuleCheck extends DataObject
     private static $db = [
         'Running' => 'Boolean',
         'Completed' => 'Boolean',
-        'Error' => 'Varchar'
+        'HasError' => 'Boolean',
+        'Error' => 'Text',
     ];
 
     private static $has_one = [
         'ModuleCheckPlan' => ModuleCheck::class,
-        'GitHubModule' => GitHubModule::class,
-        'Check' => Check::class
+        'Module' => Module::class,
+        'Check' => Check::class,
     ];
-
 
     #######################
     ### Further DB Field Details
@@ -55,20 +43,21 @@ class ModuleCheck extends DataObject
 
     private static $indexes = [
         'Completed' => true,
-        'Created' => true,
-        'Running' => true
+        'Running' => true,
     ];
 
     private static $default_sort = [
         'Running' => 'DESC',
         'Completed' => 'ASC',
-        'Created' => 'ASC'
+        'ID' => 'ASC',
     ];
 
     private static $searchable_fields = [
-        'GitHubModuleID' => ExactMatchFilter::class,
+        'Module.ModuleName' => PartialMatchFilter::class,
+        'Check.Title' => PartialMatchFilter::class,
         'ModuleCheckPlanID' => ExactMatchFilter::class,
         'Running' => ExactMatchFilter::class,
+        'HasError' => ExactMatchFilter::class,
         'Completed' => ExactMatchFilter::class,
     ];
 
@@ -78,7 +67,7 @@ class ModuleCheck extends DataObject
 
     private static $field_labels = [
         'ModuleCheckPlan' => 'Plan',
-        'GitHubModule' => 'Module',
+        'Module' => 'Module',
         'Running' => 'Started Running',
     ];
 
@@ -87,9 +76,11 @@ class ModuleCheck extends DataObject
         'LastEdited.Nice' => 'Last Edited',
         'Running.Nice' => 'Running',
         'Completed.Nice' => 'Completed',
+        'HasError.Nice' => 'Error',
         'ModuleCheckPlan.Title' => 'Plan',
+        'Module.Title' => 'Module',
+        'Module.Title' => 'Module',
     ];
-
 
     #######################
     ### Casting Section
@@ -99,21 +90,16 @@ class ModuleCheck extends DataObject
         'Title' => 'Varchar',
     ];
 
-    public function getTitle()
-    {
-        return DBField::create_field('Varchar', 'FooBar To Be Completed');
-    }
-
-
-
     #######################
     ### can Section
     #######################
 
-
     private static $primary_model_admin_class = ModuleCheckModelAdmin::class;
 
-
+    public function getTitle()
+    {
+        return DBField::create_field('Varchar', 'FooBar To Be Completed');
+    }
 
     public function canCreate($member = null, $context = [])
     {
@@ -125,8 +111,6 @@ class ModuleCheck extends DataObject
         return false;
     }
 
-
-
     #######################
     ### write Section
     #######################
@@ -134,34 +118,11 @@ class ModuleCheck extends DataObject
 
 
 
-    public function onBeforeWrite()
-    {
-        parent::onBeforeWrite();
-        //...
-    }
-
-    public function onAfterWrite()
-    {
-        parent::onAfterWrite();
-        //...
-    }
-
-    public function requireDefaultRecords()
-    {
-        parent::requireDefaultRecords();
-        //...
-    }
-
 
     #######################
     ### Import / Export Section
     #######################
 
-    public function getExportFields()
-    {
-        //..
-        return parent::getExportFields();
-    }
 
 
 
@@ -169,16 +130,47 @@ class ModuleCheck extends DataObject
     ### CMS Edit Section
     #######################
 
-
-
-
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-        //...
-
-        return $fields;
+        return parent::getCMSFields();
     }
 
+    #######################
+    ### Running it
+    #######################
 
+    public function run()
+    {
+        $this->Running = true;
+        $this->write();
+        $check = $this->Check();
+        if ($check && $check->exists()) {
+            $repo = $this->GitHubModule();
+            if ($repo && $repo->exists()) {
+                $commandClassName = $check->MyClass;
+                $commandClassName::create($repo);
+                $outcome = $commandClassName->run();
+                if ($outcome) {
+                    $this->Running = false;
+                    $this->Completed = true;
+                    $this->write();
+                } else {
+                    $this->Running = false;
+                    $this->logError($commandClassName->getError());
+                }
+            } else {
+                $this->LogError('Module ID #' . $this->ModuleID . ' can not be found.');
+            }
+        } else {
+            $this->LogError('Check ID #' . $this->CheckID . ' can not be found.');
+        }
+    }
+
+    public function LogError($message)
+    {
+        $this->Error .= '
+        | ' . $message;
+        $this->HasError = true;
+        $this->write();
+    }
 }

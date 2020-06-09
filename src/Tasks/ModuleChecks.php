@@ -6,9 +6,9 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Environment;
 use SilverStripe\Dev\BuildTask;
 use SilverStripe\ORM\DB;
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
-use Sunnysideup\ModuleChecks\Model\GitHubModule;
+use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Model\Module;
 
 /**
  * check if everything is in plcae for a module
@@ -27,7 +27,7 @@ class ModuleChecks extends BuildTask
 
         $modules = GitHubApi::get_all_repos();
 
-        $gitUser = Config::inst()->get(GitHubModule::class, 'github_user_name');
+        $gitUser = Config::inst()->get(BaseObject::class, 'github_user_name');
         $packagistUser = $this->Config()->get('packagist_user_name');
 
         if ($gitUser && $packagistUser) {
@@ -59,7 +59,4 @@ class ModuleChecks extends BuildTask
         }
         echo '----------------------------- THE END --------------------------';
     }
-
-
-
 }

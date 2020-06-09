@@ -12,12 +12,11 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Environment;
 use SilverStripe\Dev\BuildTask;
 use Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
-use Sunnysideup\ModuleChecks\Api\ConfigYML;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\Commands\FilesToAddAbstract;
 use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
-use Sunnysideup\ModuleChecks\Model\GitHubModule;
+use Sunnysideup\ModuleChecks\Model\Module;
 
 /**
  * main class running all the updates
@@ -67,7 +66,7 @@ class UpdateModules extends BuildTask
         Environment::increaseTimeLimitTo(3600);
 
         //Check temp module folder is empty
-        $tempFolder = GitHubModule::Config()->get('absolute_temp_folder');
+        $tempFolder = Config::inst()->get(BaseObject::class, 'absolute_temp_folder');
         if (! file_exists($tempFolder)) {
             Filesystem::makeFolder($tempFolder);
         }
@@ -147,7 +146,7 @@ class UpdateModules extends BuildTask
         }
         echo '<h2>' . ($count + 1) . '. ' . $module . '</h2>';
 
-        $moduleObject = GitHubModule::get_or_create_github_module($module);
+        $moduleObject = Module::get_or_create_github_module($module);
 
         $this->checkUpdateTag($moduleObject);
 
@@ -188,7 +187,6 @@ class UpdateModules extends BuildTask
             $composerJsonObj->updateJsonFile();
             $moduleObject->setDescription($composerJsonObj->getDescription());
         }
-
 
         foreach ($files as $file) {
             //run file update
@@ -301,9 +299,4 @@ class UpdateModules extends BuildTask
             GeneralMethods::output_to_screen('Could not write log file');
         }
     }
-
-
-
-
-
 }

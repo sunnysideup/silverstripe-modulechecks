@@ -1,4 +1,5 @@
 <?php
+
 namespace Sunnysideup\ModuleChecks\Commands\ShellCommands;
 
 use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
@@ -6,7 +7,7 @@ use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
 class RemoveOldReadMe extends ShellCommandsAbstract
 {
     protected $commands = [
-        'rm docs/en/README.old.md -rf'
+        'rm docs/en/README.old.md -rf',
     ];
 
     /**
@@ -19,7 +20,7 @@ class RemoveOldReadMe extends ShellCommandsAbstract
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Remove old readme';
     }

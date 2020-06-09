@@ -20,7 +20,7 @@ class AddEditorConfigToModule extends FilesToAddAbstract
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Add .editorconfig file';
     }

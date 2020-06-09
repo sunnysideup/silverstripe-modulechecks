@@ -2,17 +2,17 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 
-use Sunnysideup\ModuleChecks\Commands\OtherCommandsAbstract;
-use Sunnysideup\ModuleChecks\Api\Scrutinizer;
-use Sunnysideup\ModuleChecks\BaseObject;
-
 class MoveOldReadMe extends ChecksAbstract
 {
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
 
-
-    protected function run() : bool
+    protected function run(): bool
     {
-        $automatedReadMe = $this->repo->Directory(). '/' . 'README.md';
+        $automatedReadMe = $this->repo->Directory() . '/' . 'README.md';
 
         if (! file_exists($automatedReadMe)) {
             return false;

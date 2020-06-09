@@ -1,10 +1,17 @@
 <?php
+
 namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
 
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
+
 class ComposerRemoveDevMaster extends UpdateComposerAbstract
 {
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = false;
+
     public function run()
     {
         $json = $this->composerJsonObj->getJsonData();
@@ -19,16 +26,10 @@ class ComposerRemoveDevMaster extends UpdateComposerAbstract
     }
 
     /**
-     * should it be included by default?
-     * @var bool
-     */
-    private static $enabled = false;
-
-    /**
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Remove composer requirements for dev-master versions.';
     }

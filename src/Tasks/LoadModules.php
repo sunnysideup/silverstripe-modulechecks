@@ -5,7 +5,7 @@ namespace Sunnysideup\ModuleChecks\Tasks;
 use SilverStripe\Core\Environment;
 use SilverStripe\Dev\BuildTask;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
-use Sunnysideup\ModuleChecks\Model\GitHubModule;
+use Sunnysideup\ModuleChecks\Model\Module;
 
 /**
  * main class running all the updates
@@ -16,6 +16,8 @@ class LoadModules extends BuildTask
 
     protected $description = 'Get all the modules from github.';
 
+    private static $segment = 'load-modules';
+
     public function run($request)
     {
         Environment::increaseTimeLimitTo(3600);
@@ -23,7 +25,7 @@ class LoadModules extends BuildTask
         $modules = GitHubApi::get_all_repos();
 
         foreach ($modules as $module) {
-            GitHubModule::get_or_create_github_module($module);
+            Module::get_or_create_github_module($module);
         }
     }
 }

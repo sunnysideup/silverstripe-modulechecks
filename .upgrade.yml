@@ -29,6 +29,6 @@ mappings:
   FixConfigBasics: Sunnysideup\ModuleChecks\ShellCommands\FixConfigBasics
   ConfigYML: Sunnysideup\ModuleChecks\Api\ConfigYML
   ComposerJson: Sunnysideup\ModuleChecks\Api\ComposerJsonClass
-  GitHubModule: Sunnysideup\ModuleChecks\Model\GitHubModule
+  Module: Sunnysideup\ModuleChecks\Model\Module
   ModuleChecks: Sunnysideup\ModuleChecks\Tasks\ModuleChecks
   UpdateModules: Sunnysideup\ModuleChecks\Tasks\UpdateModules

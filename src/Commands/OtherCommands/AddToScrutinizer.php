@@ -1,13 +1,19 @@
 <?php
 
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
-use Sunnysideup\ModuleChecks\Commands\OtherCommandsAbstract;
+
 use Sunnysideup\ModuleChecks\Api\Scrutinizer;
 use Sunnysideup\ModuleChecks\BaseObject;
 
-class ExistsOnAddOns extends ChecksAbstract
+class AddToScrutinizer extends ChecksAbstract
 {
-    public function run() : bool
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
+    public function run(): bool
     {
         Scrutinizer::send_to_scrutinizer(
             Config::inst()->get(BaseObject::class, 'scrutinizer_api_key'),

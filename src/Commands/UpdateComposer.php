@@ -2,7 +2,9 @@
 
 namespace Sunnysideup\ModuleChecks\Commands;
 
-abstract class UpdateComposerAbstract extends BaseObject
+use Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
+
+abstract class UpdateComposer extends BaseCommand
 {
     protected $composerJsonObj = null;
 
@@ -10,16 +12,18 @@ abstract class UpdateComposerAbstract extends BaseObject
 
     public function __construct($repo)
     {
-        $this->repo = $repo;
-        $this->composerJsonObj = $composerJsonObj;
-        if (! $this->composerJsonObj->getJsonData()) {
-            user_error('No Json data!');
-        }
+        parent::__construct($repo);
+        $this->composerJsonObj = new ComposerJsonClass($this->repo);
     }
 
     abstract public function run();
 
-    abstract public function description() : string;
+    abstract public function description(): string;
+
+    public function getError(): string
+    {
+        return 'Could not update composer';
+    }
 
     /**
      * @return array

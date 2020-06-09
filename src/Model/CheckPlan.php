@@ -2,49 +2,19 @@
 
 namespace Sunnysideup\ModuleChecks\Model;
 
-use Exception;
-use SilverStripe\Assets\Filesystem;
-
-use GitWrapper\GitWrapper;
-use GitWrapper\GitWorkingCopy;
-use GitWrapper\Exception\GitException;
-use SilverStripe\Control\Director;
+use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Injector\Injector;
-use Sunnysideup\ModuleChecks\Api\GitHubApi;
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
-use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 
-use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\FieldType\BaseObject;
+use SilverStripe\ORM\FieldType\DBField;
 
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 
-use SilverStripe\Security\Member;
 
-use SilverStripe\Security\Permission;
-use SilverStripe\Forms\CheckboxSetField;
-
-
-
+use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 
 class CheckPlan extends DataObject
 {
-
-    public static function get_current_check_plan() : CheckPlan
-    {
-        return DataObject::get_one(CheckPlan::class, ['Completed' => 0]);
-    }
-
-    public static function get_next_module_check() : ?ModuleCheck
-    {
-        $plan = self::get_current_check_plan();
-
-        return $plan->ModuleChecks()->filter(['Running' => 0, 'Completed' => 0])->first();
-    }
-
     #######################
     ### Names Section
     #######################
@@ -54,9 +24,6 @@ class CheckPlan extends DataObject
     private static $plural_name = 'Module Check Plan';
 
     private static $table_name = 'GitHubCheck';
-
-
-
 
     #######################
     ### Model Section
@@ -73,32 +40,24 @@ class CheckPlan extends DataObject
     ];
 
     private static $many_many = [
-        'IncludeModules' => GitHubModule::class,
+        'IncludeModules' => Module::class,
         'IncludeChecks' => ModuleCheck::class,
     ];
 
     private static $many_many_extraFields = [];
 
     private static $belongs_many_many = [
-        'ExcludeModules' => GitHubModule::class,
+        'ExcludeModules' => Module::class,
         'ExcludeChecks' => ModuleCheck::class,
     ];
-
 
     #######################
     ### Further DB Field Details
     #######################
 
-
-
-
     private static $cascade_deletes = [
-        ModuleCheck::class
+        ModuleCheck::class,
     ];
-
-
-
-
 
     private static $indexes = [
         'Completed' => true,
@@ -119,14 +78,13 @@ class CheckPlan extends DataObject
         'Completed' => ExactMatchFilter::class,
     ];
 
-
     #######################
     ### Field Names and Presentation Section
     #######################
 
     private static $field_labels = [
         'AllChecks' => 'Include All Checks',
-        'AllModules' => 'Include All Modules'
+        'AllModules' => 'Include All Modules',
     ];
 
     private static $summary_fields = [
@@ -139,7 +97,6 @@ class CheckPlan extends DataObject
         'ModuleChecks.Count' => 'Module Check Count',
     ];
 
-
     #######################
     ### Casting Section
     #######################
@@ -149,6 +106,24 @@ class CheckPlan extends DataObject
         'ModuleCount' => 'Int',
         'CheckCount' => 'Int',
     ];
+
+    #######################
+    ### can Section
+    #######################
+
+    private static $primary_model_admin_class = ModuleCheckModelAdmin::class;
+
+    public static function get_current_check_plan(): CheckPlan
+    {
+        return DataObject::get_one(CheckPlan::class, ['Completed' => 0]);
+    }
+
+    public static function get_next_module_check(): ?ModuleCheck
+    {
+        $plan = self::get_current_check_plan();
+
+        return $plan->ModuleChecks()->filter(['Running' => 0, 'Completed' => 0])->first();
+    }
 
     public function getTitle()
     {
@@ -165,30 +140,14 @@ class CheckPlan extends DataObject
         return DBField::create_field('Int', 'FooBar To Be Completed');
     }
 
-
-
-    #######################
-    ### can Section
-    #######################
-
-
-    private static $primary_model_admin_class = ModuleCheckModelAdmin::class;
-
-
-
     public function canDelete($member = null, $context = [])
     {
         return false;
     }
 
-
-
     #######################
     ### write Section
     #######################
-
-
-
 
     public function onBeforeWrite()
     {
@@ -199,6 +158,7 @@ class CheckPlan extends DataObject
     public function onAfterWrite()
     {
         parent::onAfterWrite();
+        $this->createChecks();
         //...
     }
 
@@ -207,7 +167,6 @@ class CheckPlan extends DataObject
         parent::requireDefaultRecords();
         //...
     }
-
 
     #######################
     ### Import / Export Section
@@ -219,13 +178,9 @@ class CheckPlan extends DataObject
         return parent::getExportFields();
     }
 
-
-
     #######################
     ### CMS Edit Section
     #######################
-
-
 
     public function getCMSFields()
     {
@@ -239,7 +194,7 @@ class CheckPlan extends DataObject
             CheckboxSetField(
                 'ExcludeModules',
                 'Excluded Modules',
-                $obj->getAvailableReposForDropdown()
+                $obj->getAvailableModulesForDropdown()
             )
         );
         $fields->addFieldToTab(
@@ -247,7 +202,7 @@ class CheckPlan extends DataObject
             CheckboxSetField(
                 'IncludedModules',
                 'Included Modules',
-                $obj->getAvailableReposForDropdown()
+                $obj->getAvailableModulesForDropdown()
             )
         );
         $fields->addFieldToTab(
@@ -270,11 +225,44 @@ class CheckPlan extends DataObject
         return $fields;
     }
 
-
     protected function createChecks()
     {
         $obj = BaseObject::inst();
-
+        if ($this->AllChecks) {
+            $checks = $obj->getAvailableChecks();
+            foreach ($this->ExcludeChecks() as $excludedCheck) {
+                unset($checks[$excludedCheck->ID]);
+            }
+        } else {
+            $checks = [];
+            foreach ($this->IncludeChecks() as $includedCheck) {
+                $checks[$includedCheck->ID] = $includedCheck;
+            }
+        }
+        if ($this->AllModules) {
+            $modules = $obj->getAvailableModules();
+            foreach ($this->ExcludeModules() as $excludedModules) {
+                unset($modules[$excludedModules->ID]);
+            }
+        } else {
+            $modules = [];
+            foreach ($this->IncludeModules() as $includedModule) {
+                $modules[$includedModule->ID] = $includedModule;
+            }
+        }
+        foreach (array_keys($modules) as $moduleID) {
+            foreach ($checks as $checkID => $checkObject) {
+                $filter = [
+                    'ModuleCheckPlanID' => $this->ID,
+                    'Module' => $moduleID,
+                    'Check' => $checkID,
+                ];
+                $obj = DataObject::get_one(ModuleCheck::class, $filter);
+                if (! $obj) {
+                    $obj = ModuleCheck::create($obj);
+                    $obj->write();
+                }
+            }
+        }
     }
-
 }

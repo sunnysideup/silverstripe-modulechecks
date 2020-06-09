@@ -21,7 +21,7 @@ class SetPermissions extends ShellCommandsAbstract
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Reset permissions';
     }

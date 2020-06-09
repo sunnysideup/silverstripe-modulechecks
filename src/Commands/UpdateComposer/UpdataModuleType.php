@@ -9,6 +9,12 @@ use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
  */
 class UpdataModuleType extends UpdateComposerAbstract
 {
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = false;
+
     public function run()
     {
         // $json = $this->getJsonData();
@@ -20,16 +26,10 @@ class UpdataModuleType extends UpdateComposerAbstract
     }
 
     /**
-     * should it be included by default?
-     * @var bool
-     */
-    private static $enabled = false;
-
-    /**
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Change from silverstripe-module to silverstripe-vendormodule.';
     }

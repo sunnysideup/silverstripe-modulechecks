@@ -2,28 +2,20 @@
 
 namespace Sunnysideup\ModuleChecks\Commands;
 
-abstract class ChecksAbstract extends BaseObject
+abstract class ChecksAbstract extends BaseCommand
 {
-
     private static $enabled = false;
 
-    protected $repo = null;
+    abstract public function run(): bool;
 
-    public function __construct($repo)
+    abstract public function description(): string;
+
+    public function getError(): string
     {
-        $this->repo = $repo;
+        return 'Check returns with error';
     }
 
-    abstract public function run() : bool;
-
-    abstract public function description() : string;
-
-    protected function getName() :string
-    {
-        return $this->repo->ModuleName;
-    }
-
-    protected function hasFileOnGitHub(string $file) : bool
+    protected function hasFileOnGitHub(string $file): bool
     {
         $name = $this->getName();
         $gitHubUserName = $this->Config()->get('github_user_name');
@@ -31,9 +23,7 @@ abstract class ChecksAbstract extends BaseObject
         return GeneralMethods::check_location(
             'https://raw.githubusercontent.com/' .
             $gitHubUserName . '/silverstripe-' . $name .
-            '/master/'.$file
+            '/master/' . $file
         );
     }
-
-
 }

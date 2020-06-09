@@ -12,6 +12,12 @@ class AddTestToModule extends FilesToAddAbstract
 
     protected $sourceLocation = 'app/template_files/ChecksAbstract.php';
 
+    /**
+     * should it be included by default?
+     * @var bool
+     */
+    private static $enabled = true;
+
     public function __construct($repo)
     {
         parent::__construct($repo);
@@ -19,16 +25,10 @@ class AddTestToModule extends FilesToAddAbstract
     }
 
     /**
-     * should it be included by default?
-     * @var bool
-     */
-    private static $enabled = true;
-
-    /**
      * what does it do?
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Add example test file';
     }

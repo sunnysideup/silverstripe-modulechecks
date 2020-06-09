@@ -2,27 +2,15 @@
 
 namespace SilverStripe\View;
 
-use Exception;
-use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
-use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Core\Manifest\ModuleResourceLoader;
-use SilverStripe\Dev\Debug;
-use SilverStripe\Dev\Deprecation;
-use SilverStripe\ORM\ArrayLib;
-use SilverStripe\ORM\FieldType\DBField;
-use SilverStripe\ORM\FieldType\DBHTMLText;
-use SilverStripe\View\SSViewer;
-use UnexpectedValueException;
-use Sunnysideup\ModuleChecks\Model\GitHubModule;
+use Sunnysideup\ModuleChecks\Model\Check;
+use Sunnysideup\ModuleChecks\Model\Module;
 
 class BaseObject
 {
-
     use Extensible;
     use Injectable;
     use Configurable;
@@ -32,19 +20,14 @@ class BaseObject
         'github_user_name',
         'github_user_email',
         'path_to_private_key',
-        'absolute_temp_folder'
+        'absolute_temp_folder',
     ];
 
     protected static $inst = null;
 
-    public static function inst() : BaseObject
-    {
-        if(! self::$inst) {
-            self::$inst = Injector::inst()->get(BaseObject::class);
-            self::$inst->areWeReady();
-        }
-        self::$inst;
-    }
+    protected $availableChecksList = [];
+
+    protected $availableRepos = [];
 
     /**
      * list of classes to run,  in the right order
@@ -80,9 +63,7 @@ class BaseObject
      */
     private static $path_to_private_key = '~/.ssh/id_rsa';
 
-
     /**
-     *
      * @var string
      */
     private static $packagist_user_name = '';
@@ -99,7 +80,6 @@ class BaseObject
     private static $absolute_temp_folder = '/var/www/temp/';
 
     /**
-     *
      * @var string
      */
     private static $license_type = 'BSD-3-Clause';
@@ -116,19 +96,18 @@ class BaseObject
      */
     private static $tag_create_message = 'Auto-created tag.';
 
-
-     /**
-      * log folder is needed to write log file with unresolved problems, leave out
-      * not to write log file
-      * @var string
-      */
+    /**
+     * log folder is needed to write log file with unresolved problems, leave out
+     * not to write log file
+     * @var string
+     */
     private static $logfolder = '/var/www/moduletools/log/';
 
     /**
      *  Words to check for accross all files in test modules. Produces warnings
      *  when matches are found. Regex fomat. Leave empty not to do any checks
      */
-    private static $excluded_words= [
+    private static $excluded_words = [
 
     ];
 
@@ -136,18 +115,26 @@ class BaseObject
 
     private static $debug = true;
 
+    public static function inst(): BaseObject
+    {
+        if (! self::$inst) {
+            self::$inst = Injector::inst()->get(BaseObject::class);
+            self::$inst->areWeReady();
+        }
+        self::$inst;
+    }
 
     public function areWeReady()
     {
-        foreach(self::CHECKS as $check) {
+        foreach (self::CHECKS as $check) {
             $value = $this->Config()->get($check);
-            if(! $value) {
-                user_error('You need to set '.$check.' as a private static in BaseObject');
+            if (! $value) {
+                user_error('You need to set ' . $check . ' as a private static in BaseObject');
                 return false;
             }
-            if(strpos($value, '/') !== false) {
-                if(! file_exists($value)) {
-                    user_error('The following dir/file can not be found! '.$value);
+            if (strpos($value, '/') !== false) {
+                if (! file_exists($value)) {
+                    user_error('The following dir/file can not be found! ' . $value);
                     return false;
                 }
             }
@@ -155,64 +142,56 @@ class BaseObject
         return true;
     }
 
-
-    protected $availableCommandsList = [];
-
-    public function availableChecks() : array
+    public function getAvailableChecks(): array
     {
-        if (! count($this->availableCommandsList)) {
-            foreach($this->Config()->get('core_classes') as $class) {
-                $classes = ClassInfo::subclassesFor($class, false);
-                foreach($classes as $class) {
-                    $obj = Injector::inst()->get($class);
-                    if (Config::inst()->get($class, 'enabled')) {
-                        $this->availableCommandsList[$class] = $obj;
-                    }
+        if (! count($this->availableChecksList)) {
+            $list = Check::get();
+            foreach ($list as $obj) {
+                if ($obj->Enabled) {
+                    $this->availableChecksList[$obj->MyClass] = $obj;
                 }
             }
         }
 
-        return $this->availableCommandsList;
+        return $this->availableChecksList;
     }
 
-
-    public function availableChecksForDropdown() : array
+    public function getAvailableChecksForDropdown(): array
     {
         $list = $this->availableChecks();
         $array = [];
-        foreach($list as $class => $details) {
-            $array[$class] = $details->getDescription();
+        foreach ($list as $obj) {
+            $array[$obj->ID] = $obj->Title;
         }
 
         return $array;
-
     }
-    protected $availableRepos = [];
 
-    public function getAvailableRepos() : array
+    public function getAvailableModules(): array
     {
         if (! count($this->availableRepos)) {
-            $list = GitHubModule::get();
-            foreach($list as $obj) {
-                $this->availableRepos[$obj->ModuleName] = $obj;
+            $list = Module::get();
+            foreach ($list as $obj) {
+                if (! $obj->Disabled) {
+                    $this->availableRepos[$obj->ModuleName] = $obj;
+                }
             }
         }
 
         return $this->availableRepos;
     }
 
-
-    public function getAvailableReposForDropdown() : array
+    public function getAvailableModulesForDropdown(): array
     {
-        $list = $this->getAvailableRepos();
+        $list = $this->getAvailableModules();
         $array = [];
-        foreach($list as $obj) {
-            $array[$obj->ModuleName] = $obj->ModuleName;
+        foreach ($list as $obj) {
+            $array[$obj->ID] = $obj->ModuleName;
         }
 
         return $array;
-
     }
+
     /*
      * This function is just used to suppression of warnings
      * */
