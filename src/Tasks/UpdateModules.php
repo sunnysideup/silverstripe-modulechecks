@@ -112,7 +112,7 @@ class UpdateModules extends BuildTask
             try {
                 $this->processOneModule($module, $count, $files, $commands);
             } catch (Exception $e) {
-                GeneralMethods::output_to_screen("<li> Could not complete processing ${module}: " . $e->getMessage() . ' </li>');
+                FlushNow::flushNow('Could not complete processing '.$module.': ' . $e->getMessage());
             }
         }
 
@@ -132,7 +132,7 @@ class UpdateModules extends BuildTask
 
     protected function errorHandler(int $errno, string $errstr)
     {
-        GeneralMethods::output_to_screen('<li> Could not complete processing module: ' . $errstr . ' </li>');
+        FlushNow::flushNow('Could not complete processing module: ' . $errstr);
 
         UpdateModules::addUnsolvedProblem($this->currentModule, 'Could not complete processing module: ' . $errstr);
 
@@ -211,26 +211,26 @@ class UpdateModules extends BuildTask
 
         if (! $moduleObject->add()) {
             $msg = 'Could not add files module to Repo';
-            GeneralMethods::output_to_screen($msg);
+            FlushNow::flushNow($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
             return;
         }
         if (! $moduleObject->commit()) {
             $msg = 'Could not commit files to Repo';
-            GeneralMethods::output_to_screen($msg);
+            FlushNow::flushNow($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
             return;
         }
 
         if (! $moduleObject->push()) {
             $msg = 'Could not push files to Repo';
-            GeneralMethods::output_to_screen($msg);
+            FlushNow::flushNow($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
             return;
         }
         if (! $moduleObject->removeClone()) {
             $msg = 'Could not remove local copy of repo';
-            GeneralMethods::output_to_screen($msg);
+            FlushNow::flushNow($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
         }
 
@@ -251,7 +251,7 @@ class UpdateModules extends BuildTask
 
         $newName = $moduleObject->Directory() . 'tests/' . $moduleObject->ModuleName . 'Test.php';
 
-        GeneralMethods::output_to_screen("Renaming ${oldName} to ${newName}");
+        FlushNow::flushNow("Renaming ${oldName} to ${newName}");
 
         unlink($newName);
 
@@ -291,12 +291,12 @@ class UpdateModules extends BuildTask
 
         $filename = $logFolder . date('U') . '.html';
 
-        GeneralMethods::output_to_screen("Writing to ${filename}");
+        FlushNow::flushNow("Writing to ${filename}");
 
         $result = file_put_contents($filename, $html);
 
         if (! $result) {
-            GeneralMethods::output_to_screen('Could not write log file');
+            FlushNow::flushNow('Could not write log file');
         }
     }
 }

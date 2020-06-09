@@ -132,7 +132,7 @@ abstract class FilesToAddAbstract extends BaseCommand
             $fullFileName = Director::baseFolder() . '/' . $this->sourceLocation;
         }
 
-        echo "<li>${fullFileName}</li>";
+        FlushNow::flushNow($fullFileName);
 
         $file = fopen($fullFileName, 'r');
         if ($file) {
@@ -229,7 +229,7 @@ abstract class FilesToAddAbstract extends BaseCommand
      */
     protected function saveFile($fileContent)
     {
-        GeneralMethods::output_to_screen('<li> Adding ' . $this->fileLocation . ' to module  </li>');
+        FlushNow::flushNow('Adding ' . $this->fileLocation . ' to module');
 
         /*
          * If fileLocation  contains folder, name then need to check

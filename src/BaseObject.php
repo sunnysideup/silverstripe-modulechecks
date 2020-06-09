@@ -8,12 +8,14 @@ use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use Sunnysideup\ModuleChecks\Model\Check;
 use Sunnysideup\ModuleChecks\Model\Module;
+use Sunnysideup\Flush\FlushNow;
 
 class BaseObject
 {
     use Extensible;
     use Injectable;
     use Configurable;
+    use FlushNow;
 
     private const CHECKS = [
         'github_account_base_url',

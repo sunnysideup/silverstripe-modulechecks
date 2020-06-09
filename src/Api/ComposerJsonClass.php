@@ -8,8 +8,10 @@ use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 use Sunnysideup\ModuleChecks\Model\Module;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
+
 class ComposerJsonClass extends BaseObject
 {
+
     /**
      * @var array|null
      */
@@ -99,7 +101,7 @@ class ComposerJsonClass extends BaseObject
     //     }
     //
     //     if (is_array($this->jsonData)) {
-    //         GeneralMethods::output_to_screen('<li> Updating composer.json </li>');
+    //         FlushNow::flushNow('Updating composer.json');
     //         $composerUpdates = ClassInfo::subclassesFor(UpdateComposerAbstract::class);
     //
     //         //remove base class
@@ -118,7 +120,7 @@ class ComposerJsonClass extends BaseObject
     //             $obj->run();
     //         }
     //         if ($this->writeJsonToFile()) {
-    //             GeneralMethods::output_to_screen('<li> Updated JSON </li>');
+    //             FlushNow::flushNow('Updated JSON </li>');
     //         } else {
     //             UpdateModules::addUnsolvedProblem($this->moduleName, 'Could not write JSON');
     //         }

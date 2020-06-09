@@ -10,6 +10,8 @@ use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
 class GitHubApi extends BaseObject
 {
+
+
     /**
      * @var string
      */
@@ -39,8 +41,7 @@ class GitHubApi extends BaseObject
         if (! $username) {
             $username = Config::inst()->get(BaseObject::class, 'github_user_name');
         }
-        print "<li>Retrieving List of modules from GitHub for user ${username} without AUTH... </li>";
-        die('asdfs');
+        FlushNow::flushNow('Retrieving List of modules from GitHub for user '.$username.' without AUTH... ');
         if (! count(self::$_modules)) {
             for ($page = 0; $page < 10; $page++) {
                 $ch = curl_init();
@@ -63,7 +64,7 @@ class GitHubApi extends BaseObject
                 }
             }
         }
-        print '<li>Found ' . count(self::$_modules) . ' modules on GitHub ... </li>';
+        FlushNow::flushNow('Found ' . count(self::$_modules) . ' modules on GitHub ...');
         if (count(self::$_modules) === 0) {
             user_error('No modules found on GitHub. This is possibly because the limit of 60 requests an hour has been exceeded.');
         }
@@ -82,7 +83,7 @@ class GitHubApi extends BaseObject
             } else {
                 $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
             }
-            print "<li>Retrieving List of modules from GitHub for user ${username} with AUTH ... </li>";
+            FlushNow::flushNow('Retrieving List of modules from GitHub for user '.$username.' with AUTH ... ');
             if (! count(self::$_modules)) {
                 $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
                 $array = [];
@@ -96,7 +97,7 @@ class GitHubApi extends BaseObject
                     $curlResult = self::runCurlResult($url, $method, $data);
 
                     if (! $curlResult) {
-                        GeneralMethods::output_to_screen('Could not retrieve list of modules from GitHub');
+                        FlushNow::flushNow('Could not retrieve list of modules from GitHub');
 
                         UpdateModules::$unsolvedItems['all'] = 'Could not retrieve list of modules from GitHub';
                     }
@@ -128,7 +129,7 @@ class GitHubApi extends BaseObject
         restore_error_handler();
 
         if (! $file) {
-            GeneralMethods::output_to_screen('<li>Could not find ' . $rawURL . '</li>');
+            FlushNow::flushNow('Could not find ' . $rawURL);
             return '';
         }
         $content = '';
@@ -143,7 +144,7 @@ class GitHubApi extends BaseObject
     protected function apiCall(string $moduleName, array $data, ?string $gitAPIcommand = '', ?string $method = 'GET')
     {
         $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        GeneralMethods::output_to_screen('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
+        FlushNow::flushNow('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
         $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
         $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($moduleName);
         if (trim($gitAPIcommand)) {
@@ -197,7 +198,7 @@ class GitHubApi extends BaseObject
         $curlResult = curl_exec($ch);
         if (! $curlResult) {
             $msg = 'curl exectution failed';
-            GeneralMethods::output_to_screen($msg);
+            FlushNow::flushNow($msg);
             UpdateModules::$unsolvedItems['none'] = $msg;
         }
         return curl_exec($ch);

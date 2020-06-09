@@ -25,13 +25,13 @@ class CheckExclusions extends ChecksAbstract
                 $msg = '<h4>The following excluded words were found: </h4><ul>';
                 foreach ($results as $file => $words) {
                     foreach ($words as $word) {
-                        $msg .= "<li>${word} in ${file}</li>";
+                        $msg .= FlushNow::flushNow($word.' in '.$file);
                     }
                 }
                 $msg .= '</ul>';
 
                 //trigger_error ("excluded words found in files(s)");
-                GeneralMethods::output_to_screen($msg);
+                FlushNow::flushNow($msg);
                 UpdateModules::$unsolvedItems[$this->repo->ModuleName] = $msg;
             }
         }
@@ -78,7 +78,7 @@ class CheckExclusions extends ChecksAbstract
         if (! $fileContent) {
             $msg = "Could not open ${fileName} to check for excluded words";
 
-            GeneralMethods::output_to_screen($msg);
+            FlushNow::flushNow($msg);
             UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
         }
 

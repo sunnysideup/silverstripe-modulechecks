@@ -12,6 +12,7 @@ use Yaml;
 
 class ConfigYML extends BaseObject
 {
+
     protected $moduleName = '';
 
     protected $repo = null;
@@ -40,10 +41,10 @@ class ConfigYML extends BaseObject
 
     public function readYMLFromFile()
     {
-        GeneralMethods::output_to_screen('reading config yml ...  ', 'updating');
+        FlushNow::flushNow('reading config yml ...  ', 'updating');
 
         if (! file_exists($this->filename)) {
-            GeneralMethods::output_to_screen('<li>Unable to load: ' . $this->filename, 'updated');
+            FlushNow::flushNow('Unable to load: ' . $this->filename, 'updated');
             //UpdateModules::$unsolvedItems[$this->repo->ModuleName] = "Unable to load " . $this->filename;
 
             UpdateModules::addUnsolvedProblem($this->repo->ModuleName, 'Unable to load ' . $this->filename);
@@ -53,7 +54,7 @@ class ConfigYML extends BaseObject
         try {
             $this->ymlData = Yaml::parse(file_get_contents($this->filename));
         } catch (Exception $e) {
-            GeneralMethods::output_to_screen('<li>Unable to parse the YAML string: ' . $e->getMessage() . ' <li>', 'updated');
+            FlushNow::flushNow('Unable to parse the YAML string: ' . $e->getMessage() . '', 'updated');
 
             //UpdateModules::$unsolvedItems[$this->repo->ModuleName] = "Unable to parse the YAML string: " .$e->getMessage();
 
@@ -100,7 +101,7 @@ class ConfigYML extends BaseObject
             }
             $newYML = implode('', $lines);
 
-            GeneralMethods::output_to_screen('Updating config.YML to correct syntax ... ', 'updating');
+            FlushNow::flushNow('Updating config.YML to correct syntax ... ', 'updating');
 
             // $file = fopen($this->filename, 'w');
 
@@ -112,7 +113,7 @@ class ConfigYML extends BaseObject
 
     public function writeYAMLToFile()
     {
-        GeneralMethods::output_to_screen('Writing config yml ... ', 'updating');
+        FlushNow::flushNow('Writing config yml ... ', 'updating');
 
         if (! $this->ymlData) {
             return false;

@@ -29,7 +29,7 @@ class MoveOldReadMe extends ChecksAbstract
 
             if (! file_exists($filePath)) {
                 FileSystem::makeFolder(dirname($filePath));
-                GeneralMethods::output_to_screen('Copying ' . $automatedReadMe . ' to ' . $filePath);
+                FlushNow::flushNow('Copying ' . $automatedReadMe . ' to ' . $filePath);
                 copy($automatedReadMe, $filePath);
                 $copied = true;
             }

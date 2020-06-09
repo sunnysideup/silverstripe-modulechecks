@@ -198,7 +198,7 @@ class Module extends DataObject
     public function removeClone(): bool
     {
         $dir = $this->Directory();
-        GeneralMethods::output_to_screen('Removing ' . $dir . ' and all its contents ...  ', 'created');
+        // FlushNow::flushNow('Removing ' . $dir . ' and all its contents ...  ', 'created');
         $this->gitRepo = null;
         Filesystem::removeFolder($dir); // removes contents but not the actual folder
         //rmdir ($dir);

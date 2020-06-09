@@ -67,7 +67,7 @@ class UpdateTag extends ChecksAbstract
         }
 
         if ($newTagString) {
-            GeneralMethods::output_to_screen('<li> Creating new tag  ' . $newTagString . ' ... </li>');
+            FlushNow::flushNow('Creating new tag  ' . $newTagString . ' ...');
 
             //git tag -a 0.0.1 -m "testing tag"
             $options = [

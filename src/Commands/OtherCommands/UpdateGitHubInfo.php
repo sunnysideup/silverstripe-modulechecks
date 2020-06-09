@@ -44,7 +44,7 @@ class UpdateGitHubInfo extends ChecksAbstract
             }
         }
 
-        GeneralMethods::output_to_screen('updating Git Repo information ...');
+        FlushNow::flushNow('updating Git Repo information ...');
 
         $obj = new GitHubApi();
         $obj->apiCall($this->repo->ModuleName, $array, $gitAPIcommand, 'PATCH');
