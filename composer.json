@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "symfony/yaml": "3.4.41",
+        "symfony/yaml": "*",
         "silverstripe/recipe-cms": "^4.5.2@stable",
         "sunnysideup/flush": "dev-master",
         "sunnysideup/php_2_command_line": "dev-master",
