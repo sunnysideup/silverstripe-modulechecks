@@ -10,7 +10,7 @@ class MoveOldReadMe extends ChecksAbstract
      */
     private static $enabled = true;
 
-    protected function run(): bool
+    public function run(): bool
     {
         $automatedReadMe = $this->repo->Directory() . '/' . 'README.md';
 

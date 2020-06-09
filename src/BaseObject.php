@@ -1,6 +1,6 @@
 <?php
 
-namespace SilverStripe\View;
+namespace Sunnysideup\ModuleChecks;
 
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;

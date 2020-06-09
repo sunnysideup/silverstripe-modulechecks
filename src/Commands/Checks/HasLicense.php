@@ -24,7 +24,7 @@ class HasLicense extends ChecksAbstract
     /**
      * @return boolean
      */
-    protected function run(): bool
+    public function run(): bool
     {
         return $this->hasFileOnGitHub('LICENSE');
     }

@@ -66,7 +66,7 @@ abstract class ShellCommandsAbstract extends BaseCommand
         return $this->runCommand();
     }
 
-    abstract public function description(): string;
+    abstract public function getDescription(): string;
 
     public static function CheckCommandExists($cmd)
     {

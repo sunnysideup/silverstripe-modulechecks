@@ -8,7 +8,7 @@ abstract class ChecksAbstract extends BaseCommand
 
     abstract public function run(): bool;
 
-    abstract public function description(): string;
+    abstract public function getDescription(): string;
 
     public function getError(): string
     {

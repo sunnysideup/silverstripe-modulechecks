@@ -251,7 +251,7 @@ class CheckPlan extends DataObject
             }
         }
         foreach (array_keys($modules) as $moduleID) {
-            foreach ($checks as $checkID => $checkObject) {
+            foreach (array_keys($checks) as $checkID) {
                 $filter = [
                     'ModuleCheckPlanID' => $this->ID,
                     'Module' => $moduleID,

@@ -88,7 +88,7 @@ abstract class FilesToAddAbstract extends BaseCommand
         $this->fileLocation = $relativeDirAndFileName;
     }
 
-    abstract public function description(): string;
+    abstract public function getDescription(): string;
 
     public function run()
     {
@@ -110,6 +110,44 @@ abstract class FilesToAddAbstract extends BaseCommand
         }
 
         return (bool) $outcome;
+    }
+
+
+    /**
+     * you can either return the string from the
+     * `$sourceLocation` or you can just have a string here
+     * that returns the data directly....
+     *
+     * @param string $fileContent
+     *
+     * @return string
+     */
+    protected function getStandardFile(): string
+    {
+        $isURL = (strpos($this->sourceLocation, '//') !== false);
+
+        if ($isURL) {
+            $fullFileName = $this->sourceLocation;
+        } else {
+            $fullFileName = Director::baseFolder() . '/' . $this->sourceLocation;
+        }
+
+        echo "<li>${fullFileName}</li>";
+
+        $file = fopen($fullFileName, 'r');
+        if ($file) {
+            $fileSize = filesize($fullFileName);
+
+            if ($fileSize > 0) {
+                $fileContents = fread($file, filesize($fullFileName));
+            } else {
+                $fileContents = '';
+            }
+            fclose($file);
+
+            return $fileContents;
+        }
+        return '';
     }
 
     /**
@@ -167,42 +205,6 @@ abstract class FilesToAddAbstract extends BaseCommand
         return 'Could not add file.';
     }
 
-    /**
-     * you can either return the string from the
-     * `$sourceLocation` or you can just have a string here
-     * that returns the data directly....
-     *
-     * @param string $fileContent
-     *
-     * @return string
-     */
-    protected function getStandardFile(): string
-    {
-        $isURL = (strpos($this->sourceLocation, '//') !== false);
-
-        if ($isURL) {
-            $fullFileName = $this->sourceLocation;
-        } else {
-            $fullFileName = Director::baseFolder() . '/' . $this->sourceLocation;
-        }
-
-        print "<li>${fullFileName}</li>";
-
-        $file = fopen($fullFileName, 'r');
-        if ($file) {
-            $fileSize = filesize($fullFileName);
-
-            if ($fileSize > 0) {
-                $fileContents = fread($file, filesize($fullFileName));
-            } else {
-                $fileContents = '';
-            }
-            fclose($file);
-
-            return $fileContents;
-        }
-        return '';
-    }
 
     /**
      * takes the standard file and adds any

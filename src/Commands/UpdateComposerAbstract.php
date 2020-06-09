@@ -4,7 +4,7 @@ namespace Sunnysideup\ModuleChecks\Commands;
 
 use Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
 
-abstract class UpdateComposer extends BaseCommand
+abstract class UpdateComposerAbstract extends BaseCommand
 {
     protected $composerJsonObj = null;
 
@@ -18,7 +18,7 @@ abstract class UpdateComposer extends BaseCommand
 
     abstract public function run();
 
-    abstract public function description(): string;
+    abstract public function getDescription(): string;
 
     public function getError(): string
     {

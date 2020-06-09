@@ -14,4 +14,13 @@ class CheckYml extends ChecksAbstract
     {
         return ConfigYML::create($this->repo)->reWrite();
     }
+
+    /**
+     * what does it do?
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return 'Check that the yml files are in order';
+    }
 }
