@@ -123,7 +123,5 @@ class ConfigYML extends BaseObject
         return true;
     }
 
-    private function catchFopenWarning()
-    {
-    }
+
 }
