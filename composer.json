@@ -1,7 +1,7 @@
 {
     "name": "sunnysideup/modulechecks",
     "type": "silverstripe-vendormodule",
-    "description": "Checks your modules on packagist, github, and the silverstripe add-ons site",
+    "description": "Checks the basic health of your silverstripe modules",
     "keywords": [
         "Silverstripe-CMS",
         "CMS",
