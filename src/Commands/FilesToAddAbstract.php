@@ -8,6 +8,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\View\Requirements;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Model\Module;
+use Sunnysideup\Flush\FlushNow;
 
 abstract class FilesToAddAbstract extends BaseCommand
 {
@@ -211,7 +212,7 @@ abstract class FilesToAddAbstract extends BaseCommand
             $fullFileName = Director::baseFolder() . '/' . $this->sourceLocation;
         }
 
-        FlushNow::flushNow($fullFileName);
+        self::flushNow($fullFileName);
 
         $file = fopen($fullFileName, 'r');
         if ($file) {
@@ -252,7 +253,7 @@ abstract class FilesToAddAbstract extends BaseCommand
      */
     protected function saveFile($fileContent)
     {
-        FlushNow::flushNow('Adding ' . $this->fileLocation . ' to module');
+        self::flushNow('Adding ' . $this->fileLocation . ' to module');
 
         /*
          * If fileLocation  contains folder, name then need to check

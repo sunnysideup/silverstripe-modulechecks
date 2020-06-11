@@ -7,9 +7,12 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
+use Sunnysideup\Flush\FlushNow;
 
 class ModuleCheck extends DataObject
 {
+    use FlushNow;
+
     #######################
     ### Names Section
     #######################
@@ -174,12 +177,12 @@ class ModuleCheck extends DataObject
 
     public static function log_error(string $message)
     {
-        FlushNow::flushNow($message, 'deleted');
+        self::flushNow($message, 'deleted');
         $obj = CheckPlan::get_current_module_check();
         if ($obj) {
             $obj->LogError($message);
         } else {
-            FlushNow::flushNow('Could not attach error to specific ModuleCheck');
+            self::flushNow('Could not attach error to specific ModuleCheck');
         }
     }
 }

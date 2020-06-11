@@ -10,9 +10,11 @@ use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 use Yaml;
+use Sunnysideup\Flush\FlushNow;
 
 class ConfigYML extends BaseObject
 {
+
     protected $moduleName = '';
 
     protected $repo = null;
@@ -41,7 +43,7 @@ class ConfigYML extends BaseObject
 
     public function readYMLFromFile()
     {
-        FlushNow::flushNow('reading config yml ...  ', 'updating');
+        self::flushNow('reading config yml ...  ', 'updating');
 
         if (! file_exists($this->filename)) {
             //UpdateModules::$unsolvedItems[$this->repo->ModuleName] = "Unable to load " . $this->filename;
@@ -96,7 +98,7 @@ class ConfigYML extends BaseObject
             }
             $newYML = implode('', $lines);
 
-            FlushNow::flushNow('Updating config.YML to correct syntax ... ', 'updating');
+            self::flushNow('Updating config.YML to correct syntax ... ', 'updating');
 
             // $file = fopen($this->filename, 'w');
 
@@ -108,7 +110,7 @@ class ConfigYML extends BaseObject
 
     public function writeYAMLToFile()
     {
-        FlushNow::flushNow('Writing config yml ... ', 'updating');
+        self::flushNow('Writing config yml ... ', 'updating');
 
         if (! $this->ymlData) {
             return false;

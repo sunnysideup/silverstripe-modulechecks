@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
+use Sunnysideup\Flush\FlushNow;
 
 class MoveOldReadMe extends ChecksAbstract
 {
@@ -37,7 +38,7 @@ class MoveOldReadMe extends ChecksAbstract
 
             if (! file_exists($filePath)) {
                 FileSystem::makeFolder(dirname($filePath));
-                FlushNow::flushNow('Copying ' . $automatedReadMe . ' to ' . $filePath);
+                self::flushNow('Copying ' . $automatedReadMe . ' to ' . $filePath);
                 copy($automatedReadMe, $filePath);
                 $copied = true;
             }

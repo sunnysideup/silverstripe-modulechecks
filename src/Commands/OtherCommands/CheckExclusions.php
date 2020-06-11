@@ -4,6 +4,7 @@ namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
+use Sunnysideup\Flush\FlushNow;
 
 class CheckExclusions extends ChecksAbstract
 {
@@ -31,7 +32,7 @@ class CheckExclusions extends ChecksAbstract
                 $msg = '<h4>The following excluded words were found: </h4><ul>';
                 foreach ($results as $file => $words) {
                     foreach ($words as $word) {
-                        $msg .= FlushNow::flushNow($word . ' in ' . $file);
+                        $msg .= self::flushNow($word . ' in ' . $file);
                     }
                 }
                 $msg .= '</ul>';

@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
 
 use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
+use Sunnysideup\Flush\FlushNow;
 
 /**
  * sets the default installation folder
@@ -20,11 +21,11 @@ class CheckOrAddExtraArray extends UpdateComposerAbstract
         $json = $this->getJsonData();
 
         if (isset($json['extra'])) {
-            FlushNow::flushNow('Already has composer.json[extra][installer-name]');
+            self::flushNow('Already has composer.json[extra][installer-name]');
 
             return false;
         }
-        FlushNow::flushNow("Adding 'extra' array to composer.json");
+        self::flushNow("Adding 'extra' array to composer.json");
         if (! isset($json['extra'])) {
             $json['extra'] = [];
         }

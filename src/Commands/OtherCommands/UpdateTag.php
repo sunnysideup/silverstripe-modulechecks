@@ -5,6 +5,7 @@ namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 use SilverStripe\Core\Config\Config;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
+use Sunnysideup\Flush\FlushNow;
 
 class UpdateTag extends ChecksAbstract
 {
@@ -46,7 +47,7 @@ class UpdateTag extends ChecksAbstract
         }
 
         if ($newTagString) {
-            FlushNow::flushNow('Creating new tag  ' . $newTagString . ' ...');
+            self::flushNow('Creating new tag  ' . $newTagString . ' ...');
 
             //git tag -a 0.0.1 -m "testing tag"
             $options = [

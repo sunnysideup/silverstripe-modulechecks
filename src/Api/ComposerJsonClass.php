@@ -8,6 +8,7 @@ use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 use Sunnysideup\ModuleChecks\Model\Module;
 use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use Sunnysideup\Flush\FlushNow;
 
 class ComposerJsonClass extends BaseObject
 {
@@ -100,7 +101,7 @@ class ComposerJsonClass extends BaseObject
     //     }
     //
     //     if (is_array($this->jsonData)) {
-    //         FlushNow::flushNow('Updating composer.json');
+    //         self::flushNow('Updating composer.json');
     //         $composerUpdates = ClassInfo::subclassesFor(UpdateComposerAbstract::class);
     //
     //         //remove base class
@@ -119,7 +120,7 @@ class ComposerJsonClass extends BaseObject
     //             $obj->run();
     //         }
     //         if ($this->writeJsonToFile()) {
-    //             FlushNow::flushNow('Updated JSON </li>');
+    //             self::flushNow('Updated JSON </li>');
     //         } else {
     //             ModuleCheck::log_error('Could not write JSON');
     //         }

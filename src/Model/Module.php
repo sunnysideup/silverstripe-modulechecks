@@ -11,9 +11,12 @@ use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 use Sunnysideup\ModuleChecks\Api\GitApi;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\Flush\FlushNow;
 
 class Module extends DataObject
 {
+    use FlushNow;
+
     protected $gitWrapper = null;
 
     private static $table_name = 'Module';
@@ -198,7 +201,7 @@ class Module extends DataObject
     public function removeClone(): bool
     {
         $dir = $this->Directory();
-        // FlushNow::flushNow('Removing ' . $dir . ' and all its contents ...  ', 'created');
+        // self::flushNow('Removing ' . $dir . ' and all its contents ...  ', 'created');
         $this->gitRepo = null;
         Filesystem::removeFolder($dir); // removes contents but not the actual folder
         //rmdir ($dir);

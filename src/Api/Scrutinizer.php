@@ -4,13 +4,14 @@ namespace Sunnysideup\ModuleChecks\Api;
 
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use Sunnysideup\Flush\FlushNow;
 
 class Scrutinizer extends BaseObject
 {
     public static function send_to_scrutinizer(string $apiKey, string $gitHubUserName, string $moduleName): bool
     {
         if (! trim($apiKey)) {
-            FlushNow::flushNow('No Scrutinizer API key set');
+            self::flushNow('No Scrutinizer API key set');
             return false;
         }
 
@@ -42,7 +43,7 @@ class Scrutinizer extends BaseObject
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($httpcode === 201) {
-            FlushNow::flushNow('Added ' . $repoName . ' to Scrutinizer ... ');
+            self::flushNow('Added ' . $repoName . ' to Scrutinizer ... ');
 
             return true;
         }

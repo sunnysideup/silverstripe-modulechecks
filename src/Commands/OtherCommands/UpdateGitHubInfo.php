@@ -5,6 +5,7 @@ namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
+use Sunnysideup\Flush\FlushNow;
 
 class UpdateGitHubInfo extends ChecksAbstract
 {
@@ -45,7 +46,7 @@ class UpdateGitHubInfo extends ChecksAbstract
             }
         }
 
-        FlushNow::flushNow('updating Git Repo information ...');
+        self::flushNow('updating Git Repo information ...');
 
         //check!
         $obj = GitHubApi::create();

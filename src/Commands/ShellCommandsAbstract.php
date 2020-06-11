@@ -1,6 +1,7 @@
 <?php
 
 namespace Sunnysideup\ModuleChecks\Commands;
+use Sunnysideup\Flush\FlushNow;
 
 abstract class ShellCommandsAbstract extends BaseCommand
 {
@@ -84,7 +85,7 @@ abstract class ShellCommandsAbstract extends BaseCommand
     protected function runCommand()
     {
         foreach ($this->commands as $command) {
-            FlushNow::flushNow('Running ' . $command);
+            self::flushNow('Running ' . $command);
             $obj = PHP2CommandLineSingleton::create();
             $results = $obj->exec(
                 $this->rootDirForModule, //dir ...
