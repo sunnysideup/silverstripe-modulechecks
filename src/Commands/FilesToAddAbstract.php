@@ -6,9 +6,8 @@ use SilverStripe\Assets\Filesystem;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\View\Requirements;
-use Sunnysideup\ModuleChecks\Model\Module;
-use Sunnysideup\ModuleChecks\Commands\BaseCommand;
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Model\Module;
 
 abstract class FilesToAddAbstract extends BaseCommand
 {

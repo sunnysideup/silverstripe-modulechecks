@@ -59,7 +59,7 @@ class UpdateTag extends ChecksAbstract
         return $this->hasError($outcome);
     }
 
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Add automated tag';
     }

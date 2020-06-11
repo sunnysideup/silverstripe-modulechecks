@@ -1,7 +1,6 @@
 <?php
 
 namespace Sunnysideup\ModuleChecks\Commands;
-use Sunnysideup\ModuleChecks\Commands\BaseCommand;
 
 abstract class FirstAbstract extends BaseCommand
 {

@@ -54,7 +54,7 @@ class UpdateGitHubInfo extends ChecksAbstract
         return $this->hasError();
     }
 
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return 'Update Git Hub Info';
     }

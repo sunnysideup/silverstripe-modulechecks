@@ -21,48 +21,20 @@ class UpdateModules extends BuildTask
         Adds files necessary for publishing a module to GitHub.
         The list of modules is specified in standard config or else it retrieves a list of modules from GitHub.';
 
-    /**
-     * e.g.
-     * - moduleA
-     * - moduleB
-     * - moduleC
-     *
-     * @var array
-     */
-    private static $modules_to_update = [];
-
-    /**
-     * e.g.
-     * - ClassNameForUpdatingFileA
-     * - ClassNameForUpdatingFileB
-     *
-     * @var array
-     */
-    private static $files_to_update = [];
-
-    /**
-     * e.g.
-     * - ClassNameForUpdatingFileA
-     * - ClassNameForUpdatingFileB
-     *
-     * @var array
-     */
-    private static $commands_to_run = [];
-
     public function run($request)
     {
         Environment::increaseTimeLimitTo(86400);
 
         set_error_handler('errorHandler', E_ALL);
-
-        while ($obj = CheckPlan::get_next_module_check()) {
+        $sanityCount = 0;
+        $obj = CheckPlan::get_next_module_check();
+        while ($obj && $sanityCount < 99999) {
             $obj->run();
+            $sanityCount++;
+            $obj = CheckPlan::get_next_module_check();
         }
 
         restore_error_handler();
-
-        $this->writeLog();
-        //to do ..
     }
 
     protected function errorHandler(int $errno, string $errstr)

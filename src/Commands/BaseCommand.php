@@ -36,7 +36,7 @@ class BaseCommand extends BaseObject
         }
     }
 
-    protected function hasError(?bool $outcome = null) : bool
+    protected function hasError(?bool $outcome = null): bool
     {
         if ($outcome === false) {
             return true;

@@ -3,7 +3,6 @@
 namespace Sunnysideup\ModuleChecks\Commands;
 
 use Sunnysideup\ModuleChecks\Api\ComposerJsonClass;
-use Sunnysideup\ModuleChecks\Commands\BaseCommand;
 
 abstract class UpdateComposerAbstract extends BaseCommand
 {

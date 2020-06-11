@@ -1,5 +1,7 @@
 <?php
+
 namespace Sunnysideup\ModuleChecks\Commands\Last;
+
 use Sunnysideup\ModuleChecks\Commands\LastAbstract;
 
 class TearDown extends LastAbstract

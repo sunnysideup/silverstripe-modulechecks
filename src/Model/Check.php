@@ -2,20 +2,20 @@
 
 namespace Sunnysideup\ModuleChecks\Model;
 
+use ReflectionClass;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
-use SilverStripe\ORM\DataObject;
 
+
+use SilverStripe\ORM\DataObject;
 
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 
+
 use SilverStripe\ORM\Filters\PartialMatchFilter;
-
-
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
-use Sunnysideup\ModuleChecks\BaseObject;
 
-use ReflectionClass;
+use Sunnysideup\ModuleChecks\BaseObject;
 
 class Check extends DataObject
 {

@@ -2,8 +2,8 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 
-use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Api\Scrutinizer;
+use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 
 class AddToScrutinizer extends ChecksAbstract

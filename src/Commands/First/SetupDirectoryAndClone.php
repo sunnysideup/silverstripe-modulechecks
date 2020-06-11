@@ -1,6 +1,7 @@
 <?php
 
 namespace Sunnysideup\ModuleChecks\Commands\First;
+
 use Sunnysideup\ModuleChecks\Commands\FirstAbstract;
 
 class SetupDirectoryAndClone extends FirstAbstract
