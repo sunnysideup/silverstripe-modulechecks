@@ -25,7 +25,7 @@ class ConfigYML extends BaseObject
     {
         $this->repo = $repo;
 
-        $this->filename = $gitHubModuleInstance->Directory() . '/_config/' . $fileToCheck;
+        $this->filename = $this->repo->Directory() . '/_config/' . $fileToCheck;
     }
 
     public function reWrite()

@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Commands;
 
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 
 class BaseCommand extends BaseObject
 {
@@ -35,10 +36,10 @@ class BaseCommand extends BaseObject
         }
     }
 
-    protected function hasError(?bool $error = false)
+    protected function hasError(?bool $outcome = null) : bool
     {
-        if ($error) {
-            return false;
+        if ($outcome === false) {
+            return true;
         }
         return trim($this->errorString) ? true : false;
     }

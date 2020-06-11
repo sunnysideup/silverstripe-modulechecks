@@ -79,7 +79,6 @@ class ModuleCheck extends DataObject
         'HasError.Nice' => 'Error',
         'ModuleCheckPlan.Title' => 'Plan',
         'Module.Title' => 'Module',
-        'Module.Title' => 'Module',
     ];
 
     #######################
@@ -178,7 +177,7 @@ class ModuleCheck extends DataObject
         FlushNow::flushNow($message, 'deleted');
         $obj = CheckPlan::get_current_module_check();
         if ($obj) {
-            $obj->LogError($string);
+            $obj->LogError($message);
         } else {
             FlushNow::flushNow('Could not attach error to specific ModuleCheck');
         }

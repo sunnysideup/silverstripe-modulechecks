@@ -127,7 +127,7 @@ class CheckPlan extends DataObject
 
     public static function get_current_module_check(): ?ModuleCheck
     {
-        self::$current_module_check = $moduleCheck;
+        return self::$current_module_check;
     }
 
     public static function get_next_module_check(): ?ModuleCheck
@@ -186,11 +186,6 @@ class CheckPlan extends DataObject
     ### Import / Export Section
     #######################
 
-    public function getExportFields()
-    {
-        //..
-        return parent::getExportFields();
-    }
 
     #######################
     ### CMS Edit Section
@@ -205,7 +200,7 @@ class CheckPlan extends DataObject
 
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxSetField(
+            CheckboxSetField::create(
                 'ExcludeModules',
                 'Excluded Modules',
                 $obj->getAvailableModulesForDropdown()
@@ -213,7 +208,7 @@ class CheckPlan extends DataObject
         );
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxSetField(
+            CheckboxSetField::create(
                 'IncludedModules',
                 'Included Modules',
                 $obj->getAvailableModulesForDropdown()
@@ -221,7 +216,7 @@ class CheckPlan extends DataObject
         );
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxSetField(
+            CheckboxSetField::create(
                 'ExcludeChecks',
                 'Excluded Checks',
                 $obj->getAvailableChecksForDropdown()
@@ -229,7 +224,7 @@ class CheckPlan extends DataObject
         );
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxSetField(
+            CheckboxSetField::create(
                 'IncludedChecks',
                 'Included Checks',
                 $obj->getAvailableChecksForDropdown()

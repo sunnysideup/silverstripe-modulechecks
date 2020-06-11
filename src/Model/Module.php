@@ -9,6 +9,7 @@ use SilverStripe\Core\Config\Config;
 use SilverStripe\ORM\DataObject;
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 use Sunnysideup\ModuleChecks\Api\GeneralMethods;
+use Sunnysideup\ModuleChecks\Api\GitApi;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\BaseObject;
 
@@ -71,7 +72,7 @@ class Module extends DataObject
 
     public static function get_or_create_github_module(array $moduleDetails): self
     {
-        $moduleName = trim($moduleName[$moduleDetails['name']]);
+        $moduleName = trim($moduleDetails['name']);
         $filter = ['ModuleName' => $moduleName];
         $gitHubModule = Module::get()->filter($filter)->first();
         if (! $gitHubModule) {
@@ -285,7 +286,7 @@ class Module extends DataObject
 
     public function findNextTag(array $tag, string $changeType): string
     {
-        return $this->checkOrSetGitCommsWrapper()->findNextTag(string $tag, string $changeType);
+        return $this->checkOrSetGitCommsWrapper()->findNextTag($tag, $changeType);
     }
 
     /**
@@ -295,7 +296,7 @@ class Module extends DataObject
     protected function checkOrSetGitCommsWrapper(?bool $forceNew = false): GitWorkingCopy
     {
         if ($this->gitWrapper === null) {
-            $this->gitWrapper = GitApi($this, $forceNew);
+            $this->gitWrapper = GitApi::create($this, $forceNew);
         }
 
         return $this->gitWrapper;

@@ -4,6 +4,7 @@ namespace Sunnysideup\ModuleChecks\Tasks;
 
 use SilverStripe\Core\Environment;
 use SilverStripe\Dev\BuildTask;
+use Sunnysideup\ModuleChecks\Model\CheckPlan;
 
 /**
  * main class running all the updates
@@ -54,7 +55,7 @@ class UpdateModules extends BuildTask
 
         set_error_handler('errorHandler', E_ALL);
 
-        while ($obj = get_next_module_check()) {
+        while ($obj = CheckPlan::get_next_module_check()) {
             $obj->run();
         }
 

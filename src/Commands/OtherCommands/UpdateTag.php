@@ -4,6 +4,7 @@ namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 
 use SilverStripe\Core\Config\Config;
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 
 class UpdateTag extends ChecksAbstract
 {
@@ -56,5 +57,10 @@ class UpdateTag extends ChecksAbstract
             $outcome = $this->repo->createTag($options);
         }
         return $this->hasError($outcome);
+    }
+
+    public function getDescription() : string
+    {
+        return 'Add automated tag';
     }
 }

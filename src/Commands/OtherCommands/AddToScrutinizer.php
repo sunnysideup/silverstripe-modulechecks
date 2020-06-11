@@ -2,8 +2,9 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 
-use Sunnysideup\ModuleChecks\Api\Scrutinizer;
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Api\Scrutinizer;
+use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 
 class AddToScrutinizer extends ChecksAbstract
 {
@@ -16,10 +17,12 @@ class AddToScrutinizer extends ChecksAbstract
     public function run(): bool
     {
         $apiKey = Config::inst()->get(BaseObject::class, 'scrutinizer_api_key');
+        $gitHubUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
+        $outcome = null;
         if ($apiKey) {
             $outcome = Scrutinizer::send_to_scrutinizer(
                 $apiKey,
-                Config::inst()->get(BaseObject::class, 'github_user_name'),
+                $gitHubUserName,
                 $this->repo->ModuleName
             );
         } else {

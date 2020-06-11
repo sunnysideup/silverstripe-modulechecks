@@ -53,7 +53,8 @@ class GitApi extends BaseObject
             if ($this->repo->IsDirGitRepo($this->repo->Directory())) {
                 if ($forceNew) {
                     $this->repo->RemoveClone();
-                    return $this->__construct($this->repo, false);
+                    //do again!
+                    $this->__construct($this->repo, false);
                 }
                 $this->gitApiWrapper = $this->commsWrapper->workingCopy($this->repo->Directory());
             } else {

@@ -1,6 +1,7 @@
 <?php
 
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
+use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 
 class MoveOldReadMe extends ChecksAbstract
 {

@@ -4,6 +4,7 @@ namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 
 class UpdateGitHubInfo extends ChecksAbstract
 {
@@ -13,8 +14,9 @@ class UpdateGitHubInfo extends ChecksAbstract
      */
     private static $enabled = true;
 
-    public function run($array): bool
+    public function run(): bool
     {
+        $array = [];
         // see https://developer.github.com/v3/repos/#edit
 
         # not working
@@ -45,9 +47,15 @@ class UpdateGitHubInfo extends ChecksAbstract
 
         FlushNow::flushNow('updating Git Repo information ...');
 
-        $obj = new GitHubApi();
-        $obj->apiCall($this->repo->ModuleName, $array, $gitAPIcommand, 'PATCH');
+        //check!
+        $obj = GitHubApi::create();
+        $obj->apiCall($this->repo->ModuleName, $array, '', 'PATCH');
 
         return $this->hasError();
+    }
+
+    public function getDescription() : string
+    {
+        return 'Update Git Hub Info';
     }
 }

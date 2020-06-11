@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Api;
 
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
+use Sunnysideup\ModuleChecks\BaseObject;
 
 class Scrutinizer extends BaseObject
 {

@@ -55,7 +55,7 @@ class GitHubApi extends BaseObject
                 $count = count($array);
                 if ($count > 0) {
                     foreach ($array as $repo) {
-                        self::retrieve_repos($repo, $getNamesWithPrefix);
+                        self::retrieve_repos($repo, $username, $getNamesWithPrefix);
                     }
                 } else {
                     $page = 11;
@@ -70,7 +70,7 @@ class GitHubApi extends BaseObject
         return self::$_modules;
     }
 
-    public static function get_repos_with_auth($username = '', $getNamesWithPrefix = false)
+    public static function get_repos_with_auth($repo, $username, $getNamesWithPrefix = false)
     {
         $preSelected = Config::inst()->get(UpdateModules::class, 'modules_to_update');
         if (is_array($preSelected) && count($preSelected)) {
@@ -102,7 +102,7 @@ class GitHubApi extends BaseObject
                     $array = json_decode($curlResult, true);
                     if (count($array) > 0) {
                         foreach ($array as $repo) {
-                            self::retrieve_repos($repo, $getNamesWithPrefix);
+                            self::retrieve_repos($repo, $username, $getNamesWithPrefix);
                         }
                     }
                 }
@@ -202,7 +202,7 @@ class GitHubApi extends BaseObject
         return curl_exec($ch);
     }
 
-    protected static function retrieve_repos($repo, $getNamesWithPrefix)
+    protected static function retrieve_repos($repo, $username, $getNamesWithPrefix)
     {
         //dont bother about forks
         if (isset($repo['fork']) && ! $repo['fork']) {
@@ -212,9 +212,10 @@ class GitHubApi extends BaseObject
                 //check it is silverstripe module
                 if ($getNamesWithPrefix) {
                     $prefix = 'silverstripe';
-                    if (substr($str, 0, strlen($prefix)) === $prefix) {
-                        $str = substr($str, strlen($prefix));
+                    if (substr($repo['name'], 0, strlen($prefix)) === $prefix) {
+                        $repo['name'] = substr($repo['name'], strlen($prefix));
                     }
+                    $name = $repo['name'];
                 } else {
                     $name = $repo['name'];
                 }

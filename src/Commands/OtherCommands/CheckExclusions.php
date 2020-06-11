@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 
 class CheckExclusions extends ChecksAbstract
 {
@@ -17,7 +18,7 @@ class CheckExclusions extends ChecksAbstract
         return 'Check for words that should not be included';
     }
 
-    public function run($array): bool
+    public function run(): bool
     {
         $excludedWords = Config::inst()->get(BaseObject::class, 'excluded_words');
         $msg = '';

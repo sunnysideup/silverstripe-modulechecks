@@ -13,6 +13,9 @@ use SilverStripe\ORM\Filters\PartialMatchFilter;
 
 
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
+use Sunnysideup\ModuleChecks\BaseObject;
+
+use ReflectionClass;
 
 class Check extends DataObject
 {
@@ -150,12 +153,6 @@ class Check extends DataObject
     #######################
     ### Import / Export Section
     #######################
-
-    public function getExportFields()
-    {
-        //..
-        return parent::getExportFields();
-    }
 
     #######################
     ### CMS Edit Section

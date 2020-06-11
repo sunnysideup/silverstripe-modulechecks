@@ -7,6 +7,8 @@ use SilverStripe\Control\Director;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\View\Requirements;
 use Sunnysideup\ModuleChecks\Model\Module;
+use Sunnysideup\ModuleChecks\Commands\BaseCommand;
+use Sunnysideup\ModuleChecks\BaseObject;
 
 abstract class FilesToAddAbstract extends BaseCommand
 {
@@ -108,9 +110,8 @@ abstract class FilesToAddAbstract extends BaseCommand
         if ($fileContent) {
             $this->replaceWordsInFile();
         }
-        $error = $outcome ? false : true;
 
-        return $this->hasError($error);
+        return $this->hasError($outcome);
     }
 
     /**
