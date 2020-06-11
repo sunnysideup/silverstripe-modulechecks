@@ -6,12 +6,11 @@ use SilverStripe\Core\ClassInfo;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 use Sunnysideup\ModuleChecks\Model\Module;
+use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
-
 
 class ComposerJsonClass extends BaseObject
 {
-
     /**
      * @var array|null
      */
@@ -42,7 +41,7 @@ class ComposerJsonClass extends BaseObject
     }
 
     /**
-     * @param array $array [description]
+     * @param array $array
      */
     public function setJsonData(array $array)
     {
@@ -84,7 +83,7 @@ class ComposerJsonClass extends BaseObject
         if ($json) {
             $this->jsonData = json_decode($json, true);
         } else {
-            UpdateModules::addUnsolvedProblem($this->moduleName, 'Could not open composer.json file...');
+            ModuleCheck::log_error('Could not open composer.json file...');
         }
         return is_array($this->jsonData);
     }
@@ -122,12 +121,12 @@ class ComposerJsonClass extends BaseObject
     //         if ($this->writeJsonToFile()) {
     //             FlushNow::flushNow('Updated JSON </li>');
     //         } else {
-    //             UpdateModules::addUnsolvedProblem($this->moduleName, 'Could not write JSON');
+    //             ModuleCheck::log_error('Could not write JSON');
     //         }
     //     } else {
     //         //UpdateModules::$unsolvedItems[$this->moduleName] = 'No composer.json';
     //
-    //         UpdateModules::addUnsolvedProblem($this->moduleName, 'No composer.json');
+    //         ModuleCheck::log_error('No composer.json');
     //     }
     //
     //     return $this;

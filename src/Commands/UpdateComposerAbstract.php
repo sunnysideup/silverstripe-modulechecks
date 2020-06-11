@@ -34,7 +34,7 @@ abstract class UpdateComposerAbstract extends BaseCommand
     }
 
     /**
-     * @param array $array [description]
+     * @param array $array
      */
     protected function setJsonData(array $array)
     {

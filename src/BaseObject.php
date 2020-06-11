@@ -6,9 +6,9 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
+use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\ModuleChecks\Model\Check;
 use Sunnysideup\ModuleChecks\Model\Module;
-use Sunnysideup\Flush\FlushNow;
 
 class BaseObject
 {
@@ -36,11 +36,13 @@ class BaseObject
      * @var array
      */
     private static $core_classes = [
+        'FirstAbstract',
         'ChecksAbstract',
         'FilesToAddAbstract',
         'UpdateComposerAbstract',
         'ShellCommandsAbstract',
         'OtherCommands',
+        'LastAbstract',
     ];
 
     /**

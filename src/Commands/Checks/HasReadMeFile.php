@@ -6,6 +6,12 @@ use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 
 class HasReadMeFile extends ChecksAbstract
 {
+    protected $options = [
+        'README.md',
+        'README.MD',
+        'readme.md',
+    ];
+
     /**
      * should it be included by default?
      * @var bool
@@ -17,7 +23,13 @@ class HasReadMeFile extends ChecksAbstract
      */
     public function run(): bool
     {
-        return $this->hasFileOnGitHub('README.md');
+        foreach ($this->options as $option) {
+            $outcome = $this->hasFileOnGitHub($option);
+            if ($outcome) {
+                return true;
+            }
+        }
+        return $this->hasError();
     }
 
     /**
@@ -26,6 +38,6 @@ class HasReadMeFile extends ChecksAbstract
      */
     public function getDescription(): string
     {
-        return 'Does the module have a README file?';
+        return 'Does the module have a README file in root';
     }
 }

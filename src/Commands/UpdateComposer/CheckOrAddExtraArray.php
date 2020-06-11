@@ -2,7 +2,6 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\UpdateComposer;
 
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 
 /**

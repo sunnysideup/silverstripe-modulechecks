@@ -12,10 +12,15 @@ class CheckExclusions extends ChecksAbstract
      */
     private static $enabled = true;
 
+    public function getDescription(): string
+    {
+        return 'Check for words that should not be included';
+    }
+
     public function run($array): bool
     {
         $excludedWords = Config::inst()->get(BaseObject::class, 'excluded_words');
-
+        $msg = '';
         if (count($excludedWords) > 0) {
             $folder = $this->repo->Directory();
 
@@ -25,16 +30,15 @@ class CheckExclusions extends ChecksAbstract
                 $msg = '<h4>The following excluded words were found: </h4><ul>';
                 foreach ($results as $file => $words) {
                     foreach ($words as $word) {
-                        $msg .= FlushNow::flushNow($word.' in '.$file);
+                        $msg .= FlushNow::flushNow($word . ' in ' . $file);
                     }
                 }
                 $msg .= '</ul>';
-
-                //trigger_error ("excluded words found in files(s)");
-                FlushNow::flushNow($msg);
-                UpdateModules::$unsolvedItems[$this->repo->ModuleName] = $msg;
             }
         }
+        $this->logError($msg);
+
+        return $this->hasError();
     }
 
     private function checkDirExcludedWords($directory, $wordArray): array
@@ -78,8 +82,7 @@ class CheckExclusions extends ChecksAbstract
         if (! $fileContent) {
             $msg = "Could not open ${fileName} to check for excluded words";
 
-            FlushNow::flushNow($msg);
-            UpdateModules::$unsolvedItems[$moduleObject->ModuleName] = $msg;
+            $this->logError($msg);
         }
 
         foreach ($wordArray as $word) {

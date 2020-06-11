@@ -10,11 +10,17 @@ class MoveOldReadMe extends ChecksAbstract
      */
     private static $enabled = true;
 
+    public function getDescription(): string
+    {
+        return 'Move Read Me to right place';
+    }
+
     public function run(): bool
     {
         $automatedReadMe = $this->repo->Directory() . '/' . 'README.md';
 
         if (! file_exists($automatedReadMe)) {
+            $this->logError('Could not find ' . $this->repo->Directory() . '/' . 'README.md');
             return false;
         }
 
@@ -39,6 +45,6 @@ class MoveOldReadMe extends ChecksAbstract
             unlink($automatedReadMe);
         }
 
-        return true;
+        return $this->hasError();
     }
 }

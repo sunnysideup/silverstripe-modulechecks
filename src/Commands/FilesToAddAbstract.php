@@ -93,10 +93,10 @@ abstract class FilesToAddAbstract extends BaseCommand
     public function run()
     {
         if (! $this->rootDirForModule) {
-            user_error('no root dir for module has been set');
+            $this->logError('no root dir for module has been set');
         }
         if (! $this->fileLocation) {
-            user_error('File location not set');
+            $this->logError('File location not set');
         }
         $fileContent = $this->getStandardFile();
 
@@ -108,46 +108,9 @@ abstract class FilesToAddAbstract extends BaseCommand
         if ($fileContent) {
             $this->replaceWordsInFile();
         }
+        $error = $outcome ? false : true;
 
-        return (bool) $outcome;
-    }
-
-
-    /**
-     * you can either return the string from the
-     * `$sourceLocation` or you can just have a string here
-     * that returns the data directly....
-     *
-     * @param string $fileContent
-     *
-     * @return string
-     */
-    protected function getStandardFile(): string
-    {
-        $isURL = (strpos($this->sourceLocation, '//') !== false);
-
-        if ($isURL) {
-            $fullFileName = $this->sourceLocation;
-        } else {
-            $fullFileName = Director::baseFolder() . '/' . $this->sourceLocation;
-        }
-
-        FlushNow::flushNow($fullFileName);
-
-        $file = fopen($fullFileName, 'r');
-        if ($file) {
-            $fileSize = filesize($fullFileName);
-
-            if ($fileSize > 0) {
-                $fileContents = fread($file, filesize($fullFileName));
-            } else {
-                $fileContents = '';
-            }
-            fclose($file);
-
-            return $fileContents;
-        }
-        return '';
+        return $this->hasError($error);
     }
 
     /**
@@ -160,12 +123,12 @@ abstract class FilesToAddAbstract extends BaseCommand
     {
         foreach ($this->gitReplaceArray as $searchTerm => $replaceMethod) {
             $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
-            GeneralMethods::replaceInFile($fileName, $searchTerm, $this->repo->{$replaceMethod}());
+            $this->replaceInFile($fileName, $searchTerm, $this->repo->{$replaceMethod}());
         }
 
         foreach ($this->replaceArray as $searchTerm => $replaceMethod) {
             $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
-            GeneralMethods::replaceInFile($fileName, $searchTerm, $this->{$replaceMethod}());
+            $this->replaceInFile($fileName, $searchTerm, $this->{$replaceMethod}());
         }
     }
 
@@ -205,6 +168,66 @@ abstract class FilesToAddAbstract extends BaseCommand
         return 'Could not add file.';
     }
 
+    /*
+     * Replaces all instances of a string in a file, and rewrites the file
+     *
+     * @param string $fileName
+     * @param string $search
+     * @param string $replacement
+     *
+     **/
+    public function replaceInFile($fileName, $search, $replacement)
+    {
+        $file = fopen($fileName, 'r');
+        if ($file) {
+            $content = fread($file, filesize($fileName) * 2);
+            $newContent = str_replace($search, $replacement, $content);
+            fclose($file);
+
+            $file = fopen($fileName, 'w');
+            if ($file) {
+                fwrite($file, $newContent);
+                fclose($file);
+            }
+        }
+    }
+
+    /**
+     * you can either return the string from the
+     * `$sourceLocation` or you can just have a string here
+     * that returns the data directly....
+     *
+     * @param string $fileContent
+     *
+     * @return string
+     */
+    protected function getStandardFile(): string
+    {
+        $isURL = (strpos($this->sourceLocation, '//') !== false);
+
+        if ($isURL) {
+            $fullFileName = $this->sourceLocation;
+        } else {
+            $fullFileName = Director::baseFolder() . '/' . $this->sourceLocation;
+        }
+
+        FlushNow::flushNow($fullFileName);
+
+        $file = fopen($fullFileName, 'r');
+        if ($file) {
+            $fileSize = filesize($fullFileName);
+
+            if ($fileSize > 0) {
+                $fileContents = fread($file, filesize($fullFileName));
+            } else {
+                $fileContents = '';
+            }
+            fclose($file);
+
+            return $fileContents;
+        }
+        return '';
+    }
 
     /**
      * takes the standard file and adds any
@@ -246,7 +269,7 @@ abstract class FilesToAddAbstract extends BaseCommand
         }
 
         if (isset($folderPath) && ! file_exists($this->rootDirForModule . '/' . $folderPath)) {
-            user_error('could not find or create directory ' . $this->rootDirForModule . '/' . $folderPath);
+            $this->logError('could not find or create directory ' . $this->rootDirForModule . '/' . $folderPath);
         }
 
         $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
@@ -260,8 +283,14 @@ abstract class FilesToAddAbstract extends BaseCommand
         } else {
             return false;
         }
+        if (! $exists) {
+            $this->logError('Tried to save file,  but can not find it: ' . $fileName);
+        }
+        if (! $result) {
+            $this->logError('Tried to save file,  but can not write to it: ' . $fileName);
+        }
 
-        return $result && $exists;
+        return $this->hasError();
     }
 
     /**

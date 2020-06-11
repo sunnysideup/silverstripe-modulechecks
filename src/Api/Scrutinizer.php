@@ -6,7 +6,7 @@ use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
 class Scrutinizer extends BaseObject
 {
-    public static function send_to_scrutinizer($apiKey, $gitHubUserName, $moduleName)
+    public static function send_to_scrutinizer(string $apiKey, string $gitHubUserName, string $moduleName): bool
     {
         if (! trim($apiKey)) {
             FlushNow::flushNow('No Scrutinizer API key set');
@@ -33,10 +33,7 @@ class Scrutinizer extends BaseObject
         $curlResult = curl_exec($ch);
 
         if (! $curlResult) {
-            FlushNow::flushNow('Could not add '.$repoName.' to Scrutinizer ... ');
-            //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (curl failure)";
-
-            UpdateModules::addUnsolvedProblem($repoName, "Could not add ${repoName} to Scrutiniser (curl failure)");
+            ModuleCheck::log_error("Could not add ${repoName} to Scrutiniser (curl failure)");
 
             return false;
         }
@@ -44,11 +41,13 @@ class Scrutinizer extends BaseObject
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($httpcode === 201) {
-            FlushNow::flushNow('Added '.$repoName.' to Scrutinizer ... ');
-        } else {
-            FlushNow::flushNow('Could not add '.$repoName.' to Scrutinizer ... ');
-            //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (HttpCode $httpcode)";
-            UpdateModules::addUnsolvedProblem($repoName, "Could not add ${repoName} to Scrutiniser (HttpCode ${httpcode})");
+            FlushNow::flushNow('Added ' . $repoName . ' to Scrutinizer ... ');
+
+            return true;
         }
+        //UpdateModules::$unsolvedItems[$repoName] = "Could not add $reopName to Scrutiniser (HttpCode $httpcode)";
+        ModuleCheck::log_error("Could not add ${repoName} to Scrutiniser (HttpCode ${httpcode})");
+
+        return false;
     }
 }

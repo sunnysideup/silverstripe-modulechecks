@@ -16,7 +16,6 @@ use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
 class GitApi extends BaseObject
 {
-
     protected $gitApiWrapper = null;
 
     protected $commsWrapper = null;
@@ -65,9 +64,10 @@ class GitApi extends BaseObject
                 while (! $this->gitApiWrapper) {
                     $cloneAttempts ++;
                     if ($cloneAttempts === 4) {
-                        user_error('Failed to clone module ' . $this->repo->LongModuleName() . ' after ' . ($cloneAttempts - 1) . ' attemps.', E_USER_ERROR);
+                        $message = 'Failed to clone module ' . $this->repo->LongModuleName() . ' after ' . ($cloneAttempts - 1) . ' attemps.';
                         //UpdateModules::$unsolvedItems[$this->ModuleName()] = 'Failed to clone modules';
-                        UpdateModules::addUnsolvedProblem($this->repo->ModuleName(), 'Failed to clone modules');
+                        ModuleCheck::log_error($message);
+                        USER_ERROR($message);
                     }
                     try {
                         $this->commsWrapper->setTimeout(240); //Big modules need a longer timeout
@@ -374,13 +374,37 @@ class GitApi extends BaseObject
         }
     }
 
-    public function createTag($tagCommandOptions)
+    public function createTag($tagCommandOptions): bool
     {
         $this->gitApiWrapper->tag($tagCommandOptions);
-        $this->gitApiWrapper->push(['tags' => true]);
+
+        return $this->gitApiWrapper->push(['tags' => true]);
     }
 
-    protected function IsDirGitRepo($directory)
+    public function findNextTag(array $tag, string $changeType): string
+    {
+        switch ($changeType) {
+            case 'MAJOR':
+                $tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
+                $tag['tagparts'][1] = 0;
+                $tag['tagparts'][2] = 0;
+                break;
+
+            case 'MINOR':
+                $tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
+                $tag['tagparts'][2] = 0;
+                break;
+
+            default:
+                case 'PATCH':
+                $tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
+                break;
+        }
+
+        return trim(implode('.', $tag['tagparts']));
+    }
+
+    protected function IsDirGitRepo($directory): bool
     {
         return file_exists($directory . '/.git');
     }

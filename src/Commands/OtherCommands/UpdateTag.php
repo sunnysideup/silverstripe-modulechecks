@@ -13,31 +13,9 @@ class UpdateTag extends ChecksAbstract
      */
     private static $enabled = true;
 
-    protected function findNextTag(array $tag, string $changeType): string
+    public function run(): bool
     {
-        switch ($changeType) {
-            case 'MAJOR':
-                $tag['tagparts'][0] = intval($tag['tagparts'][0]) + 1;
-                $tag['tagparts'][1] = 0;
-                $tag['tagparts'][2] = 0;
-                break;
-
-            case 'MINOR':
-                $tag['tagparts'][1] = intval($tag['tagparts'][1]) + 1;
-                $tag['tagparts'][2] = 0;
-                break;
-
-            default:
-                case 'PATCH':
-                $tag['tagparts'][2] = intval($tag['tagparts'][2]) + 1;
-                break;
-        }
-
-        return trim(implode('.', $tag['tagparts']));
-    }
-
-    private function run(): bool
-    {
+        $outcome = true;
         $tagDelayString = Config::inst()->get(BaseObject::class, 'tag_delay');
         if (! $tagDelayString) {
             $tagDelayString = '-3 weeks';
@@ -61,9 +39,9 @@ class UpdateTag extends ChecksAbstract
         if (! $tag) {
             $newTagString = '1.0.0';
         } elseif ($tag && $commitTime > $tag['timestamp'] && $commitTime < $tagDelay) {
-            $changeType = $moduleObject->getChangeTypeSinceLastTag();
+            $changeType = $this->repo->getChangeTypeSinceLastTag();
 
-            $newTagString = $this->findNextTag($tag, $changeType);
+            $newTagString = $this->repo->findNextTag($tag, $changeType);
         }
 
         if ($newTagString) {
@@ -75,9 +53,8 @@ class UpdateTag extends ChecksAbstract
                 'm' => Config::inst()->get(BaseObject::class, 'tag_create_message'),
             ];
 
-            $this->repo->createTag($options);
+            $outcome = $this->repo->createTag($options);
         }
-
-        return true;
+        return $this->hasError($outcome);
     }
 }

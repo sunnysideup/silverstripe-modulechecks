@@ -15,18 +15,6 @@ abstract class ChecksAbstract extends BaseCommand
         return 'Check returns with error';
     }
 
-    protected function hasFileOnGitHub(string $file): bool
-    {
-        $name = $this->getName();
-        $gitHubUserName = $this->Config()->get('github_user_name');
-
-        return $this->checkLocation(
-            'https://raw.githubusercontent.com/' .
-            $gitHubUserName . '/silverstripe-' . $name .
-            '/master/' . $file
-        );
-    }
-
     /**
      * opens a location with curl to see if it exists.
      *
@@ -48,4 +36,15 @@ abstract class ChecksAbstract extends BaseCommand
         return $outcome;
     }
 
+    protected function hasFileOnGitHub(string $file): bool
+    {
+        $name = $this->getName();
+        $gitHubUserName = $this->Config()->get('github_user_name');
+
+        return $this->checkLocation(
+            'https://raw.githubusercontent.com/' .
+            $gitHubUserName . '/silverstripe-' . $name .
+            '/master/' . $file
+        );
+    }
 }

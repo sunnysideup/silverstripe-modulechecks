@@ -15,6 +15,8 @@ use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 
 class CheckPlan extends DataObject
 {
+    protected static $current_module_check = null;
+
     #######################
     ### Names Section
     #######################
@@ -118,11 +120,23 @@ class CheckPlan extends DataObject
         return DataObject::get_one(CheckPlan::class, ['Completed' => 0]);
     }
 
+    public static function set_current_module_check(ModuleCheck $moduleCheck)
+    {
+        self::$current_module_check = $moduleCheck;
+    }
+
+    public static function get_current_module_check(): ?ModuleCheck
+    {
+        self::$current_module_check = $moduleCheck;
+    }
+
     public static function get_next_module_check(): ?ModuleCheck
     {
         $plan = self::get_current_check_plan();
 
-        return $plan->ModuleChecks()->filter(['Running' => 0, 'Completed' => 0])->first();
+        self::$current_module_check = $plan->ModuleChecks()->filter(['Running' => 0, 'Completed' => 0])->first();
+
+        return self::$current_module_check;
     }
 
     public function getTitle()

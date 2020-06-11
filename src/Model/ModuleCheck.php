@@ -148,15 +148,14 @@ class ModuleCheck extends DataObject
             $repo = $this->GitHubModule();
             if ($repo && $repo->exists()) {
                 $commandClassName = $check->MyClass;
-                $commandClassName::create($repo);
-                $outcome = $commandClassName->run();
+                $commandObject = $commandClassName::create($repo);
+                $outcome = $commandObject->run();
+                $this->Running = false;
+                $this->Completed = true;
                 if ($outcome) {
-                    $this->Running = false;
-                    $this->Completed = true;
                     $this->write();
                 } else {
-                    $this->Running = false;
-                    $this->logError($commandClassName->getError());
+                    $this->logError($commandObject->getError());
                 }
             } else {
                 $this->LogError('Module ID #' . $this->ModuleID . ' can not be found.');
@@ -172,5 +171,16 @@ class ModuleCheck extends DataObject
         | ' . $message;
         $this->HasError = true;
         $this->write();
+    }
+
+    public static function log_error(string $message)
+    {
+        FlushNow::flushNow($message, 'deleted');
+        $obj = CheckPlan::get_current_module_check();
+        if ($obj) {
+            $obj->LogError($string);
+        } else {
+            FlushNow::flushNow('Could not attach error to specific ModuleCheck');
+        }
     }
 }

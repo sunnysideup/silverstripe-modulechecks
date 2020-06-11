@@ -10,8 +10,6 @@ use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 
 class GitHubApi extends BaseObject
 {
-
-
     /**
      * @var string
      */
@@ -41,7 +39,7 @@ class GitHubApi extends BaseObject
         if (! $username) {
             $username = Config::inst()->get(BaseObject::class, 'github_user_name');
         }
-        FlushNow::flushNow('Retrieving List of modules from GitHub for user '.$username.' without AUTH... ');
+        FlushNow::flushNow('Retrieving List of modules from GitHub for user ' . $username . ' without AUTH... ');
         if (! count(self::$_modules)) {
             for ($page = 0; $page < 10; $page++) {
                 $ch = curl_init();
@@ -83,7 +81,7 @@ class GitHubApi extends BaseObject
             } else {
                 $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
             }
-            FlushNow::flushNow('Retrieving List of modules from GitHub for user '.$username.' with AUTH ... ');
+            FlushNow::flushNow('Retrieving List of modules from GitHub for user ' . $username . ' with AUTH ... ');
             if (! count(self::$_modules)) {
                 $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
                 $array = [];

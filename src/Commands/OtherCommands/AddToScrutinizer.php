@@ -15,16 +15,21 @@ class AddToScrutinizer extends ChecksAbstract
 
     public function run(): bool
     {
-        Scrutinizer::send_to_scrutinizer(
-            Config::inst()->get(BaseObject::class, 'scrutinizer_api_key'),
-            Config::inst()->get(BaseObject::class, 'github_user_name'),
-            $this->repo->ModuleName
-        );
+        $apiKey = Config::inst()->get(BaseObject::class, 'scrutinizer_api_key');
+        if ($apiKey) {
+            $outcome = Scrutinizer::send_to_scrutinizer(
+                $apiKey,
+                Config::inst()->get(BaseObject::class, 'github_user_name'),
+                $this->repo->ModuleName
+            );
+        } else {
+            $this->logError('API Key Not Set');
+        }
 
-        return true;
+        return $this->hasError($outcome);
     }
 
-    public function getDescription()
+    public function getDescription(): string
     {
         return 'Add to Scrutinizer';
     }

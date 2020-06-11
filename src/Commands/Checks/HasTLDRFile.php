@@ -7,9 +7,9 @@ use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 class HasTLDRFile extends ChecksAbstract
 {
     protected $options = [
-        'docs/en/INDEX.md',
-        'docs/en/INDEX.MD',
-        'docs/en/index.md',
+        'INDEX.md',
+        'INDEX.MD',
+        'index.md',
     ];
 
     /**
@@ -24,8 +24,12 @@ class HasTLDRFile extends ChecksAbstract
     public function run(): bool
     {
         foreach ($this->options as $option) {
-            return $this->hasFileOnGitHub('docs/en/' . $option);
+            $outcome = $this->hasFileOnGitHub('docs/en/' . $option);
+            if ($outcome) {
+                return true;
+            }
         }
+        return $this->hasError();
     }
 
     /**
@@ -34,6 +38,6 @@ class HasTLDRFile extends ChecksAbstract
      */
     public function getDescription(): string
     {
-        return 'Does the module have a README file?';
+        return 'Does the module have a INDEX.md file in /docs/en?';
     }
 }

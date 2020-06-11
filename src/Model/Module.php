@@ -283,6 +283,11 @@ class Module extends DataObject
         return $this->checkOrSetGitCommsWrapper()->createTag($tagCommandOptions);
     }
 
+    public function findNextTag(array $tag, string $changeType): string
+    {
+        return $this->checkOrSetGitCommsWrapper()->findNextTag(string $tag, string $changeType);
+    }
+
     /**
      * @param bool (optional) $forceNew - create a new repo and ditch all changes
      * @return GitWorkingCopy Repo Object

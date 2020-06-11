@@ -7,12 +7,12 @@ use Exception;
 
 
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 use Yaml;
 
 class ConfigYML extends BaseObject
 {
-
     protected $moduleName = '';
 
     protected $repo = null;
@@ -44,21 +44,16 @@ class ConfigYML extends BaseObject
         FlushNow::flushNow('reading config yml ...  ', 'updating');
 
         if (! file_exists($this->filename)) {
-            FlushNow::flushNow('Unable to load: ' . $this->filename, 'updated');
             //UpdateModules::$unsolvedItems[$this->repo->ModuleName] = "Unable to load " . $this->filename;
 
-            UpdateModules::addUnsolvedProblem($this->repo->ModuleName, 'Unable to load ' . $this->filename);
+            ModuleCheck::log_error('Unable to load: ' . $this->filename);
             return false;
         }
 
         try {
             $this->ymlData = Yaml::parse(file_get_contents($this->filename));
         } catch (Exception $e) {
-            FlushNow::flushNow('Unable to parse the YAML string: ' . $e->getMessage() . '', 'updated');
-
-            //UpdateModules::$unsolvedItems[$this->repo->ModuleName] = "Unable to parse the YAML string: " .$e->getMessage();
-
-            UpdateModules::addUnsolvedProblem($this->repo->ModuleName, 'Unable to parse the YAML string: ' . $e->getMessage());
+            ModuleCheck::log_error('Unable to parse the YAML string: ' . $e->getMessage());
 
             //trigger_error ("Error in YML file");
 
@@ -123,6 +118,4 @@ class ConfigYML extends BaseObject
         file_put_contents($this->filename, $yaml);
         return true;
     }
-
-
 }

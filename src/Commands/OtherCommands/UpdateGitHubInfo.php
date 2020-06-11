@@ -2,7 +2,6 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\BaseObject;
 
@@ -49,6 +48,6 @@ class UpdateGitHubInfo extends ChecksAbstract
         $obj = new GitHubApi();
         $obj->apiCall($this->repo->ModuleName, $array, $gitAPIcommand, 'PATCH');
 
-        return true;
+        return $this->hasError();
     }
 }

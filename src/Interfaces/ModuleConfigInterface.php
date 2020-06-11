@@ -15,9 +15,9 @@ interface ModuleConfigInterface
     public function params();
 
     /**
-     * @param  [type] $location    [description]
-     * @param  [type] $fileContent [description]
-     * @return [type]              [description]
+     * @param  [type] $location
+     * @param  [type] $fileContent
+     * @return [type]
      */
     public function customiseFile($location, $fileContent);
 }

@@ -2,7 +2,6 @@
 
 namespace Sunnysideup\ModuleChecks\Commands\Checks;
 
-use Sunnysideup\ModuleChecks\Api\GeneralMethods;
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 
 class ExistsOnPackagist extends ChecksAbstract
