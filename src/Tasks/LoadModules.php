@@ -23,8 +23,7 @@ class LoadModules extends BuildTask
         Environment::increaseTimeLimitTo(3600);
 
         $modules = GitHubApi::get_all_repos();
-
-        foreach ($modules as $module) {
+        foreach ($modules as $name => $module) {
             Module::get_or_create_github_module($module);
         }
     }

@@ -6,6 +6,8 @@ use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Assets\Folder;
+use SilverStripe\Control\Director;
 use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\ModuleChecks\Model\Check;
 use Sunnysideup\ModuleChecks\Model\Module;
@@ -65,7 +67,7 @@ class BaseObject
     /**
      * @var string
      */
-    private static $path_to_private_key = '~/.ssh/id_rsa';
+    private static $path_to_private_key = 'certs/id_rsa';
 
     /**
      * @var string
@@ -122,10 +124,10 @@ class BaseObject
     public static function inst(): BaseObject
     {
         if (! self::$inst) {
-            self::$inst = Injector::inst()->get(BaseObject::class);
+            self::$inst = Injector::inst()->get(self::class);
             self::$inst->areWeReady();
         }
-        self::$inst;
+        return self::$inst;
     }
 
     public function areWeReady()
@@ -138,8 +140,13 @@ class BaseObject
             }
             if (strpos($value, '/') !== false) {
                 if (! file_exists($value)) {
-                    user_error('The following dir/file can not be found! ' . $value);
-                    return false;
+                    $fullFile = Director::baseFolder().'/'.$value;
+                    if(file_exists($fullFile) || is_link($fullFile))  {
+                        //all good...
+                    } else {
+                        user_error('The following dir/file can not be found! ' . Director::baseFolder().'/'.$value);
+                        return false;
+                    }
                 }
             }
         }
@@ -162,7 +169,7 @@ class BaseObject
 
     public function getAvailableChecksForDropdown(): array
     {
-        $list = $this->availableChecks();
+        $list = $this->getAvailableChecks();
         $array = [];
         foreach ($list as $obj) {
             $array[$obj->ID] = $obj->Title;

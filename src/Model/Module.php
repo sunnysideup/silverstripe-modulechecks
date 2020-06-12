@@ -22,7 +22,7 @@ class Module extends DataObject
     private static $table_name = 'Module';
 
     private static $db = [
-        'ModuleName' => 'Varchar(100)',
+        'ModuleName' => 'Varchar(200)',
         'Description' => 'Varchar(300)',
         'ForksCount' => 'Int',
         'DefaultBranch' => 'Varchar(100)',
@@ -46,7 +46,7 @@ class Module extends DataObject
     private static $summary_fields = [
         'ModuleName' => 'Name',
         'Description' => 'Description',
-        'ForksCount' => 'Count',
+        'ForksCount' => 'Forks',
         'DefaultBranch' => 'Branch',
         'Disabled.Nice' => 'Disabled',
         'HomePage' => 'HomePage',
@@ -75,6 +75,7 @@ class Module extends DataObject
     public static function get_or_create_github_module(array $moduleDetails): self
     {
         $moduleName = trim($moduleDetails['name']);
+        unset($moduleDetails['name']);
         $filter = ['ModuleName' => $moduleName];
         $gitHubModule = Module::get()->filter($filter)->first();
         if (! $gitHubModule) {
@@ -84,6 +85,7 @@ class Module extends DataObject
                 $gitHubModule->{$field} = $value;
             }
         }
+        $gitHubModule->ModuleName = $moduleName;
         $gitHubModule->write();
 
         return $gitHubModule;

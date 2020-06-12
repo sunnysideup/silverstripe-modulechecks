@@ -5,11 +5,11 @@ namespace Sunnysideup\ModuleChecks\Model;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\ORM\DataObject;
 
-use SilverStripe\ORM\FieldType\BaseObject;
 use SilverStripe\ORM\FieldType\DBField;
 
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 
+use Sunnysideup\ModuleChecks\BaseObject;
 
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 
