@@ -3,9 +3,10 @@
 namespace Sunnysideup\ModuleChecks\Commands;
 
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Model\Check;
 use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 
-class BaseCommand extends BaseObject
+class BaseCommand extends Check
 {
     protected $repo = null;
 
@@ -13,7 +14,7 @@ class BaseCommand extends BaseObject
 
     private static $enabled = false;
 
-    public function __construct($repo)
+    public function setRepo($repo)
     {
         $this->repo = $repo;
     }

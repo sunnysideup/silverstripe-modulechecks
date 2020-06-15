@@ -11,6 +11,13 @@ use SilverStripe\Control\Director;
 use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\ModuleChecks\Model\Check;
 use Sunnysideup\ModuleChecks\Model\Module;
+use Sunnysideup\ModuleChecks\Commands\LastAbstract;
+use Sunnysideup\ModuleChecks\Commands\FirstAbstract;
+use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
+use Sunnysideup\ModuleChecks\Commands\FilesToAddAbstract;
+use Sunnysideup\ModuleChecks\Commands\ShellCommandsAbstract;
+use Sunnysideup\ModuleChecks\Commands\OtherCommandsAbstract;
+use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 
 class BaseObject
 {
@@ -29,22 +36,19 @@ class BaseObject
 
     protected static $inst = null;
 
-    protected $availableChecksList = [];
-
-    protected $availableRepos = [];
 
     /**
      * list of classes to run,  in the right order
      * @var array
      */
     private static $core_classes = [
-        'FirstAbstract',
-        'ChecksAbstract',
-        'FilesToAddAbstract',
-        'UpdateComposerAbstract',
-        'ShellCommandsAbstract',
-        'OtherCommands',
-        'LastAbstract',
+        FirstAbstract::class,
+        ChecksAbstract::class,
+        FilesToAddAbstract::class,
+        UpdateComposerAbstract::class,
+        ShellCommandsAbstract::class,
+        OtherCommandsAbstract::class,
+        LastAbstract::class,
     ];
 
     /**
@@ -124,7 +128,7 @@ class BaseObject
     public static function inst(): BaseObject
     {
         if (! self::$inst) {
-            self::$inst = Injector::inst()->get(self::class);
+            self::$inst = Injector::inst()->get(BaseObject::class);
             self::$inst->areWeReady();
         }
         return self::$inst;
@@ -151,56 +155,6 @@ class BaseObject
             }
         }
         return true;
-    }
-
-    public function getAvailableChecks(): array
-    {
-        if (! count($this->availableChecksList)) {
-            $list = Check::get();
-            foreach ($list as $obj) {
-                if ($obj->Enabled) {
-                    $this->availableChecksList[$obj->MyClass] = $obj;
-                }
-            }
-        }
-
-        return $this->availableChecksList;
-    }
-
-    public function getAvailableChecksForDropdown(): array
-    {
-        $list = $this->getAvailableChecks();
-        $array = [];
-        foreach ($list as $obj) {
-            $array[$obj->ID] = $obj->Title;
-        }
-
-        return $array;
-    }
-
-    public function getAvailableModules(): array
-    {
-        if (! count($this->availableRepos)) {
-            $list = Module::get();
-            foreach ($list as $obj) {
-                if (! $obj->Disabled) {
-                    $this->availableRepos[$obj->ModuleName] = $obj;
-                }
-            }
-        }
-
-        return $this->availableRepos;
-    }
-
-    public function getAvailableModulesForDropdown(): array
-    {
-        $list = $this->getAvailableModules();
-        $array = [];
-        foreach ($list as $obj) {
-            $array[$obj->ID] = $obj->ModuleName;
-        }
-
-        return $array;
     }
 
     /*

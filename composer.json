@@ -28,7 +28,8 @@
         "sunnysideup/flush": "dev-master",
         "sunnysideup/php_2_command_line": "dev-master",
         "sunnysideup/cms-niceties": "dev-master",
-        "cpliakas/git-wrapper": "^3.0"
+        "cpliakas/git-wrapper": "^3.0",
+        "unclecheese/display-logic": "^2.0.3"
     },
     "extra": [],
     "autoload": {

@@ -17,6 +17,10 @@ class CheckPlan extends DataObject
 {
     protected static $current_module_check = null;
 
+    protected $availableChecksList = [];
+
+    protected $availableRepos = [];
+
     #######################
     ### Names Section
     #######################
@@ -200,7 +204,7 @@ class CheckPlan extends DataObject
 
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxSetField::create(
+            $exMods = CheckboxSetField::create(
                 'ExcludeModules',
                 'Excluded Modules',
                 $obj->getAvailableModulesForDropdown()
@@ -208,7 +212,7 @@ class CheckPlan extends DataObject
         );
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxSetField::create(
+            $incMods = CheckboxSetField::create(
                 'IncludedModules',
                 'Included Modules',
                 $obj->getAvailableModulesForDropdown()
@@ -216,7 +220,7 @@ class CheckPlan extends DataObject
         );
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxSetField::create(
+            $exChecks = CheckboxSetField::create(
                 'ExcludeChecks',
                 'Excluded Checks',
                 $obj->getAvailableChecksForDropdown()
@@ -224,12 +228,16 @@ class CheckPlan extends DataObject
         );
         $fields->addFieldToTab(
             'Root.Main',
-            CheckboxSetField::create(
+            $incChecks = CheckboxSetField::create(
                 'IncludedChecks',
                 'Included Checks',
                 $obj->getAvailableChecksForDropdown()
             )
         );
+        $exMods->displayIf("AllModules")->isChecked();
+        $incMods->displayIf("AllModules")->isNotChecked();
+        $exChecks->displayIf("AllChecks")->isChecked();
+        $incChecks->displayIf("AllChecks")->isNotChecked();
 
         return $fields;
     }
@@ -274,4 +282,56 @@ class CheckPlan extends DataObject
             }
         }
     }
+
+
+    protected function getAvailableChecks(): array
+    {
+        if (! count($this->availableChecksList)) {
+            $list = Check::get();
+            foreach ($list as $obj) {
+                if ($obj->Enabled) {
+                    $this->availableChecksList[$obj->MyClass] = $obj;
+                }
+            }
+        }
+
+        return $this->availableChecksList;
+    }
+
+    protected function getAvailableChecksForDropdown(): array
+    {
+        $list = $this->getAvailableChecks();
+        $array = [];
+        foreach ($list as $obj) {
+            $array[$obj->ID] = $obj->Title;
+        }
+
+        return $array;
+    }
+
+    protected function getAvailableModules(): array
+    {
+        if (! count($this->availableRepos)) {
+            $list = Module::get();
+            foreach ($list as $obj) {
+                if (! $obj->Disabled) {
+                    $this->availableRepos[$obj->ModuleName] = $obj;
+                }
+            }
+        }
+
+        return $this->availableRepos;
+    }
+
+    protected function getAvailableModulesForDropdown(): array
+    {
+        $list = $this->getAvailableModules();
+        $array = [];
+        foreach ($list as $obj) {
+            $array[$obj->ID] = $obj->ModuleName;
+        }
+
+        return $array;
+    }
+
 }

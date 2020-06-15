@@ -120,6 +120,9 @@ class Check extends DataObject
     {
         parent::requireDefaultRecords();
         foreach (Config::inst()->get(BaseObject::class, 'core_classes') as $class) {
+            if ( ! class_exists($class)) {
+                user_error('Could not find the following class: '.$class);
+            }
             $classes = ClassInfo::subclassesFor($class, false);
             foreach ($classes as $class) {
                 $filter = ['MyClass' => $class];
