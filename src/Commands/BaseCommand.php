@@ -5,14 +5,38 @@ namespace Sunnysideup\ModuleChecks\Commands;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Model\Check;
 use Sunnysideup\ModuleChecks\Model\ModuleCheck;
+use ReflectionClass;
+use SilverStripe\Core\ClassInfo;
 
-class BaseCommand extends Check
+class BaseCommand
 {
     protected $repo = null;
 
     protected $errorString = '';
 
     private static $enabled = false;
+
+
+    public function __construct(?Module $repo = null)
+    {
+        $this->repo = $repo;
+        if($repo) {
+            $this->rootDirForModule = $this->repo->Directory();
+        }
+    }
+
+    public function calculateType(): string
+    {
+        $list = class_parents($this);
+        foreach ($list as $class) {
+            $abstractClass = new ReflectionClass($class);
+            if ($abstractClass->isAbstract()) {
+                return ClassInfo::shortName($class);
+            }
+        }
+
+        return 'error';
+    }
 
     public function setRepo($repo)
     {
@@ -44,4 +68,5 @@ class BaseCommand extends Check
         }
         return trim($this->errorString) ? true : false;
     }
+
 }

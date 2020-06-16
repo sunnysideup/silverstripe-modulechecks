@@ -2,6 +2,7 @@
 
 namespace Sunnysideup\ModuleChecks\Model;
 
+use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\ORM\DataObject;
 
@@ -202,42 +203,41 @@ class CheckPlan extends DataObject
         //...
         $obj = BaseObject::inst();
 
-        $fields->addFieldToTab(
+        $fields->addFieldsToTab(
             'Root.Main',
-            $exMods = CheckboxSetField::create(
-                'ExcludeModules',
-                'Excluded Modules',
-                $obj->getAvailableModulesForDropdown()
-            )
-        );
-        $fields->addFieldToTab(
-            'Root.Main',
-            $incMods = CheckboxSetField::create(
-                'IncludedModules',
-                'Included Modules',
-                $obj->getAvailableModulesForDropdown()
-            )
-        );
-        $fields->addFieldToTab(
-            'Root.Main',
-            $exChecks = CheckboxSetField::create(
-                'ExcludeChecks',
-                'Excluded Checks',
-                $obj->getAvailableChecksForDropdown()
-            )
-        );
-        $fields->addFieldToTab(
-            'Root.Main',
-            $incChecks = CheckboxSetField::create(
-                'IncludedChecks',
-                'Included Checks',
-                $obj->getAvailableChecksForDropdown()
-            )
+            [
+                LiteralField::create(
+                    'AddModules',
+                    '<h2 style="text-align: left"><a href="/dev/tasks/load-modules">load modules</a></h2>'
+                ),
+                $exMods = CheckboxSetField::create(
+                    'ExcludeModules',
+                    'Excluded Modules',
+                    $this->getAvailableModulesForDropdown()
+                ),
+                $incMods = CheckboxSetField::create(
+                    'IncludedModules',
+                    'Included Modules',
+                    $this->getAvailableModulesForDropdown()
+                ),
+
+                $exChecks = CheckboxSetField::create(
+                    'ExcludeChecks',
+                    'Excluded Checks',
+                    $this->getAvailableChecksForDropdown()
+                ),
+                $incChecks = CheckboxSetField::create(
+                    'IncludedChecks',
+                    'Included Checks',
+                    $this->getAvailableChecksForDropdown()
+                )
+            ]
         );
         $exMods->displayIf("AllModules")->isChecked();
         $incMods->displayIf("AllModules")->isNotChecked();
         $exChecks->displayIf("AllChecks")->isChecked();
         $incChecks->displayIf("AllChecks")->isNotChecked();
+
 
         return $fields;
     }
@@ -303,9 +303,8 @@ class CheckPlan extends DataObject
         $list = $this->getAvailableChecks();
         $array = [];
         foreach ($list as $obj) {
-            $array[$obj->ID] = $obj->Title;
+            $array[$obj->ID] = $obj->Type . ': ' . $obj->Title;
         }
-
         return $array;
     }
 
@@ -330,6 +329,7 @@ class CheckPlan extends DataObject
         foreach ($list as $obj) {
             $array[$obj->ID] = $obj->ModuleName;
         }
+        asort($array);
 
         return $array;
     }

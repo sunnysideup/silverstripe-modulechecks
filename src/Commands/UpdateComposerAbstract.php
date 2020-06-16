@@ -10,10 +10,12 @@ abstract class UpdateComposerAbstract extends BaseCommand
 
     private static $enabled = false;
 
-    public function __construct($repo)
+    public function __construct(?Module $repo = null)
     {
         parent::__construct($repo);
-        $this->composerJsonObj = new ComposerJsonClass($this->repo);
+        if($this->repo) {
+            $this->composerJsonObj = new ComposerJsonClass($this->repo);
+        }
     }
 
     abstract public function run();

@@ -5,6 +5,7 @@ namespace Sunnysideup\ModuleChecks\Model;
 use ReflectionClass;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Core\Injector\Injector;
 
 
 use SilverStripe\ORM\DataObject;
@@ -63,9 +64,9 @@ class Check extends DataObject
     ];
 
     private static $default_sort = [
-        'Enabled' => 'DESC',
-        'Type' => 'DESC',
         'ID' => 'ASC',
+        'Type' => 'DESC',
+        'Enabled' => 'DESC',
     ];
 
     private static $searchable_fields = [
@@ -125,14 +126,15 @@ class Check extends DataObject
             }
             $classes = ClassInfo::subclassesFor($class, false);
             foreach ($classes as $class) {
+                $classObject = Injector::inst()->get($class);
                 $filter = ['MyClass' => $class];
-                $obj = DataObject::get_one($class, $filter);
+                $obj = DataObject::get_one(Check::class, $filter);
                 if (! $obj) {
-                    $obj = $class::create($filter);
+                    $obj = Check::create($filter);
                 }
-                $obj->Title = $obj->getDescription();
+                $obj->Title = $classObject->getDescription();
                 $obj->MyClass = $class;
-                $obj->Type = $this->calculateType();
+                $obj->Type = $classObject->calculateType();
                 $obj->Enabled = Config::inst()->get($class, 'enabled');
                 $obj->write();
             }
@@ -140,18 +142,6 @@ class Check extends DataObject
         //...
     }
 
-    public function calculateType(): string
-    {
-        $list = class_parents($this);
-        foreach ($list as $class) {
-            $abstractClass = new ReflectionClass($class);
-            if ($abstractClass->isAbstract()) {
-                return ClassInfo::shortName($class);
-            }
-        }
-
-        return 'error';
-    }
 
     #######################
     ### Import / Export Section

@@ -69,10 +69,12 @@ abstract class FilesToAddAbstract extends BaseCommand
 
     private static $enabled = false;
 
-    public function __construct(Module $repo)
+    public function __construct(?Module $repo = null)
     {
         parent::__construct($repo);
-        $this->rootDirForModule = $repo->Directory();
+        if($this->repo) {
+            $this->rootDirForModule = $this->repo->Directory();
+        }
     }
 
     public function setRootDirForModule($rootDirForModule)

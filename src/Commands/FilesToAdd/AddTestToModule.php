@@ -18,10 +18,12 @@ class AddTestToModule extends FilesToAddAbstract
      */
     private static $enabled = true;
 
-    public function __construct($repo)
+    public function __construct(?Module $repo = null)
     {
         parent::__construct($repo);
-        $this->fileLocation = 'tests/' . $repo->ShortUCFirstName() . 'Test.php';
+        if($this->repo) {
+            $this->fileLocation = 'tests/' . $this->repo->ShortUCFirstName() . 'Test.php';
+        }
     }
 
     /**

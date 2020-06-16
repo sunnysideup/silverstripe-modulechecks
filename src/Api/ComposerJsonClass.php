@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Api;
 
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Control\Director;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Commands\UpdateComposerAbstract;
 use Sunnysideup\ModuleChecks\Model\Module;
@@ -27,7 +28,7 @@ class ComposerJsonClass extends BaseObject
      */
     protected $moduleName = '';
 
-    public function __construct($repo)
+    public function __construct(Module $repo)
     {
         $this->repo = $repo;
         $this->moduleName = $this->repo->ModuleName;
@@ -66,8 +67,7 @@ class ComposerJsonClass extends BaseObject
             return false;
         }
 
-        $folder = Config::inst()->get(BaseObject::class, 'absolute_temp_folder');
-        $filename = $folder . '/' . $this->repo->ModuleName . '/composer.json';
+        $filename = $this->fileName();
         $value = file_put_contents($filename, json_encode($this->jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         return $value ? true : false;
@@ -75,10 +75,8 @@ class ComposerJsonClass extends BaseObject
 
     private function readJsonFromFile(): bool
     {
-        $folder = Config::inst()->get(BaseObject::class, 'absolute_temp_folder');
-        $filename = $folder . '/' . $this->moduleName . '/composer.json';
         set_error_handler([$this, 'catchFopenWarning'], E_WARNING);
-
+        $filename = $this->fileName();
         $json = file_get_contents($filename);
         restore_error_handler();
         if ($json) {
@@ -87,6 +85,11 @@ class ComposerJsonClass extends BaseObject
             ModuleCheck::log_error('Could not open composer.json file...');
         }
         return is_array($this->jsonData);
+    }
+
+    protected function fileName() : string
+    {
+        return $this->repo->Directory() . '/composer.json';
     }
 
     private function catchFopenWarning()
