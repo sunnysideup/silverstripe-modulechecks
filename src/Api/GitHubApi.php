@@ -40,7 +40,7 @@ class GitHubApi extends BaseObject
         if (! $username) {
             $username = Config::inst()->get(BaseObject::class, 'github_user_name');
         }
-        self::flushNow('Retrieving List of modules from GitHub for user ' . $username . ' without AUTH... ');
+        FlushNow::do_flush('Retrieving List of modules from GitHub for user ' . $username . ' without AUTH... ');
         if (! count(self::$_modules)) {
             for ($page = 0; $page < 10; $page++) {
                 $ch = curl_init();
@@ -63,7 +63,7 @@ class GitHubApi extends BaseObject
                 }
             }
         }
-        self::flushNow('Found ' . count(self::$_modules) . ' modules on GitHub ...');
+        FlushNow::do_flush('Found ' . count(self::$_modules) . ' modules on GitHub ...');
         if (count(self::$_modules) === 0) {
             user_error('No modules found on GitHub. This is possibly because the limit of 60 requests an hour has been exceeded.');
         }
@@ -82,7 +82,7 @@ class GitHubApi extends BaseObject
             } else {
                 $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
             }
-            self::flushNow('Retrieving List of modules from GitHub for user ' . $username . ' with AUTH ... ');
+            FlushNow::do_flush('Retrieving List of modules from GitHub for user ' . $username . ' with AUTH ... ');
             if (! count(self::$_modules)) {
                 $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
                 $array = [];
@@ -96,7 +96,7 @@ class GitHubApi extends BaseObject
                     $curlResult = self::runCurlResult($url, $method, $data);
 
                     if (! $curlResult) {
-                        self::flushNow('Could not retrieve list of modules from GitHub');
+                        FlushNow::do_flush('Could not retrieve list of modules from GitHub');
 
                         UpdateModules::$unsolvedItems['all'] = 'Could not retrieve list of modules from GitHub';
                     }
@@ -128,7 +128,7 @@ class GitHubApi extends BaseObject
         restore_error_handler();
 
         if (! $file) {
-            self::flushNow('Could not find ' . $rawURL);
+            FlushNow::do_flush('Could not find ' . $rawURL);
             return '';
         }
         $content = '';
@@ -143,7 +143,7 @@ class GitHubApi extends BaseObject
     protected function apiCall(string $moduleName, array $data, ?string $gitAPIcommand = '', ?string $method = 'GET')
     {
         $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-        self::flushNow('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
+        FlushNow::do_flush('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
         $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
         $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($moduleName);
         if (trim($gitAPIcommand)) {
@@ -197,7 +197,7 @@ class GitHubApi extends BaseObject
         $curlResult = curl_exec($ch);
         if (! $curlResult) {
             $msg = 'curl exectution failed';
-            self::flushNow($msg);
+            FlushNow::do_flush($msg);
             UpdateModules::$unsolvedItems['none'] = $msg;
         }
         return curl_exec($ch);
@@ -236,14 +236,14 @@ class GitHubApi extends BaseObject
                             'HomePage' => $repo['private'] ?? 'tba',
                         ];
                     }
+                    FlushNow::do_flush('Listing '.$repo['name'], 'created');
                 } else {
-                    DB::alteration_message('skipping ' . $repo['name'] . ' as it does not appear to me a silverstripe module, you can add it manually to this task, using the configs ... ');
-                }
+                    FlushNow::do_flush('skipping ' . $repo['name'] . ' as it does not appear to me a silverstripe module, you can add it manually to this task, using the configs ... ', 'obsolete');                }
             } else {
-                DB::alteration_message('skipping ' . $repo['name'] . ' as it has a different owner');
+                FlushNow::do_flush('skipping ' . $repo['name'] . ' as it has a different owner', 'obsolete');
             }
         } elseif (isset($repo['name'])) {
-            DB::alteration_message('skipping ' . $repo['name'] . ' as it is a fork');
+            FlushNow::do_flush('skipping ' . $repo['name'] . ' as it is a fork', 'obsolete');
         }
     }
 }

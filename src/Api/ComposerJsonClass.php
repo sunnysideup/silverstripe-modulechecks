@@ -104,7 +104,7 @@ class ComposerJsonClass extends BaseObject
     //     }
     //
     //     if (is_array($this->jsonData)) {
-    //         self::flushNow('Updating composer.json');
+    //         FlushNow::do_flush('Updating composer.json');
     //         $composerUpdates = ClassInfo::subclassesFor(UpdateComposerAbstract::class);
     //
     //         //remove base class
@@ -123,7 +123,7 @@ class ComposerJsonClass extends BaseObject
     //             $obj->run();
     //         }
     //         if ($this->writeJsonToFile()) {
-    //             self::flushNow('Updated JSON </li>');
+    //             FlushNow::do_flush('Updated JSON </li>');
     //         } else {
     //             ModuleCheck::log_error('Could not write JSON');
     //         }

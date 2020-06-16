@@ -9,17 +9,17 @@ use Sunnysideup\ModuleChecks\Model\CheckPlan;
 /**
  * main class running all the updates
  */
-class UpdateModules extends BuildTask
+class RunCheckPlan extends BuildTask
 {
-    public static $unsolvedItems = [];
 
     protected $enabled = true;
 
     protected $title = 'Update Modules';
-
     protected $description = '
         Adds files necessary for publishing a module to GitHub.
         The list of modules is specified in standard config or else it retrieves a list of modules from GitHub.';
+
+    private static $segment = 'run-check-plan';
 
     public function run($request)
     {
@@ -27,7 +27,8 @@ class UpdateModules extends BuildTask
 
         set_error_handler('errorHandler', E_ALL);
         $sanityCount = 0;
-        $obj = CheckPlan::get_next_module_check();
+        $checkPlanID = $_GET['id'] ?? 0;
+        $obj = CheckPlan::get_next_module_check($checkPlanID);
         while ($obj && $sanityCount < 99999) {
             $obj->run();
             $sanityCount++;

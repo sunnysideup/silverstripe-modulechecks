@@ -12,6 +12,8 @@ use Sunnysideup\ModuleChecks\Model\Module;
  */
 class LoadModules extends BuildTask
 {
+    protected $enabled = true;
+
     protected $title = 'Load Modules';
 
     protected $description = 'Get all the modules from github.';

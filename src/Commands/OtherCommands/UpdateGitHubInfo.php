@@ -46,7 +46,7 @@ class UpdateGitHubInfo extends ChecksAbstract
             }
         }
 
-        self::flushNow('updating Git Repo information ...');
+        FlushNow::do_flush('updating Git Repo information ...');
 
         //check!
         $obj = GitHubApi::create();

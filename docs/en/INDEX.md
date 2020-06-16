@@ -38,7 +38,7 @@ for the UpdateModules task to run:
   github_user_name - your git user name
   github_account_base_url - the base url
 
-  absolute_temp_folder - temporary folder for modules to be cloned into - must be writeable by www-data
+  temp_folder_name - temporary folder for modules to be cloned into - must be writeable by www-data
   path_to_private_key: path to id_rsa file, for example, /var/www/.ssh/id_rsa
   The known_hosts file also needs to be created.
 

@@ -32,7 +32,7 @@ class CheckExclusions extends ChecksAbstract
                 $msg = '<h4>The following excluded words were found: </h4><ul>';
                 foreach ($results as $file => $words) {
                     foreach ($words as $word) {
-                        $msg .= self::flushNow($word . ' in ' . $file);
+                        $msg .= FlushNow::do_flush($word . ' in ' . $file);
                     }
                 }
                 $msg .= '</ul>';

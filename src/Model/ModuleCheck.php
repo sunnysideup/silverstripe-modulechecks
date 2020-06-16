@@ -35,7 +35,7 @@ class ModuleCheck extends DataObject
     ];
 
     private static $has_one = [
-        'ModuleCheckPlan' => ModuleCheck::class,
+        'CheckPlan' => CheckPlan::class,
         'Module' => Module::class,
         'Check' => Check::class,
     ];
@@ -45,8 +45,8 @@ class ModuleCheck extends DataObject
     #######################
 
     private static $indexes = [
-        'Completed' => true,
         'Running' => true,
+        'Completed' => true,
     ];
 
     private static $default_sort = [
@@ -58,7 +58,7 @@ class ModuleCheck extends DataObject
     private static $searchable_fields = [
         'Module.ModuleName' => PartialMatchFilter::class,
         'Check.Title' => PartialMatchFilter::class,
-        'ModuleCheckPlanID' => ExactMatchFilter::class,
+        'CheckPlanID' => ExactMatchFilter::class,
         'Running' => ExactMatchFilter::class,
         'HasError' => ExactMatchFilter::class,
         'Completed' => ExactMatchFilter::class,
@@ -69,7 +69,7 @@ class ModuleCheck extends DataObject
     #######################
 
     private static $field_labels = [
-        'ModuleCheckPlan' => 'Plan',
+        'CheckPlan' => 'Plan',
         'Module' => 'Module',
         'Running' => 'Started Running',
     ];
@@ -80,7 +80,7 @@ class ModuleCheck extends DataObject
         'Running.Nice' => 'Running',
         'Completed.Nice' => 'Completed',
         'HasError.Nice' => 'Error',
-        'ModuleCheckPlan.Title' => 'Plan',
+        'CheckPlan.Title' => 'Plan',
         'Module.Title' => 'Module',
     ];
 
@@ -177,12 +177,12 @@ class ModuleCheck extends DataObject
 
     public static function log_error(string $message)
     {
-        self::flushNow($message, 'deleted');
+        FlushNow::do_flush($message, 'deleted');
         $obj = CheckPlan::get_current_module_check();
         if ($obj) {
             $obj->LogError($message);
         } else {
-            self::flushNow('Could not attach error to specific ModuleCheck');
+            FlushNow::do_flush('Could not attach error to specific ModuleCheck');
         }
     }
 }

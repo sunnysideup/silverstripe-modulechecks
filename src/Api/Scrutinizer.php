@@ -11,7 +11,7 @@ class Scrutinizer extends BaseObject
     public static function send_to_scrutinizer(string $apiKey, string $gitHubUserName, string $moduleName): bool
     {
         if (! trim($apiKey)) {
-            self::flushNow('No Scrutinizer API key set');
+            FlushNow::do_flush('No Scrutinizer API key set');
             return false;
         }
 
@@ -43,7 +43,7 @@ class Scrutinizer extends BaseObject
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($httpcode === 201) {
-            self::flushNow('Added ' . $repoName . ' to Scrutinizer ... ');
+            FlushNow::do_flush('Added ' . $repoName . ' to Scrutinizer ... ');
 
             return true;
         }

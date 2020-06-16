@@ -87,7 +87,7 @@ abstract class ShellCommandsAbstract extends BaseCommand
     protected function runCommand()
     {
         foreach ($this->commands as $command) {
-            self::flushNow('Running ' . $command);
+            FlushNow::do_flush('Running ' . $command);
             $obj = PHP2CommandLineSingleton::create();
             $results = $obj->exec(
                 $this->rootDirForModule, //dir ...

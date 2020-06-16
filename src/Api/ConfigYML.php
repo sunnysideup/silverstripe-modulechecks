@@ -43,7 +43,7 @@ class ConfigYML extends BaseObject
 
     public function readYMLFromFile()
     {
-        self::flushNow('reading config yml ...  ', 'updating');
+        FlushNow::do_flush('reading config yml ...  ', 'updating');
 
         if (! file_exists($this->filename)) {
             //UpdateModules::$unsolvedItems[$this->repo->ModuleName] = "Unable to load " . $this->filename;
@@ -98,7 +98,7 @@ class ConfigYML extends BaseObject
             }
             $newYML = implode('', $lines);
 
-            self::flushNow('Updating config.YML to correct syntax ... ', 'updating');
+            FlushNow::do_flush('Updating config.YML to correct syntax ... ', 'updating');
 
             // $file = fopen($this->filename, 'w');
 
@@ -110,7 +110,7 @@ class ConfigYML extends BaseObject
 
     public function writeYAMLToFile()
     {
-        self::flushNow('Writing config yml ... ', 'updating');
+        FlushNow::do_flush('Writing config yml ... ', 'updating');
 
         if (! $this->ymlData) {
             return false;

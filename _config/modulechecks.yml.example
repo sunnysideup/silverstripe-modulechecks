@@ -9,7 +9,7 @@ Sunnysideup\ModuleChecks\Model\Module:
   github_account_base_url: "git://github.com"
 
 
-  absolute_temp_folder: "workingfolder"
+  temp_folder_name: "workingfolder"
   path_to_private_key: "app/id_rsa"
 
   tag_create_message: "Auto-created tag."

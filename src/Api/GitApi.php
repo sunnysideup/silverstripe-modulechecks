@@ -17,6 +17,8 @@ use Sunnysideup\Flush\FlushNow;
 
 class GitApi extends BaseObject
 {
+    use FlushNow;
+
     protected $gitApiWrapper = null;
 
     protected $commsWrapper = null;
@@ -59,7 +61,7 @@ class GitApi extends BaseObject
                 }
                 $this->gitApiWrapper = $this->commsWrapper->workingCopy($this->repo->Directory());
             } else {
-                self::flushNow('cloning ... ' . $this->repo->FullGitURL(), 'created');
+                FlushNow::do_flush('cloning ... ' . $this->repo->FullGitURL(), 'created');
 
                 $this->gitApiWrapper = null;
                 $cloneAttempts = 0;
@@ -84,8 +86,8 @@ class GitApi extends BaseObject
                             user_error($e->getMessage(), E_USER_ERROR);
                         }
 
-                        self::flushNow('Failed to clone repository: ' . $e->getMessage());
-                        self::flushNow('Waiting 8 seconds to try again ...:');
+                        FlushNow::do_flush('Failed to clone repository: ' . $e->getMessage());
+                        FlushNow::do_flush('Waiting 8 seconds to try again ...:');
                         $this->repo->removeClone();
                         sleep(8);
                     }
@@ -115,7 +117,7 @@ class GitApi extends BaseObject
             }
             return true;
 
-            //self::flushNow($git->getOutput());
+            //FlushNow::do_flush($git->getOutput());
         }
         return false;
     }
@@ -138,10 +140,10 @@ class GitApi extends BaseObject
                     print_r($e);
                     throw $e;
                 }
-                self::flushNow('No changes to commit');
+                FlushNow::do_flush('No changes to commit');
                 return false;
             }
-            //self::flushNow($git->getOutput());
+            //FlushNow::do_flush($git->getOutput());
 
             return true;
         }
@@ -154,7 +156,7 @@ class GitApi extends BaseObject
      */
     public function add(): bool
     {
-        self::flushNow('Adding new files to ' . $this->repo->ModuleName . ' ...  ', 'created');
+        FlushNow::do_flush('Adding new files to ' . $this->repo->ModuleName . ' ...  ', 'created');
 
         if ($this->gitApiWrapper) {
             try {
@@ -165,11 +167,11 @@ class GitApi extends BaseObject
                     print_r($e);
                     throw $e;
                 }
-                self::flushNow('No new files to add to $module. ');
+                FlushNow::do_flush('No new files to add to $module. ');
                 return false;
             }
 
-            //self::flushNow($git->getOutput());
+            //FlushNow::do_flush($git->getOutput());
 
             return true;
         }
@@ -183,7 +185,7 @@ class GitApi extends BaseObject
      */
     public function push(): bool
     {
-        self::flushNow('Pushing files to ' . $this->repo->ModuleName . ' ...  ', 'created');
+        FlushNow::do_flush('Pushing files to ' . $this->repo->ModuleName . ' ...  ', 'created');
 
         if ($this->gitApiWrapper) {
             $pushed = false;
@@ -199,8 +201,8 @@ class GitApi extends BaseObject
                         print_r($e);
                         throw $e;
                     }
-                    self::flushNow('Failed to push repository: ' . $e->getMessage() . '');
-                    self::flushNow('Waiting 8 seconds to try again ...:');
+                    FlushNow::do_flush('Failed to push repository: ' . $e->getMessage() . '');
+                    FlushNow::do_flush('Waiting 8 seconds to try again ...:');
                     sleep(8);
                     return false;
                 }
@@ -260,7 +262,7 @@ class GitApi extends BaseObject
                         print_r($e);
                         throw $e;
                     }
-                    self::flushNow('Unable to get tag because there are no commits to the repository');
+                    FlushNow::do_flush('Unable to get tag because there are no commits to the repository');
                     return false;
                 }
 
@@ -356,7 +358,7 @@ class GitApi extends BaseObject
                 // print_r ($result);
             } catch (Exception $e) {
                 $errStr = $e->getMessage();
-                self::flushNow('Unable to get next tag type (getChangeTypeSinceLastTag): ' . $errStr);
+                FlushNow::do_flush('Unable to get next tag type (getChangeTypeSinceLastTag): ' . $errStr);
                 return false;
             }
 

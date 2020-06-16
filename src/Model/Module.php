@@ -102,7 +102,7 @@ class Module extends DataObject
      */
     public function Directory(): string
     {
-        $tempFolder = Config::inst()->get(BaseObject::class, 'absolute_temp_folder');
+        $tempFolder = Config::inst()->get(BaseObject::class, 'temp_folder_name');
         if ($this->ModuleName) {
             $folder = $tempFolder . '/' . $this->ModuleName;
             if (file_exists($folder)) {
@@ -203,7 +203,7 @@ class Module extends DataObject
     public function removeClone(): bool
     {
         $dir = $this->Directory();
-        // self::flushNow('Removing ' . $dir . ' and all its contents ...  ', 'created');
+        // FlushNow::do_flush('Removing ' . $dir . ' and all its contents ...  ', 'created');
         $this->gitRepo = null;
         Filesystem::removeFolder($dir); // removes contents but not the actual folder
         //rmdir ($dir);

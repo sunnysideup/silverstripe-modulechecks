@@ -101,6 +101,11 @@ class Check extends DataObject
         return false;
     }
 
+    public function canEdit($member = null, $context = [])
+    {
+        return false;
+    }
+
     #######################
     ### write Section
     #######################

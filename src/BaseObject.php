@@ -31,7 +31,7 @@ class BaseObject
         'github_user_name',
         'github_user_email',
         'path_to_private_key',
-        'absolute_temp_folder',
+        'temp_folder_name',
     ];
 
     protected static $inst = null;
@@ -87,7 +87,7 @@ class BaseObject
      *
      * @var string
      */
-    private static $absolute_temp_folder = '/var/www/temp/';
+    private static $temp_folder_name = '/var/www/temp/';
 
     /**
      * @var string

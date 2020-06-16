@@ -214,7 +214,7 @@ abstract class FilesToAddAbstract extends BaseCommand
             $fullFileName = Director::baseFolder() . '/' . $this->sourceLocation;
         }
 
-        self::flushNow($fullFileName);
+        FlushNow::do_flush($fullFileName);
 
         $file = fopen($fullFileName, 'r');
         if ($file) {
@@ -255,7 +255,7 @@ abstract class FilesToAddAbstract extends BaseCommand
      */
     protected function saveFile($fileContent)
     {
-        self::flushNow('Adding ' . $this->fileLocation . ' to module');
+        FlushNow::do_flush('Adding ' . $this->fileLocation . ' to module');
 
         /*
          * If fileLocation  contains folder, name then need to check
@@ -310,7 +310,7 @@ abstract class FilesToAddAbstract extends BaseCommand
 
     protected function getReadMeComponent($componentName): string
     {
-        $temp_dir = Config::inst()->get(BaseObject::class, 'absolute_temp_folder');
+        $temp_dir = Config::inst()->get(BaseObject::class, 'temp_folder_name');
         $moduleName = $this->repo->ModuleName;
 
         $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . strtoupper($componentName) . '.md';

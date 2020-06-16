@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Model;
 
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\ORM\DataObject;
 
@@ -14,8 +15,13 @@ use Sunnysideup\ModuleChecks\BaseObject;
 
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 
+use Sunnysideup\Flush\FlushNow;
+
 class CheckPlan extends DataObject
 {
+
+    use FlushNow;
+
     protected static $current_module_check = null;
 
     protected $availableChecksList = [];
@@ -48,14 +54,14 @@ class CheckPlan extends DataObject
 
     private static $many_many = [
         'IncludeModules' => Module::class,
-        'IncludeChecks' => ModuleCheck::class,
+        'IncludeChecks' => Check::class,
     ];
 
     private static $many_many_extraFields = [];
 
     private static $belongs_many_many = [
         'ExcludeModules' => Module::class,
-        'ExcludeChecks' => ModuleCheck::class,
+        'ExcludeChecks' => Check::class,
     ];
 
     #######################
@@ -63,7 +69,7 @@ class CheckPlan extends DataObject
     #######################
 
     private static $cascade_deletes = [
-        ModuleCheck::class,
+        'ModuleChecks',
     ];
 
     private static $indexes = [
@@ -120,8 +126,14 @@ class CheckPlan extends DataObject
 
     private static $primary_model_admin_class = ModuleCheckModelAdmin::class;
 
-    public static function get_current_check_plan(): CheckPlan
+    public static function get_current_check_plan(?int $id = 0): CheckPlan
     {
+        if($id) {
+            $obj = CheckPlan::get()->byID($id);
+            if($obj) {
+                return $obj;
+            }
+        }
         return DataObject::get_one(CheckPlan::class, ['Completed' => 0]);
     }
 
@@ -135,18 +147,23 @@ class CheckPlan extends DataObject
         return self::$current_module_check;
     }
 
-    public static function get_next_module_check(): ?ModuleCheck
+    public static function get_next_module_check(?int $checkPlanID = 0, ?int $moduleCheckID = 0): ?ModuleCheck
     {
-        $plan = self::get_current_check_plan();
-
-        self::$current_module_check = $plan->ModuleChecks()->filter(['Running' => 0, 'Completed' => 0])->first();
+        $plan = self::get_current_check_plan($checkPlanID);
+        self::$current_module_check = null;
+        if($moduleCheckID) {
+            self::$current_module_check = $plan->ModuleChecks()->byID($moduleCheckID);
+        }
+        if(! self::$current_module_check) {
+            self::$current_module_check = $plan->ModuleChecks()->filter(['Running' => 0, 'Completed' => 0])->first();
+        }
 
         return self::$current_module_check;
     }
 
     public function getTitle()
     {
-        return DBField::create_field('Varchar', 'FooBar To Be Completed');
+        return DBField::create_field('Varchar', $this->ModuleChecks()->count() . ' Checks');
     }
 
     public function getModuleCount()
@@ -159,10 +176,6 @@ class CheckPlan extends DataObject
         return DBField::create_field('Int', 'FooBar To Be Completed');
     }
 
-    public function canDelete($member = null, $context = [])
-    {
-        return false;
-    }
 
     #######################
     ### write Section
@@ -177,7 +190,6 @@ class CheckPlan extends DataObject
     public function onAfterWrite()
     {
         parent::onAfterWrite();
-        $this->createChecks();
         //...
     }
 
@@ -199,54 +211,78 @@ class CheckPlan extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-
+        $fields->removeByName('ExcludeModules');
+        $fields->removeByName('IncludeModules');
+        $fields->removeByName('IncludeChecks');
+        $fields->removeByName('ExcludeChecks');
         //...
         $obj = BaseObject::inst();
 
         $fields->addFieldsToTab(
-            'Root.Main',
+            'Root.Modules',
             [
-                LiteralField::create(
-                    'AddModules',
-                    '<h2 style="text-align: left"><a href="/dev/tasks/load-modules">load modules</a></h2>'
-                ),
+                CheckboxField::create('AllModules'),
                 $exMods = CheckboxSetField::create(
                     'ExcludeModules',
                     'Excluded Modules',
                     $this->getAvailableModulesForDropdown()
                 ),
                 $incMods = CheckboxSetField::create(
-                    'IncludedModules',
+                    'IncludeModules',
                     'Included Modules',
                     $this->getAvailableModulesForDropdown()
                 ),
 
+            ]
+        );
+        $exMods->displayIf("AllModules")->isChecked();
+        $incMods->displayIf("AllModules")->isNotChecked();
+
+        $fields->addFieldsToTab(
+            'Root.Checks',
+            [
+                CheckboxField::create('AllChecks'),
                 $exChecks = CheckboxSetField::create(
                     'ExcludeChecks',
                     'Excluded Checks',
                     $this->getAvailableChecksForDropdown()
                 ),
                 $incChecks = CheckboxSetField::create(
-                    'IncludedChecks',
+                    'IncludeChecks',
                     'Included Checks',
                     $this->getAvailableChecksForDropdown()
-                )
+                ),
             ]
         );
-        $exMods->displayIf("AllModules")->isChecked();
-        $incMods->displayIf("AllModules")->isNotChecked();
         $exChecks->displayIf("AllChecks")->isChecked();
         $incChecks->displayIf("AllChecks")->isNotChecked();
+
+        $fields->addFieldsToTab(
+            'Root.Actions',
+            [
+                LiteralField::create(
+                    'AddModules',
+                    '<h2 style="text-align: left"><a href="/dev/tasks/load-modules">load modules</a></h2>'
+                ),
+                LiteralField::create(
+                    'CreateCheckPlan',
+                    '<h2 style="text-align: left"><a href="/dev/tasks/create-check-plan?id='.$this->ID.'">create check plan</a></h2>'
+                ),
+                LiteralField::create(
+                    'RunCheckPlan',
+                    '<h2 style="text-align: left"><a href="/dev/tasks/run-check-plan/?id='.$this->ID.'">run check plan</a></h2>'
+                ),
+            ]
+        );
 
 
         return $fields;
     }
 
-    protected function createChecks()
+    public function createChecks($debug = false)
     {
-        $obj = BaseObject::inst();
         if ($this->AllChecks) {
-            $checks = $obj->getAvailableChecks();
+            $checks = $this->getAvailableChecks();
             foreach ($this->ExcludeChecks() as $excludedCheck) {
                 unset($checks[$excludedCheck->ID]);
             }
@@ -257,7 +293,7 @@ class CheckPlan extends DataObject
             }
         }
         if ($this->AllModules) {
-            $modules = $obj->getAvailableModules();
+            $modules = $this->getAvailableModules();
             foreach ($this->ExcludeModules() as $excludedModules) {
                 unset($modules[$excludedModules->ID]);
             }
@@ -267,18 +303,24 @@ class CheckPlan extends DataObject
                 $modules[$includedModule->ID] = $includedModule;
             }
         }
-        foreach (array_keys($modules) as $moduleID) {
-            foreach (array_keys($checks) as $checkID) {
+        foreach ($modules as $module) {
+            foreach ($checks as $check) {
                 $filter = [
-                    'ModuleCheckPlanID' => $this->ID,
-                    'Module' => $moduleID,
-                    'Check' => $checkID,
+                    'CheckPlanID' => $this->ID,
+                    'ModuleID' => $module->ID,
+                    'CheckID' => $check->ID,
                 ];
-                $obj = DataObject::get_one(ModuleCheck::class, $filter);
+                if($debug) {
+                    $this->flushNow('<pre>'.  print_r($filter, 1) . '</pre><hr />');
+                }
+                $obj = ModuleCheck::get()->filter($filter)->first();
                 if (! $obj) {
                     $obj = ModuleCheck::create($obj);
-                    $obj->write();
                 }
+                foreach($filter as $field => $value) {
+                    $obj->{$field} = $value;
+                }
+                $obj->write();
             }
         }
     }
