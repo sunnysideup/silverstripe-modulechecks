@@ -22,11 +22,11 @@ class CreateCheckPlan extends BuildTask
 
     public function run($request)
     {
-        Environment::increaseTimeLimitTo(86400);
+        Environment::increaseTimeLimitTo(600);
         $checkPlanID = $_GET['id'] ?? 0;
         $obj = CheckPlan::get_current_check_plan($checkPlanID);
         $obj->createChecks(true);
-        echo '++++++++++++ DONE +++++++++++++++';
+        echo '<h1>++++++++++++ DONE +++++++++++++++</h1>';
 
     }
 }

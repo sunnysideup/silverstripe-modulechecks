@@ -29,6 +29,8 @@ class Module extends DataObject
         'Private' => 'Boolean',
         'HomePage' => 'Varchar(100)',
         'Disabled' => 'Boolean',
+        'ComposerName' => 'Varchar(100)',
+        'ComposerType' => 'Varchar(100)',
     ];
 
     private static $has_many = [
@@ -50,6 +52,8 @@ class Module extends DataObject
         'DefaultBranch' => 'Branch',
         'Disabled.Nice' => 'Disabled',
         'HomePage' => 'HomePage',
+        'ComposerName' => 'Composer Name',
+        'ComposerType' => 'Composer Type',
     ];
 
     private static $searchable_fields = [
@@ -59,6 +63,8 @@ class Module extends DataObject
         'Private' => 'ExactMatchFilter',
         'Disabled' => 'ExactMatchFilter',
         'HomePage' => 'PartialMatchFilter',
+        'ComposerName' => 'PartialMatchFilter',
+        'ComposerType' => 'PartialMatchFilter',
     ];
 
     private static $indexes = [
@@ -72,7 +78,7 @@ class Module extends DataObject
 
     private static $primary_model_admin_class = ModuleCheckModelAdmin::class;
 
-    public static function get_or_create_github_module(array $moduleDetails): self
+    public static function get_or_create_github_module(array $moduleDetails, ?bool $force): self
     {
         $moduleName = trim($moduleDetails['name']);
         unset($moduleDetails['name']);
@@ -86,9 +92,23 @@ class Module extends DataObject
             }
         }
         $gitHubModule->ModuleName = $moduleName;
+        if(!$gitHubModule->ComposerType && $force) {
+            self::update_composer_data($gitHubModule, false);
+        }
         $gitHubModule->write();
 
         return $gitHubModule;
+    }
+
+    public static function update_composer_data(Module $gitHubModule, ?bool $write = false)
+    {
+        $composerDataString = GitHubApi::get_raw_file_from_github($gitHubModule, 'composer.json');
+        $composerData = json_decode($composerDataString, true);
+        $gitHubModule->ComposerType = $composerData['type'] ?? 'tba';
+        $gitHubModule->ComposerName = $composerData['name'] ?? 'tba';
+        if($write) {
+            $gitHubModule->write();
+        }
     }
 
     public function getDirectory(): string
@@ -217,9 +237,7 @@ class Module extends DataObject
      */
     public function getRawFileFromGithub(string $fileName): string
     {
-        $obj = new GitHubApi();
-
-        return $obj->getRawFileFromGithub($this, $fileName);
+        return GitHubApi::get_raw_file_from_github($this, $fileName);
     }
 
     /**

@@ -74,8 +74,8 @@ class CheckPlan extends DataObject
 
     private static $indexes = [
         'Completed' => true,
-        'AllModules' => true,
-        'AllChecks' => true,
+        'AllModules' => false,
+        'AllChecks' => false,
     ];
 
     private static $defaults = [
@@ -261,8 +261,12 @@ class CheckPlan extends DataObject
             'Root.Actions',
             [
                 LiteralField::create(
-                    'AddModules',
+                    'LoadModules',
                     '<h2 style="text-align: left"><a href="/dev/tasks/load-modules">load modules</a></h2>'
+                ),
+                LiteralField::create(
+                    'DisableModules',
+                    '<h2 style="text-align: left"><a href="/dev/tasks/disable-modules-based-on-composer-type">disable non-applicable modules</a></h2>'
                 ),
                 LiteralField::create(
                     'CreateCheckPlan',
@@ -323,6 +327,11 @@ class CheckPlan extends DataObject
                 $obj->write();
             }
         }
+    }
+
+    protected function mustDoChecks()
+    {
+
     }
 
 

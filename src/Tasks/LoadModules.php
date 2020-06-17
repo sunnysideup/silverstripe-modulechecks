@@ -23,10 +23,11 @@ class LoadModules extends BuildTask
     public function run($request)
     {
         Environment::increaseTimeLimitTo(3600);
-
+        $force = empty($_GET['force']) ? false : true;
         $modules = GitHubApi::get_all_repos();
         foreach ($modules as $name => $module) {
-            Module::get_or_create_github_module($module);
+            Module::get_or_create_github_module($module, $force);
         }
+        echo '<h1>++++++++++++ DONE +++++++++++++++</h1>';
     }
 }

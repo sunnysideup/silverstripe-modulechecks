@@ -23,10 +23,8 @@ class DeleteAllModuleChecks extends BuildTask
 
     public function run($request)
     {
-        Environment::increaseTimeLimitTo(86400);
-
         DB::query('DELETE FROM "ModuleCheck" WHERE Completed = 0 OR RUNNING = 1;');
-        echo '++++++++++++ DONE +++++++++++++++';
+        echo '<h1>++++++++++++ DONE +++++++++++++++</h1>';
 
     }
 }

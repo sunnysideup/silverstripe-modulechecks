@@ -1,6 +1,8 @@
 <?php
 
 namespace Sunnysideup\ModuleChecks\Commands;
+use Sunnysideup\ModuleChecks\Api\GitHubApi;
+use Sunnysideup\ModuleChecks\Api\FileMethods;
 
 abstract class ChecksAbstract extends BaseCommand
 {
@@ -24,27 +26,18 @@ abstract class ChecksAbstract extends BaseCommand
      */
     public function checkLocation(string $url): bool
     {
-        $handle = curl_init($url);
-        curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, true);
-        curl_exec($handle);
-
-        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-        $outcome = $httpCode === intval(200) ? true : false;
-        curl_close($handle);
-
-        return $outcome;
+        return FileMethods::check_location_exists($url);
     }
 
-    protected function hasFileOnGitHub(string $file): bool
+    protected function hasFileOnGitHub(string $fileName): bool
     {
-        $name = $this->getName();
-        $gitHubUserName = $this->Config()->get('github_user_name');
+        if($this->repo) {
+            return GitHubApi::has_file_on_git_hub($this->repo, $fileName);
+        } else {
+            $this->logError("Please provide repo.");
 
-        return $this->checkLocation(
-            'https://raw.githubusercontent.com/' .
-            $gitHubUserName . '/silverstripe-' . $name .
-            '/master/' . $file
-        );
+            return false;
+        }
+
     }
 }

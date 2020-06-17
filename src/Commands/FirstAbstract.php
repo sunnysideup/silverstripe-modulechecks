@@ -6,6 +6,12 @@ abstract class FirstAbstract extends BaseCommand
 {
     private static $enabled = false;
 
+    /**
+     * always add if enabled
+     * @var bool
+     */
+    private static $must_do = true;
+
     abstract public function run(): bool;
 
     abstract public function getDescription(): string;

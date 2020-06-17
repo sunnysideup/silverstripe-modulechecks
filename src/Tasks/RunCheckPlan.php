@@ -36,6 +36,7 @@ class RunCheckPlan extends BuildTask
         }
 
         restore_error_handler();
+        echo '<h1>++++++++++++ DONE +++++++++++++++</h1>';
     }
 
     protected function errorHandler(int $errno, string $errstr)

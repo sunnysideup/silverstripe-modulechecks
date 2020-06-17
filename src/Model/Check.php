@@ -38,6 +38,7 @@ class Check extends DataObject
         'Title' => 'Varchar',
         'MyClass' => 'Varchar',
         'Enabled' => 'Boolean',
+        'MustDo' => 'Boolean',
         'Type' => 'Varchar',
     ];
 
@@ -61,6 +62,7 @@ class Check extends DataObject
         'Title' => 'unique("Title")',
         'MyClass' => 'unique("MyClass")',
         'Enabled' => true,
+        'MustDo' => true,
     ];
 
     private static $default_sort = [
@@ -70,6 +72,7 @@ class Check extends DataObject
     ];
 
     private static $searchable_fields = [
+        'MustDo' => ExactMatchFilter::class,
         'Enabled' => ExactMatchFilter::class,
         'Title' => PartialMatchFilter::class,
         'Type' => PartialMatchFilter::class,
@@ -78,6 +81,16 @@ class Check extends DataObject
     #######################
     ### Field Names and Presentation Section
     #######################
+
+    private static $summary_fields = [
+        'Title' => 'Title',
+        'Enabled.Nice' => 'Enabled',
+        'MustDo.Nice' => 'Must Do',
+        'Type' => 'Group',
+        'ModuleChecks.Count' => 'Run Count',
+        'ExcludedFromPlan.Count' => 'Exclude Count',
+        'IncludedInPlan.Count' => 'Include Count',
+    ];
 
 
     #######################
@@ -141,6 +154,7 @@ class Check extends DataObject
                 $obj->MyClass = $class;
                 $obj->Type = $classObject->calculateType();
                 $obj->Enabled = Config::inst()->get($class, 'enabled');
+                $obj->MustDo = Config::inst()->get($class, 'must_do');
                 $obj->write();
             }
         }
