@@ -72,9 +72,12 @@ class Module extends DataObject
     ];
 
     private static $casting = [
+        'Title' => 'Varchar(255)',
         'Directory' => 'Varchar(255)',
         'URL' => 'Varchar(255)',
     ];
+
+
 
     private static $primary_model_admin_class = ModuleCheckModelAdmin::class;
 
@@ -114,6 +117,11 @@ class Module extends DataObject
     public function getDirectory(): string
     {
         return $this->Directory();
+    }
+
+    public function getTitle(): string
+    {
+        return $this->ModuleName;
     }
 
     /**

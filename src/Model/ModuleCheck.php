@@ -6,8 +6,10 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
+use SilverStripe\Forms\LiteralField;
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 use Sunnysideup\Flush\FlushNow;
+use Sunnysideup\CMSNiceties\Forms\CMSNicetiesLinkButton;
 
 class ModuleCheck extends DataObject
 {
@@ -81,6 +83,7 @@ class ModuleCheck extends DataObject
         'Completed.Nice' => 'Completed',
         'HasError.Nice' => 'Error',
         'CheckPlan.Title' => 'Plan',
+        'Check.Title' => 'Check',
         'Module.Title' => 'Module',
     ];
 
@@ -134,7 +137,18 @@ class ModuleCheck extends DataObject
 
     public function getCMSFields()
     {
-        return parent::getCMSFields();
+        $fields = parent::getCMSFields();
+        $fields->addFieldToTab(
+            'Root.Main',
+            CMSNicetiesLinkButton::create(
+                'RunNow',
+                'Do It',
+                'dev/tasks'
+            )
+        );
+
+        return $fields;
+
     }
 
     #######################

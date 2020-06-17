@@ -16,6 +16,7 @@ use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 
 use Sunnysideup\Flush\FlushNow;
+use Sunnysideup\CMSNiceties\Forms\CMSNicetiesLinkButton;
 
 class CheckPlan extends DataObject
 {
@@ -260,13 +261,15 @@ class CheckPlan extends DataObject
         $fields->addFieldsToTab(
             'Root.Actions',
             [
-                LiteralField::create(
+                CMSNicetiesLinkButton::create(
                     'LoadModules',
-                    '<h2 style="text-align: left"><a href="/dev/tasks/load-modules">load modules</a></h2>'
+                    'load modules',
+                    '/dev/tasks/load-modules'
                 ),
-                LiteralField::create(
+                CMSNicetiesLinkButton::create(
                     'DisableModules',
-                    '<h2 style="text-align: left"><a href="/dev/tasks/disable-modules-based-on-composer-type">disable non-applicable modules</a></h2>'
+                    'disable non-applicable modules',
+                    '<h2 style="text-align: left"><a href="/dev/tasks/disable-modules-based-on-composer-type"></a></h2>'
                 ),
                 LiteralField::create(
                     'CreateCheckPlan',
