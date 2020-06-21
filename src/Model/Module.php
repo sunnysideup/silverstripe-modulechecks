@@ -130,21 +130,21 @@ class Module extends DataObject
      */
     public function Directory(): string
     {
-        $tempFolder = Config::inst()->get(BaseObject::class, 'temp_folder_name');
+        $tempFolder = BaseObject::absolute_path_to_temp_folder();
         if ($this->ModuleName) {
             $folder = $tempFolder . '/' . $this->ModuleName;
-            if (file_exists($folder)) {
-                if (file_exists($folder)) {
-                    return $folder;
-                }
-            } else {
+            if (! file_exists($folder)) {
                 mkdir($folder);
-                if (file_exists($folder)) {
+            }
+            if (file_exists($folder)) {
+                if(is_writable($folder)) {
                     return $folder;
+                } else {
+                    user_error('Could not write to ' . $folder);
                 }
             }
         }
-        return '';
+        user_error('Could not find / create ' . $folder);
     }
 
     /**

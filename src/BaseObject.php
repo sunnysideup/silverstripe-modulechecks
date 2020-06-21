@@ -2,11 +2,13 @@
 
 namespace Sunnysideup\ModuleChecks;
 
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Filesystem;
 use SilverStripe\Control\Director;
 use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\ModuleChecks\Model\Check;
@@ -31,9 +33,10 @@ class BaseObject
         'github_user_name',
         'github_user_email',
     ];
+
     private const CHECKS_PATHS_METHODS = [
         'absolute_path_to_private_key',
-        'github_user_email',
+        'absolute_path_to_temp_folder',
     ];
 
     protected static $inst = null;
@@ -85,7 +88,7 @@ class BaseObject
     /**
      * where the git module is temporary
      * cloned and fixed up
-     * should be an absolute_path
+     * should be an name only
      *
      * @var string
      */
@@ -147,10 +150,10 @@ class BaseObject
         }
         foreach (self::CHECKS_PATHS_METHODS as $check) {
             $path = self::{$check}();
-            if(file_exists($fullFile) || is_link($fullFile))  {
+            if(file_exists($path) || is_link($path))  {
                 //all good...
             } else {
-                user_error('The following dir/file can not be found! ' . Director::baseFolder().'/'.$value);
+                user_error('The following dir/file can not be found! ' . $path);
                 return false;
             }
         }
@@ -159,7 +162,19 @@ class BaseObject
 
     public static function absolute_path_to_private_key() : string
     {
-        return Director::baseFolder() . '/' . Config::inst()->get(BaseObject::class, 'path_to_private_key');
+        return Director::baseFolder() . '/' . Config::inst()->get(BaseObject::class, 'relative_path_to_private_key');
+    }
+
+    /**
+     * path to temp folder using
+     * @return string
+     */
+    public static function absolute_path_to_temp_folder() : string
+    {
+        $folder =  ASSETS_PATH . '/' . Config::inst()->get(BaseObject::class, 'temp_folder_name');
+        Filesystem::makeFolder($folder);
+
+        return $folder;
     }
 
     /*

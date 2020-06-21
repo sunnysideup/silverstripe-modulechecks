@@ -10,7 +10,7 @@ Sunnysideup\ModuleChecks\Model\Module:
 
 
   temp_folder_name: "workingfolder"
-  path_to_private_key: "app/id_rsa"
+  relative_path_to_private_key: "app/certs/id_rsa"
 
   tag_create_message: "Auto-created tag."
 
