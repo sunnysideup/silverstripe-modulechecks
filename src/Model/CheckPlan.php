@@ -269,15 +269,17 @@ class CheckPlan extends DataObject
                 CMSNicetiesLinkButton::create(
                     'DisableModules',
                     'disable non-applicable modules',
-                    '<h2 style="text-align: left"><a href="/dev/tasks/disable-modules-based-on-composer-type"></a></h2>'
+                    '/dev/tasks/disable-modules-based-on-composer-type'
                 ),
-                LiteralField::create(
+                CMSNicetiesLinkButton::create(
                     'CreateCheckPlan',
-                    '<h2 style="text-align: left"><a href="/dev/tasks/create-check-plan?id='.$this->ID.'">create check plan</a></h2>'
+                    'add modules checks to this check plan',
+                    '/dev/tasks/create-check-plan?id='.$this->ID
                 ),
-                LiteralField::create(
+                CMSNicetiesLinkButton::create(
                     'RunCheckPlan',
-                    '<h2 style="text-align: left"><a href="/dev/tasks/run-check-plan/?id='.$this->ID.'">run check plan</a></h2>'
+                    'run this check plan',
+                    '/dev/tasks/run-check-plan/?id='.$this->ID
                 ),
             ]
         );

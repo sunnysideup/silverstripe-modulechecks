@@ -30,8 +30,10 @@ class BaseObject
         'github_account_base_url',
         'github_user_name',
         'github_user_email',
-        'path_to_private_key',
-        'temp_folder_name',
+    ];
+    private const CHECKS_PATHS_METHODS = [
+        'absolute_path_to_private_key',
+        'github_user_email',
     ];
 
     protected static $inst = null;
@@ -142,19 +144,22 @@ class BaseObject
                 user_error('You need to set ' . $check . ' as a private static in BaseObject');
                 return false;
             }
-            if (strpos($value, '/') !== false) {
-                if (! file_exists($value)) {
-                    $fullFile = Director::baseFolder().'/'.$value;
-                    if(file_exists($fullFile) || is_link($fullFile))  {
-                        //all good...
-                    } else {
-                        user_error('The following dir/file can not be found! ' . Director::baseFolder().'/'.$value);
-                        return false;
-                    }
-                }
+        }
+        foreach (self::CHECKS_PATHS_METHODS as $check) {
+            $path = self::{$check}();
+            if(file_exists($fullFile) || is_link($fullFile))  {
+                //all good...
+            } else {
+                user_error('The following dir/file can not be found! ' . Director::baseFolder().'/'.$value);
+                return false;
             }
         }
         return true;
+    }
+
+    public static function absolute_path_to_private_key() : string
+    {
+        return Director::baseFolder() . '/' . Config::inst()->get(BaseObject::class, 'path_to_private_key');
     }
 
     /*

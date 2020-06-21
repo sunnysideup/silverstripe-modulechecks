@@ -142,8 +142,8 @@ class ModuleCheck extends DataObject
             'Root.Main',
             CMSNicetiesLinkButton::create(
                 'RunNow',
-                'Do It',
-                'dev/tasks'
+                'Run this check',
+                'dev/tasks/run-check-plan/?id='.$this->ID
             )
         );
 
@@ -161,10 +161,10 @@ class ModuleCheck extends DataObject
         $this->write();
         $check = $this->Check();
         if ($check && $check->exists()) {
-            $repo = $this->GitHubModule();
+            $repo = $this->Module();
             if ($repo && $repo->exists()) {
                 $commandClassName = $check->MyClass;
-                $commandObject = $commandClassName::create($repo);
+                $commandObject = new $commandClassName($repo);
                 $outcome = $commandObject->run();
                 $this->Running = false;
                 $this->Completed = true;

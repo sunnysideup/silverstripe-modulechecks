@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Commands\FilesToAdd;
 
 use Sunnysideup\ModuleChecks\Commands\FilesToAddAbstract;
+use Sunnysideup\ModuleChecks\Model\Module;
 
 class AddTestToModule extends FilesToAddAbstract
 {

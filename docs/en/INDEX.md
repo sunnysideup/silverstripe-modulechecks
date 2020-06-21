@@ -39,7 +39,7 @@ for the UpdateModules task to run:
   github_account_base_url - the base url
 
   temp_folder_name - temporary folder for modules to be cloned into - must be writeable by www-data
-  path_to_private_key: path to id_rsa file, for example, /var/www/.ssh/id_rsa
+  path_to_private_key: path to id_rsa file, for example, app/keys
   The known_hosts file also needs to be created.
 
 CAUTION: The readme file for that this module will write is not customised

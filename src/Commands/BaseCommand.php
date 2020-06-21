@@ -4,6 +4,7 @@ namespace Sunnysideup\ModuleChecks\Commands;
 
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Model\Check;
+use Sunnysideup\ModuleChecks\Model\Module;
 use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 use ReflectionClass;
 use SilverStripe\Core\ClassInfo;

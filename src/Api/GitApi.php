@@ -45,11 +45,9 @@ class GitApi extends BaseObject
                 $this->commsWrapper->streamOutput();
             }
 
-            if (! Config::inst()->get(BaseObject::class, 'path_to_private_key')) {
-                user_error('We recommend you set private key');
-            }
+            $pathToPrivateKey = BaseObject::absolute_path_to_private_key();
             // Optionally specify a private key other than one of the defaults.
-            $this->commsWrapper->setPrivateKey(Config::inst()->get(BaseObject::class, 'path_to_private_key'));
+            $this->commsWrapper->setPrivateKey($pathToPrivateKey);
 
             //if directory exists, return existing repo,
             //otherwise clone it....
