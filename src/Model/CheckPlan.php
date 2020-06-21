@@ -14,6 +14,7 @@ use SilverStripe\ORM\Filters\ExactMatchFilter;
 use Sunnysideup\ModuleChecks\BaseObject;
 
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
+use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 
 use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\CMSNiceties\Forms\CMSNicetiesLinkButton;
@@ -148,16 +149,21 @@ class CheckPlan extends DataObject
         return self::$current_module_check;
     }
 
-    public static function get_next_module_check(?int $checkPlanID = 0, ?int $moduleCheckID = 0): ?ModuleCheck
+    public static function get_next_module_check(?int $checkPlanID = 0, ?int $moduleID = 0, ?int $moduleCheckID = 0): ?ModuleCheck
     {
         $plan = self::get_current_check_plan($checkPlanID);
         self::$current_module_check = null;
-        if($moduleCheckID) {
-            self::$current_module_check = $plan->ModuleChecks()->byID($moduleCheckID);
+        $filter = ['Running' => 0, 'Completed' => 0];
+        if($checkPlanID) {
+            $filter['CheckPlanID'] = $checkPlanID;
         }
-        if(! self::$current_module_check) {
-            self::$current_module_check = $plan->ModuleChecks()->filter(['Running' => 0, 'Completed' => 0])->first();
+        if($moduleID) {
+            $filter['ModuleID'] = $moduleID;
         }
+        if($checkPlanID) {
+            $filter['ID'] = $moduleCheckID;
+        }
+        self::$current_module_check = ModuleCheck::get()->filter($filter)->first();
 
         return self::$current_module_check;
     }
@@ -279,7 +285,7 @@ class CheckPlan extends DataObject
                 CMSNicetiesLinkButton::create(
                     'RunCheckPlan',
                     'run this check plan',
-                    '/dev/tasks/run-check-plan/?id='.$this->ID
+                    '/dev/tasks/run-check-plan/?checkplanid='.$this->ID
                 ),
             ]
         );

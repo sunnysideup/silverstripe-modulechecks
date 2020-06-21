@@ -143,7 +143,7 @@ class ModuleCheck extends DataObject
             CMSNicetiesLinkButton::create(
                 'RunNow',
                 'Run this check',
-                'dev/tasks/run-check-plan/?id='.$this->ID
+                'dev/tasks/run-check-plan/?modulecheckid='.$this->ID
             )
         );
 

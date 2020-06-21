@@ -29,12 +29,14 @@ class RunCheckPlan extends BuildTask
 
         set_error_handler([$this, 'errorHandler'], E_ALL);
         $sanityCount = 0;
-        $checkPlanID = $_GET['id'] ?? 0;
-        $obj = CheckPlan::get_next_module_check($checkPlanID);
+        $checkPlanID = $_GET['checkplanid'] ?? 0;
+        $moduleID = $_GET['moduleid'] ?? 0;
+        $moduleCheckID = $_GET['modulecheckid'] ?? 0;
+        $obj = CheckPlan::get_next_module_check($checkPlanID, $moduleID, $moduleCheckID);
         while ($obj && $sanityCount < 99999) {
             $obj->run();
             $sanityCount++;
-            $obj = CheckPlan::get_next_module_check($checkPlanID);
+            $obj = CheckPlan::get_next_module_check($checkPlanID, $moduleID, $moduleCheckID);
         }
 
         restore_error_handler();
