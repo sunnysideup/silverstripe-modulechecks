@@ -52,8 +52,6 @@ class ModuleCheck extends DataObject
     ];
 
     private static $default_sort = [
-        'Running' => 'DESC',
-        'Completed' => 'ASC',
         'ID' => 'ASC',
     ];
 
