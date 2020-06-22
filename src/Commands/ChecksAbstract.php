@@ -3,6 +3,7 @@
 namespace Sunnysideup\ModuleChecks\Commands;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\Api\FileMethods;
+use Sunnysideup\Flush\FlushNow;
 
 abstract class ChecksAbstract extends BaseCommand
 {
@@ -26,6 +27,8 @@ abstract class ChecksAbstract extends BaseCommand
      */
     public function checkLocation(string $url): bool
     {
+        FlushNow::do_flush('Checking ' . $url);
+
         return FileMethods::check_location_exists($url);
     }
 

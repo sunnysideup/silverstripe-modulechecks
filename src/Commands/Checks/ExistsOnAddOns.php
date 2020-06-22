@@ -19,11 +19,11 @@ class ExistsOnAddOns extends ChecksAbstract
      */
     public function run(): bool
     {
-        $name = $this->getName();
+        $name = $this->getNameWithoutSilverstripe();
         $packagistUserName = Config::inst()->get(BaseObject::class, 'packagist_user_name');
 
         return $this->checkLocation(
-            'http://addons.silverstripe.org/add-ons/' .
+            'https://addons.silverstripe.org/add-ons/' .
             $packagistUserName .
             '/' . $name
         );

@@ -3,6 +3,9 @@
 namespace Sunnysideup\ModuleChecks\Commands\Checks;
 
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
+use Sunnysideup\Flush\FlushNow;
+use SilverStripe\Core\Config\Config;
+use Sunnysideup\ModuleChecks\BaseObject;
 
 class ExistsOnPackagist extends ChecksAbstract
 {
@@ -17,13 +20,11 @@ class ExistsOnPackagist extends ChecksAbstract
      */
     public function run(): bool
     {
-        $name = $this->getName();
-        $packagistUserName = $this->Config()->get('packagist_user_name');
+        $name = $this->getNameWithoutSilverstripe();
+        $packagistUserName = Config::inst()->get(BaseObject::class, 'packagist_user_name');
+        $location = 'https://packagist.org/packages/' . $packagistUserName . '/' . $name;
 
-        return $this->checkLocation(
-            'https://packagist.org/packages/' .
-            $packagistUserName . '/' . $name
-        );
+        return $this->checkLocation($location);
     }
 
     /**

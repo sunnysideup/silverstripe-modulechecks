@@ -54,6 +54,17 @@ class BaseCommand
         return $this->repo->ModuleName;
     }
 
+    protected function getNameWithoutSilverstripe(): string
+    {
+        $str = $this->repo->ModuleName;
+        foreach(['silverstripe-', 'silverstripe_'] as $prefix) {
+            if (substr($str, 0, strlen('silverstripe-')) == $prefix) {
+                $str = substr($str, strlen($prefix));
+            }
+        }
+        return $str;
+    }
+
     protected function logError(string $error)
     {
         if (trim($error)) {
