@@ -75,10 +75,8 @@ class ComposerJsonClass extends BaseObject
 
     private function readJsonFromFile(): bool
     {
-        set_error_handler([$this, 'catchFopenWarning'], E_WARNING);
         $filename = $this->fileName();
         $json = file_get_contents($filename);
-        restore_error_handler();
         if ($json) {
             $this->jsonData = json_decode($json, true);
         } else {

@@ -151,16 +151,22 @@ class CheckPlan extends DataObject
 
     public static function get_next_module_check(?int $checkPlanID = 0, ?int $moduleID = 0, ?int $moduleCheckID = 0): ?ModuleCheck
     {
-        $plan = self::get_current_check_plan($checkPlanID);
         self::$current_module_check = null;
         $filter = ['Running' => 0, 'Completed' => 0];
+
+        if( ! $checkPlanID) {
+            $checkPlan = self::get_current_check_plan();
+            if($checkPlan) {
+                $checkPlanID = $checkPlan->ID;
+            }
+        }
         if($checkPlanID) {
             $filter['CheckPlanID'] = $checkPlanID;
         }
         if($moduleID) {
             $filter['ModuleID'] = $moduleID;
         }
-        if($checkPlanID) {
+        if($moduleCheckID) {
             $filter['ID'] = $moduleCheckID;
         }
         self::$current_module_check = ModuleCheck::get()->filter($filter)->first();

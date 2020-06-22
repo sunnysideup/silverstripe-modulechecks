@@ -315,9 +315,7 @@ abstract class FilesToAddAbstract extends BaseCommand
 
         $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . strtoupper($componentName) . '.md';
 
-        set_error_handler([$this, 'catchFopenWarning'], E_WARNING);
         $file = fopen($fileName, 'r');
-        restore_error_handler();
 
         if ($file) {
             $content = fread($file, filesize($fileName));

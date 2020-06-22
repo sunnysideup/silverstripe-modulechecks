@@ -133,18 +133,18 @@ class Module extends DataObject
         $tempFolder = BaseObject::absolute_path_to_temp_folder();
         if ($this->ModuleName) {
             $folder = $tempFolder . '/' . $this->ModuleName;
-            if (! file_exists($folder)) {
-                mkdir($folder);
-            }
             if (file_exists($folder)) {
-                if(is_writable($folder)) {
+                if (file_exists($folder)) {
                     return $folder;
-                } else {
-                    user_error('Could not write to ' . $folder);
+                }
+            } else {
+                mkdir($folder);
+                if (file_exists($folder)) {
+                    return $folder;
                 }
             }
         }
-        user_error('Could not find / create ' . $folder);
+        return '';
     }
 
     /**
@@ -323,7 +323,7 @@ class Module extends DataObject
      * @param bool (optional) $forceNew - create a new repo and ditch all changes
      * @return GitWorkingCopy Repo Object
      */
-    protected function checkOrSetGitCommsWrapper(?bool $forceNew = false): GitWorkingCopy
+    public function checkOrSetGitCommsWrapper(?bool $forceNew = false): GitWorkingCopy
     {
         if ($this->gitWrapper === null) {
             $this->gitWrapper = GitApi::create($this, $forceNew);
