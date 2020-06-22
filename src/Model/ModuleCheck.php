@@ -7,13 +7,16 @@ use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\ORM\Filters\ExactMatchFilter;
 use SilverStripe\ORM\Filters\PartialMatchFilter;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\ReadonlyField;
 use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\CMSNiceties\Forms\CMSNicetiesLinkButton;
+use Sunnysideup\CMSNiceties\Traits\CMSNicetiesTraitForCMSLinks;
 
 class ModuleCheck extends DataObject
 {
     use FlushNow;
+    use CMSNicetiesTraitForCMSLinks;
 
     #######################
     ### Names Section
@@ -136,13 +139,28 @@ class ModuleCheck extends DataObject
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-        $fields->addFieldToTab(
-            'Root.Main',
-            CMSNicetiesLinkButton::create(
-                'RunNow',
-                'Run this check',
-                'dev/tasks/run-check-plan/?modulecheckid='.$this->ID
-            )
+        if($this->canBeRun()) {
+            $fields->addFieldToTab(
+                'Root.Main',
+                CMSNicetiesLinkButton::create(
+                    'RunNow',
+                    'Run this check',
+                    'dev/tasks/run-check-plan/?modulecheckid='.$this->ID
+                )
+            );
+        } else {
+            $fields->addFieldToTab(
+                'Root.Main',
+                ReadonlyField::create(
+                    'RunNow',
+                    '',
+                    'This task can not be run (already started / completed)'
+                )
+            );
+        }
+        $fields->replaceField(
+            'ModuleID',
+            $this->CMSEditLinkField('Module', 'Module')
         );
 
         return $fields;
@@ -153,6 +171,10 @@ class ModuleCheck extends DataObject
     ### Running it
     #######################
 
+    public function canBeRun() : bool
+    {
+        return $this->Completed || $this->Running ? false : true;
+    }
     public function run()
     {
         $this->Running = true;

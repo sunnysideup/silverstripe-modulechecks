@@ -3,6 +3,8 @@
 namespace Sunnysideup\ModuleChecks\Commands\Checks;
 
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
+use Sunnysideup\ModuleChecks\BaseObject;
+use SilverStripe\Core\Config\Config;
 
 class ExistsOnAddOns extends ChecksAbstract
 {
@@ -18,7 +20,7 @@ class ExistsOnAddOns extends ChecksAbstract
     public function run(): bool
     {
         $name = $this->getName();
-        $packagistUserName = $this->Config()->get('packagist_user_name');
+        $packagistUserName = Config::inst()->get(BaseObject::class, 'packagist_user_name');
 
         return $this->checkLocation(
             'http://addons.silverstripe.org/add-ons/' .

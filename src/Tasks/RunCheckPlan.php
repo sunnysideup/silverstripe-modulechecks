@@ -35,10 +35,10 @@ class RunCheckPlan extends BuildTask
         echo '<h1>++++++++++++ STARTING +++++++++++++++</h1>';
         while ($obj && $sanityCount < 99999) {
             echo '<h1>ERROR</h1>';
-            set_error_handler([$this, 'errorHandler'], E_ALL);
+            // set_error_handler([$this, 'errorHandler'], E_ALL);
             echo 'running ' . $obj->ID;
             $obj->run();
-            restore_error_handler();
+            // restore_error_handler();
             $sanityCount++;
             $obj = CheckPlan::get_next_module_check($checkPlanID, $moduleID, $moduleCheckID);
         }

@@ -12,10 +12,13 @@ use Sunnysideup\ModuleChecks\Api\GitApi;
 use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\Flush\FlushNow;
+use Sunnysideup\CMSNiceties\Traits\CMSNicetiesTraitForCMSLinks;
 
 class Module extends DataObject
 {
     use FlushNow;
+    use CMSNicetiesTraitForCMSLinks;
+
 
     protected $gitWrapper = null;
 
@@ -323,7 +326,7 @@ class Module extends DataObject
      * @param bool (optional) $forceNew - create a new repo and ditch all changes
      * @return GitWorkingCopy Repo Object
      */
-    public function checkOrSetGitCommsWrapper(?bool $forceNew = false): GitWorkingCopy
+    public function checkOrSetGitCommsWrapper(?bool $forceNew = false) : GitApi
     {
         if ($this->gitWrapper === null) {
             $this->gitWrapper = GitApi::create($this, $forceNew);

@@ -11,7 +11,9 @@ use GitWrapper\GitWrapper;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
 use Sunnysideup\ModuleChecks\BaseObject;
+use Sunnysideup\ModuleChecks\Model\Check;
 use Sunnysideup\ModuleChecks\Model\Module;
+use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 use Sunnysideup\ModuleChecks\Tasks\UpdateModules;
 use Sunnysideup\Flush\FlushNow;
 
@@ -48,10 +50,11 @@ class GitApi extends BaseObject
             $pathToPrivateKey = BaseObject::absolute_path_to_private_key();
             // Optionally specify a private key other than one of the defaults.
             $this->commsWrapper->setPrivateKey($pathToPrivateKey);
+            $this->commsWrapper->setEnvVar('HOME', dirname($pathToPrivateKey));
 
             //if directory exists, return existing repo,
             //otherwise clone it....
-            if ($this->repo->IsDirGitRepo($this->repo->Directory())) {
+            if ($this->IsDirGitRepo($this->repo->Directory())) {
                 if ($forceNew) {
                     $this->repo->RemoveClone();
                     //do again!
