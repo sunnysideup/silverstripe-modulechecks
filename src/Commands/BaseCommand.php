@@ -7,9 +7,10 @@ use Sunnysideup\ModuleChecks\Model\Check;
 use Sunnysideup\ModuleChecks\Model\Module;
 use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 use ReflectionClass;
+use Sunnysideup\Flush\FlushNow;
 use SilverStripe\Core\ClassInfo;
 
-class BaseCommand
+abstract class BaseCommand
 {
     protected $repo = null;
 
@@ -25,6 +26,7 @@ class BaseCommand
             $this->rootDirForModule = $this->repo->Directory();
         }
     }
+    abstract public function run(): bool;
 
     public function calculateType(): string
     {
@@ -68,16 +70,13 @@ class BaseCommand
     protected function logError(string $error)
     {
         if (trim($error)) {
-            ModuleCheck::log_error($error);
-            $this->errorString = " \n|" . $error;
+            FlushNow::do_flush('Error --- '.$error);
+            $this->errorString .= " \n|" . $error;
         }
     }
 
-    protected function hasError(?bool $outcome = null): bool
+    protected function hasError(): bool
     {
-        if ($outcome === false) {
-            return true;
-        }
         return trim($this->errorString) ? true : false;
     }
 

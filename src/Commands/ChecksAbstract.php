@@ -13,10 +13,6 @@ abstract class ChecksAbstract extends BaseCommand
 
     abstract public function getDescription(): string;
 
-    public function getError(): string
-    {
-        return 'Check returns with error';
-    }
 
     /**
      * opens a location with curl to see if it exists.

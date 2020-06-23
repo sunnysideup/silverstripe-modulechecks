@@ -7,7 +7,7 @@ use Sunnysideup\ModuleChecks\Model\Module;
 
 class AddTestToModule extends FilesToAddAbstract
 {
-    protected $gitReplaceArray = [
+    protected $repoReplaceArray = [
         'Module' => 'ShortUCFirstName',
     ];
 

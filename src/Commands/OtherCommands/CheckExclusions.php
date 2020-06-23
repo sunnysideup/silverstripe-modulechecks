@@ -5,6 +5,7 @@ namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 use Sunnysideup\Flush\FlushNow;
+use SilverStripe\Core\Config\Config;
 
 class CheckExclusions extends ChecksAbstract
 {
@@ -26,13 +27,16 @@ class CheckExclusions extends ChecksAbstract
         if (count($excludedWords) > 0) {
             $folder = $this->repo->Directory();
 
-            $results = $this->checkDirExcludedWords($folder . '/' . $this->repo->ModuleName, $excludedWords);
+            $results = $this->checkDirExcludedWords($folder, $excludedWords);
 
             if ($results && count($results > 0)) {
                 $msg = '<h4>The following excluded words were found: </h4><ul>';
+                FlushNow::do_flush($msg);
                 foreach ($results as $file => $words) {
                     foreach ($words as $word) {
-                        $msg .= FlushNow::do_flush($word . ' in ' . $file);
+                        $msg = $word . ' in ' . $file;
+                        FlushNow::do_flush($msg);
+                        $msg .= '<li>'.$msg.'</li>';
                     }
                 }
                 $msg .= '</ul>';

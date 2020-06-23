@@ -57,7 +57,10 @@ class UpdateTag extends ChecksAbstract
 
             $outcome = $this->repo->createTag($options);
         }
-        return $this->hasError($outcome);
+        if( ! $outcome) {
+            $this->logError('Could not create tag');
+        }
+        return $this->hasError();
     }
 
     public function getDescription(): string

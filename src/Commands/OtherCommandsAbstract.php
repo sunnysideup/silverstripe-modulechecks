@@ -9,9 +9,4 @@ abstract class OtherCommandsAbstract extends BaseCommand
     abstract public function run(): bool;
 
     abstract public function description(): string;
-
-    public function getError(): string
-    {
-        return 'Could not run command.';
-    }
 }

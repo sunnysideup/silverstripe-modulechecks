@@ -76,11 +76,6 @@ abstract class ShellCommandsAbstract extends BaseCommand
         return ! empty(shell_exec("which ${cmd}"));
     }
 
-    public function getError(): string
-    {
-        return print_r($this->outcomes, 1);
-    }
-
     /**
      * runs a command from the root dir or the module
      */
@@ -96,9 +91,11 @@ abstract class ShellCommandsAbstract extends BaseCommand
                 true //run immediately?
             );
             foreach ($results as $result) {
-                $this->outcomes[] = $result;
+                $this->logError($result);
             }
         }
+        print_r($results);
+        die('sdf');
         return true;
     }
 }

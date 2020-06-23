@@ -92,7 +92,7 @@ class BaseObject
      *
      * @var string
      */
-    private static $temp_folder_name = '/var/www/temp/';
+    private static $temp_folder_name = '.temp';
 
     /**
      * @var string

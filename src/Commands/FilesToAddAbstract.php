@@ -69,22 +69,22 @@ abstract class FilesToAddAbstract extends BaseCommand
 
     private static $enabled = false;
 
-    public function __construct(?Module $repo = null)
+    public function __construct(Module $repo)
     {
         parent::__construct($repo);
-        if($this->repo) {
-            $this->rootDirForModule = $this->repo->Directory();
-        }
+        $this->rootDirForModule = $this->repo->Directory();
     }
 
-    public function setRootDirForModule($rootDirForModule)
+    public function setRootDirForModule(string $rootDirForModule)
     {
-        $this->{$rootDirForModule} = $rootDirForModule;
+        $this->rootDirForModule = $rootDirForModule;
+        return $this;
     }
 
-    public function setSourceLocation($sourceLocation)
+    public function setSourceLocation(string $sourceLocation)
     {
         $this->sourceLocation = $sourceLocation;
+        return $this;
     }
 
     public function setFileLocation($relativeDirAndFileName)
@@ -94,13 +94,15 @@ abstract class FilesToAddAbstract extends BaseCommand
 
     abstract public function getDescription(): string;
 
-    public function run()
+    public function run() : bool
     {
         if (! $this->rootDirForModule) {
             $this->logError('no root dir for module has been set');
+            return true;
         }
         if (! $this->fileLocation) {
             $this->logError('File location not set');
+            return true;
         }
         $fileContent = $this->getStandardFile();
 
@@ -112,8 +114,10 @@ abstract class FilesToAddAbstract extends BaseCommand
         if ($fileContent) {
             $this->replaceWordsInFile();
         }
-
-        return $this->hasError($outcome);
+        if( ! $outcome) {
+            $this->logError('Could not save file: ' . $this->fileLocation);
+        }
+        return $this->hasError();
     }
 
     /**
@@ -125,14 +129,32 @@ abstract class FilesToAddAbstract extends BaseCommand
     public function replaceWordsInFile()
     {
         foreach ($this->gitReplaceArray as $searchTerm => $replaceMethod) {
-            $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
-            $this->replaceInFile($fileName, $searchTerm, $this->repo->{$replaceMethod}());
+            $this->replaceInFile($this->getFilePath(), $searchTerm, $this->repo->{$replaceMethod}());
         }
 
         foreach ($this->replaceArray as $searchTerm => $replaceMethod) {
-            $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
-            $this->replaceInFile($fileName, $searchTerm, $this->{$replaceMethod}());
+            $this->replaceInFile($this->getFilePath(), $searchTerm, $this->{$replaceMethod}());
         }
+    }
+
+    protected function getFilePath() : string
+    {
+        return $this->rootDirForModule . '/' . $this->fileLocation;
+    }
+
+    protected function checkFolderPath() : bool
+    {
+        $fullPath = dirname($this->getFilePath());
+        if (! file_exists($fullPath)) {
+            Filesystem::makeFolder($fullPath);
+        }
+
+        if (! isset($fullPath) || ! file_exists($fullPath)) {
+            $this->logError('could not find or create directory ' . $fullPath);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -164,11 +186,6 @@ abstract class FilesToAddAbstract extends BaseCommand
         $fileText = $this->getStandardFile();
         $text = $this->replaceWordsInText($fileText);
         return trim($text) === trim($compareText);
-    }
-
-    public function getError(): string
-    {
-        return 'Could not add file.';
     }
 
     /*
@@ -253,30 +270,13 @@ abstract class FilesToAddAbstract extends BaseCommand
      *
      * @return bool - true on success, false on failure
      */
-    protected function saveFile($fileContent)
+    protected function saveFile($fileContent) : bool
     {
         FlushNow::do_flush('Adding ' . $this->fileLocation . ' to module');
 
-        /*
-         * If fileLocation  contains folder, name then need to check
-         * if folder exists
-         */
-        if (strpos($this->fileLocation, '/') !== false) {
-            $folderPath = substr($this->fileLocation, 0, strrpos($this->fileLocation, '/'));
+        $this->checkFolderPath();
 
-            //print_r ($this->rootDirForModule.'/'.$folderPath);
-
-            if (! file_exists($this->rootDirForModule . '/' . $folderPath)) {
-                Filesystem::makeFolder($this->rootDirForModule . '/' . $folderPath);
-            }
-        }
-
-        if (isset($folderPath) && ! file_exists($this->rootDirForModule . '/' . $folderPath)) {
-            $this->logError('could not find or create directory ' . $this->rootDirForModule . '/' . $folderPath);
-        }
-
-        $fileName = $this->rootDirForModule . '/' . $this->fileLocation;
-        $this->fileLocation;
+        $fileName = $this->getFilePath();
 
         $file = fopen($fileName, 'w');
 
@@ -284,16 +284,19 @@ abstract class FilesToAddAbstract extends BaseCommand
             $result = fwrite($file, $fileContent);
             $exists = file_exists($fileName);
         } else {
+            $this->logError('Could not open: ' . $fileName);
             return false;
         }
         if (! $exists) {
             $this->logError('Tried to save file,  but can not find it: ' . $fileName);
+            return false;
         }
         if (! $result) {
             $this->logError('Tried to save file,  but can not write to it: ' . $fileName);
+            return false;
         }
 
-        return $this->hasError();
+        return true;
     }
 
     /**
@@ -314,16 +317,11 @@ abstract class FilesToAddAbstract extends BaseCommand
         $moduleName = $this->repo->ModuleName;
 
         $fileName = $temp_dir . '/' . $moduleName . '/docs/en/' . strtoupper($componentName) . '.md';
-
-        $file = fopen($fileName, 'r');
-
-        if ($file) {
-            $content = fread($file, filesize($fileName));
-        } else {
-            $content = '';
+        if(file_exists($fileName)) {
+            return file_get_contents($fileName);
         }
 
-        return $content;
+        return '';
     }
 
     protected function Configuration()
@@ -366,7 +364,5 @@ abstract class FilesToAddAbstract extends BaseCommand
         return $this->getReadMeComponent('suggestedmodules');
     }
 
-    private function catchFopenWarning($errno, $errstr)
-    {
-    }
+
 }

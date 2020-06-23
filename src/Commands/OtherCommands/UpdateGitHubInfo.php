@@ -6,6 +6,7 @@ use Sunnysideup\ModuleChecks\Api\GitHubApi;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
 use Sunnysideup\Flush\FlushNow;
+use SilverStripe\Core\Config\Config;
 
 class UpdateGitHubInfo extends ChecksAbstract
 {
@@ -49,8 +50,7 @@ class UpdateGitHubInfo extends ChecksAbstract
         FlushNow::do_flush('updating Git Repo information ...');
 
         //check!
-        $obj = GitHubApi::create();
-        $obj->apiCall($this->repo->ModuleName, $array, '', 'PATCH');
+        $obj = GitHubApi::api_call($this->repo->ModuleName, $array, '', 'PATCH');
 
         return $this->hasError();
     }

@@ -137,11 +137,9 @@ class Module extends DataObject
         if ($this->ModuleName) {
             $folder = $tempFolder . '/' . $this->ModuleName;
             if (file_exists($folder)) {
-                if (file_exists($folder)) {
-                    return $folder;
-                }
+                return $folder;
             } else {
-                mkdir($folder);
+                Filesystem::makeFolder($folder);
                 if (file_exists($folder)) {
                     return $folder;
                 }
@@ -192,7 +190,7 @@ class Module extends DataObject
 
     public function ShortUCFirstName(): string
     {
-        $array = explode(['_', '-'], $this->ShortModuleName());
+        $array = preg_split( "/(-|_)/",  $this->ShortModuleName() );
 
         $name = '';
 

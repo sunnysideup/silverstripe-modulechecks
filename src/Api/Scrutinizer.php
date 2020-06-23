@@ -8,6 +8,13 @@ use Sunnysideup\Flush\FlushNow;
 
 class Scrutinizer extends BaseObject
 {
+    /**
+     *
+     * @param  string $apiKey         [description]
+     * @param  string $gitHubUserName [description]
+     * @param  string $moduleName     [description]
+     * @return bool                   [description]
+     */
     public static function send_to_scrutinizer(string $apiKey, string $gitHubUserName, string $moduleName): bool
     {
         if (! trim($apiKey)) {

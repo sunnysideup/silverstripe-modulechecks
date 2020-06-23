@@ -23,11 +23,6 @@ abstract class UpdateComposerAbstract extends BaseCommand
 
     abstract public function getDescription(): string;
 
-    public function getError(): string
-    {
-        return 'Could not update composer';
-    }
-
     /**
      * @return array
      */

@@ -104,7 +104,7 @@ class ModuleCheck extends DataObject
 
     public function getTitle()
     {
-        return DBField::create_field('Varchar', 'FooBar To Be Completed');
+        return DBField::create_field('Varchar', $this->Module()->getTitle(). ' --- '.$this->Check()->getTitle() . ' ---');
     }
 
     public function canCreate($member = null, $context = [])
@@ -151,10 +151,10 @@ class ModuleCheck extends DataObject
         } else {
             $fields->addFieldToTab(
                 'Root.Main',
-                ReadonlyField::create(
+                CMSNicetiesLinkButton::create(
                     'RunNow',
-                    '',
-                    'This task can not be run (already started / completed)'
+                    'Run this check AGAIN (careful!)',
+                    'dev/tasks/run-check-plan/?modulecheckid='.$this->ID.'&force=1'
                 )
             );
         }
@@ -201,12 +201,14 @@ class ModuleCheck extends DataObject
         }
     }
 
-    public function LogError($message)
+    public function LogError(string $message)
     {
-        $this->Error .= '
-        | ' . $message;
-        $this->HasError = true;
-        $this->write();
+        if(trim($message)) {
+            $this->Error .= '
+            | ' . $message;
+            $this->HasError = true;
+            $this->write();
+        }
     }
 
     public static function log_error(string $message)

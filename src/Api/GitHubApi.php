@@ -87,13 +87,12 @@ class GitHubApi extends BaseObject
                 $url = 'https://api.github.com/users/' . trim($gitUserName) . '/repos';
                 $array = [];
                 for ($page = 0; $page < 10; $page++) {
-                    $data = [
+                    $jsonData = [
                         'per_page' => 100,
                         'page' => $page,
                     ];
 
-                    $method = 'GET';
-                    $curlResult = self::run_curl_results($url, $method, $data);
+                    $curlResult = self::run_curl_results($url, $jsonData);
 
                     if (! $curlResult) {
                         FlushNow::do_flush('Could not retrieve list of modules from GitHub');
@@ -158,9 +157,9 @@ class GitHubApi extends BaseObject
         return $content;
     }
 
-    public static function api_call(string $moduleName, array $data, ?string $gitAPIcommand = '', ?string $method = 'GET')
+    public static function api_call(string $moduleName, array $jsonData, ?string $gitAPIcommand = '', ?string $method = 'GET')
     {
-        $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        // $jsonData = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         FlushNow::do_flush('Running Git API command ' . $gitAPIcommand . ' using ' . $method . ' method...');
         $gitUserName = Config::inst()->get(BaseObject::class, 'github_user_name');
         $url = 'https://api.github.com/:repos/' . trim($gitUserName) . '/:' . trim($moduleName);
@@ -168,7 +167,7 @@ class GitHubApi extends BaseObject
             $url .= '/' . trim($gitAPIcommand);
         }
 
-        $curlResult = self::run_curl_results($url, $method, $jsonData);
+        $curlResult = self::run_curl_results($url, $jsonData, $method);
 
         print_r($url);
         print_r('<br/>');
@@ -176,7 +175,7 @@ class GitHubApi extends BaseObject
         return $curlResult;
     }
 
-    protected static function run_curl_results(string $url, string $method, array $jsonData)
+    protected static function run_curl_results(string $url, array $jsonData, ?string $method = 'GET')
     {
         $method = trim(strtoupper($method));
 

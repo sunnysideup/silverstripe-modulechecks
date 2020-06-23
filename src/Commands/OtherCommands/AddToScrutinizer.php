@@ -5,6 +5,7 @@ namespace Sunnysideup\ModuleChecks\Commands\OtherCommands;
 use Sunnysideup\ModuleChecks\Api\Scrutinizer;
 use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\ModuleChecks\Commands\ChecksAbstract;
+use SilverStripe\Core\Config\Config;
 
 class AddToScrutinizer extends ChecksAbstract
 {
@@ -25,11 +26,14 @@ class AddToScrutinizer extends ChecksAbstract
                 $gitHubUserName,
                 $this->repo->ModuleName
             );
+            print_r($outcome);
         } else {
             $this->logError('API Key Not Set');
         }
-
-        return $this->hasError($outcome);
+        if(! $outcome) {
+            $this->logError('Could not add to scrutinizer');
+        }
+        return $this->hasError();
     }
 
     public function getDescription(): string

@@ -23,17 +23,17 @@ class MoveOldReadMe extends ChecksAbstract
         $automatedReadMe = $this->repo->Directory() . '/' . 'README.md';
 
         if (! file_exists($automatedReadMe)) {
-            $this->logError('Could not find ' . $this->repo->Directory() . '/' . 'README.md');
-            return false;
+            $this->logError('Could not find ' . $automatedReadMe);
+            return true;
         }
 
-        $oldreadmeDestinationFiles = [
+        $oldReadMeDestinationFiles = [
             'docs/en/INDEX.md',
             'docs/en/README.old.md',
         ];
 
         $copied = false;
-        foreach ($oldreadmeDestinationFiles as $file) {
+        foreach ($oldReadMeDestinationFiles as $file) {
             $filePath = $this->repo->Directory() . '/' . $file;
 
             if (! file_exists($filePath)) {
@@ -43,7 +43,7 @@ class MoveOldReadMe extends ChecksAbstract
                 $copied = true;
             }
         }
-        //delete the autoamted ReadMe
+        //delete the automated ReadMe
         if ($copied) {
             unlink($automatedReadMe);
         }

@@ -16,8 +16,4 @@ abstract class FirstAbstract extends BaseCommand
 
     abstract public function getDescription(): string;
 
-    public function getError(): string
-    {
-        return 'Could not set up module';
-    }
 }

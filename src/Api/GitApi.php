@@ -69,10 +69,11 @@ class GitApi extends BaseObject
                 while (! $this->gitApiWrapper) {
                     $cloneAttempts ++;
                     if ($cloneAttempts === 4) {
-                        $message = 'Failed to clone module ' . $this->repo->LongModuleName() . ' after ' . ($cloneAttempts - 1) . ' attemps.';
+                        $message = 'Failed to clone module ' . $this->repo->LongModuleName() . ' after ' . ($cloneAttempts - 1) . ' attempts.';
                         //UpdateModules::$unsolvedItems[$this->ModuleName()] = 'Failed to clone modules';
                         ModuleCheck::log_error($message);
                         USER_ERROR($message);
+                        return;
                     }
                     try {
                         $this->commsWrapper->setTimeout(240); //Big modules need a longer timeout

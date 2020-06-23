@@ -149,10 +149,14 @@ class CheckPlan extends DataObject
         return self::$current_module_check;
     }
 
-    public static function get_next_module_check(?int $checkPlanID = 0, ?int $moduleID = 0, ?int $moduleCheckID = 0): ?ModuleCheck
+    public static function get_next_module_check(?int $checkPlanID = 0, ?int $moduleID = 0, ?int $moduleCheckID = 0, ?bool $force = false): ?ModuleCheck
     {
         self::$current_module_check = null;
-        $filter = ['Running' => 0, 'Completed' => 0];
+        if($force) {
+            $filter = [];
+        } else {
+            $filter = ['Running' => 0, 'Completed' => 0];
+        }
 
         if( ! $checkPlanID) {
             $checkPlan = self::get_current_check_plan();
@@ -170,7 +174,13 @@ class CheckPlan extends DataObject
             $filter['ID'] = $moduleCheckID;
         }
         self::$current_module_check = ModuleCheck::get()->filter($filter)->first();
-
+        if($force && self::$current_module_check) {
+            self::$current_module_check->Running = false;
+            self::$current_module_check->HasError = false;
+            self::$current_module_check->Completed = false;
+            self::$current_module_check->Error = '';
+            self::$current_module_check->write();
+        }
         return self::$current_module_check;
     }
 
