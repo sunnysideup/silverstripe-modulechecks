@@ -18,7 +18,7 @@ class ComposerAddKeywords extends UpdateComposerAbstract
      */
     private static $enabled = true;
 
-    public function run()
+    public function run(): bool
     {
         $this->removeKeyWords($this->defaultWords);
 

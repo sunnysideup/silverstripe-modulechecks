@@ -16,7 +16,7 @@ class UpdateLicense extends UpdateComposerAbstract
      */
     private static $enabled = true;
 
-    public function run()
+    public function run(): bool
     {
         $json = $this->getJsonData();
         $json['license'] = Config::inst()->get(UpdateLicense::class, 'license_type');

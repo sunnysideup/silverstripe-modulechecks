@@ -15,14 +15,14 @@ class UpdataModuleType extends UpdateComposerAbstract
      */
     private static $enabled = false;
 
-    public function run()
+    public function run(): bool
     {
-        // $json = $this->getJsonData();
-        // if($json['type'] === 'silverstripe-module') {
-        //     $json['type'] = 'silverstripe-vendormodule';
-        // }
-        //
-        // $this->setJsonData($json);
+        $json = $this->getJsonData();
+        if($json['type'] === 'silverstripe-module') {
+            $json['type'] = 'silverstripe-vendormodule';
+        }
+
+        $this->setJsonData($json);
     }
 
     /**

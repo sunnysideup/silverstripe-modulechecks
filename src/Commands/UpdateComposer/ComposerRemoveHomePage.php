@@ -12,7 +12,7 @@ class ComposerRemoveHomePage extends UpdateComposerAbstract
      */
     private static $enabled = true;
 
-    public function run()
+    public function run(): bool
     {
         $json = $this->composerJsonObj->getJsonData();
         if (isset($json['authors'][0]['homepage'])) {

@@ -19,7 +19,7 @@ abstract class UpdateComposerAbstract extends BaseCommand
         }
     }
 
-    abstract public function run();
+    abstract public function run(): bool;
 
     abstract public function getDescription(): string;
 

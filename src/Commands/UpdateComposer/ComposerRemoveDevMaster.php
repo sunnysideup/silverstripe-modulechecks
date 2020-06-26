@@ -12,7 +12,7 @@ class ComposerRemoveDevMaster extends UpdateComposerAbstract
      */
     private static $enabled = false;
 
-    public function run()
+    public function run(): bool
     {
         $json = $this->composerJsonObj->getJsonData();
         $require = $json['require'];
