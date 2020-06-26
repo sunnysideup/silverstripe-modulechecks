@@ -13,6 +13,20 @@ use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\CMSNiceties\Forms\CMSNicetiesLinkButton;
 use Sunnysideup\CMSNiceties\Traits\CMSNicetiesTraitForCMSLinks;
 
+/**
+ * Class \Sunnysideup\ModuleChecks\Model\ModuleCheck
+ *
+ * @property boolean $Running
+ * @property boolean $Completed
+ * @property boolean $HasError
+ * @property string $Error
+ * @property int $CheckPlanID
+ * @property int $ModuleID
+ * @property int $CheckID
+ * @method \Sunnysideup\ModuleChecks\Model\CheckPlan CheckPlan()
+ * @method \Sunnysideup\ModuleChecks\Model\Module Module()
+ * @method \Sunnysideup\ModuleChecks\Model\Check Check()
+ */
 class ModuleCheck extends DataObject
 {
     use FlushNow;

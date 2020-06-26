@@ -14,6 +14,22 @@ use Sunnysideup\ModuleChecks\BaseObject;
 use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\CMSNiceties\Traits\CMSNicetiesTraitForCMSLinks;
 
+/**
+ * Class \Sunnysideup\ModuleChecks\Model\Module
+ *
+ * @property string $ModuleName
+ * @property string $Description
+ * @property int $ForksCount
+ * @property string $DefaultBranch
+ * @property boolean $Private
+ * @property string $HomePage
+ * @property boolean $Disabled
+ * @property string $ComposerName
+ * @property string $ComposerType
+ * @method \SilverStripe\ORM\DataList|\Sunnysideup\ModuleChecks\Model\ModuleCheck[] ModuleChecks()
+ * @method \SilverStripe\ORM\ManyManyList|\Sunnysideup\ModuleChecks\Model\CheckPlan[] ExcludedFromPlan()
+ * @method \SilverStripe\ORM\ManyManyList|\Sunnysideup\ModuleChecks\Model\CheckPlan[] IncludedInPlan()
+ */
 class Module extends DataObject
 {
     use FlushNow;

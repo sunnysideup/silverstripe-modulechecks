@@ -18,6 +18,18 @@ use Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin;
 
 use Sunnysideup\ModuleChecks\BaseObject;
 
+/**
+ * Class \Sunnysideup\ModuleChecks\Model\Check
+ *
+ * @property string $Title
+ * @property string $MyClass
+ * @property boolean $Enabled
+ * @property boolean $MustDo
+ * @property string $Type
+ * @method \SilverStripe\ORM\DataList|\Sunnysideup\ModuleChecks\Model\ModuleCheck[] ModuleChecks()
+ * @method \SilverStripe\ORM\ManyManyList|\Sunnysideup\ModuleChecks\Model\CheckPlan[] ExcludedFromPlan()
+ * @method \SilverStripe\ORM\ManyManyList|\Sunnysideup\ModuleChecks\Model\CheckPlan[] IncludedInPlan()
+ */
 class Check extends DataObject
 {
     #######################

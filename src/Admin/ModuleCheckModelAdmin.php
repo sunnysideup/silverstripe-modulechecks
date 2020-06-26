@@ -8,6 +8,10 @@ use Sunnysideup\ModuleChecks\Model\CheckPlan;
 use Sunnysideup\ModuleChecks\Model\Module;
 use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 
+/**
+ * Class \Sunnysideup\ModuleChecks\Admin\ModuleCheckModelAdmin
+ *
+ */
 class ModuleCheckModelAdmin extends ModelAdmin
 {
     private static $menu_title = 'Checks';

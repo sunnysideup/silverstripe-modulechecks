@@ -19,6 +19,18 @@ use Sunnysideup\ModuleChecks\Model\ModuleCheck;
 use Sunnysideup\Flush\FlushNow;
 use Sunnysideup\CMSNiceties\Forms\CMSNicetiesLinkButton;
 
+/**
+ * Class \Sunnysideup\ModuleChecks\Model\CheckPlan
+ *
+ * @property boolean $Completed
+ * @property boolean $AllModules
+ * @property boolean $AllChecks
+ * @method \SilverStripe\ORM\DataList|\Sunnysideup\ModuleChecks\Model\ModuleCheck[] ModuleChecks()
+ * @method \SilverStripe\ORM\ManyManyList|\Sunnysideup\ModuleChecks\Model\Module[] IncludeModules()
+ * @method \SilverStripe\ORM\ManyManyList|\Sunnysideup\ModuleChecks\Model\Check[] IncludeChecks()
+ * @method \SilverStripe\ORM\ManyManyList|\Sunnysideup\ModuleChecks\Model\Module[] ExcludeModules()
+ * @method \SilverStripe\ORM\ManyManyList|\Sunnysideup\ModuleChecks\Model\Check[] ExcludeChecks()
+ */
 class CheckPlan extends DataObject
 {
 
