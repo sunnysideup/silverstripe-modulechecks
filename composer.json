@@ -24,10 +24,10 @@
     ],
     "require": {
         "symfony/yaml": "*",
-        "silverstripe/recipe-cms": "^4.5.2@stable",
+        "silverstripe/recipe-cms": "^4.7",
         "sunnysideup/flush": "dev-master",
         "sunnysideup/php_2_command_line": "dev-master",
-        "sunnysideup/cms-niceties": "dev-master",
+        "sunnysideup/cms-niceties": "^3.0",
         "cpliakas/git-wrapper": "^3.0",
         "unclecheese/display-logic": "^2.0.3"
     },
